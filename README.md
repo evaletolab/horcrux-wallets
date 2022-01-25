@@ -3,6 +3,7 @@ A tool to organise and generate offline secure paper wallets.
 
 # generate/import Mnemonic (BIP39)
 * https://github.com/bitcoinjs/bip39
+* i18n, select language 
 
 ``` js
 mnemonic = new Mnemonic(language);
@@ -17,7 +18,7 @@ var isValid = mnemonic.check(phrase);
 
 # Converting BIP39 mnemonic phrase to shamir secret sharing scheme
 * https://github.com/iancoleman/shamir39
-* TODO ?
+* use 2/N scheme
 
 # generate private keys
 * https://github.com/bitcoinjs/bip32
