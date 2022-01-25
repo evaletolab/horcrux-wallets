@@ -3,6 +3,7 @@ A tool to organise and generate offline secure paper wallets.
 
 # generate/import Mnemonic (BIP39)
 * https://github.com/bitcoinjs/bip39
+* i18n, select language 
 
 ``` js
 mnemonic = new Mnemonic(language);
