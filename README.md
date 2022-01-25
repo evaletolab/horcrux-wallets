@@ -11,7 +11,9 @@ var isValid = mnemonic.check(phrase);
 ```
 * how to manage entropy and randomness ?
 * BIP39 Seed 
+* [https://electrum.readthedocs.io/en/latest/seedphrase.html](Electrum secure seed version), 
 * print QRcodes
+
 
 # Converting BIP39 mnemonic phrase to shamir secret sharing scheme
 * https://github.com/iancoleman/shamir39
