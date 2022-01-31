@@ -53,7 +53,7 @@
       <ol class="generated">
         <li class="part">part 1, stored on username/password => smartcontract </li>
         <li class="part">part 2, stored on paper</li>
-        <li class="part">part 3, stored on "gg cloud"?</li>
+        <li class="part">part 3, stored on device (add new device feature)</li>
       </ol>
     </div>
   
