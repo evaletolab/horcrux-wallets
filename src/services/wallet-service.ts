@@ -1,12 +1,20 @@
 import { $config } from './config-service';
 import * as bip39 from 'bip39';
-import * as randomBytes from 'randombytes';
 
 class WalletService {
   private _STORAGE = "horcrux-wallet";
 
+
+  entropy256Bits = function() {
+    const bytes = Buffer.allocUnsafe(64);
+    const self: any = window;
+    const cryptoObj = self.crypto || self.msCrypto; // for IE
+    cryptoObj.getRandomValues(bytes);
+    return new Promise(()=> bytes);
+  }
+
   async createEntropy() {
-    return randomBytes(64);
+    this.entropy256Bits();
   }
 
   async createUser(username: string) {
