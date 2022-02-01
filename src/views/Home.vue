@@ -77,8 +77,8 @@ export default class Home extends Vue {
   rootKey = "";
   async mounted() {
     this.mnemonic = await $wallet.createMnemonic();
-    this.seed = (await $wallet.createSeed(this.mnemonic)).toString('hex');
-    //this.rootKey = await $wallet.createRootKey(this.seed);
+    this.seed = (await $wallet.createSeed(this.mnemonic));
+    this.rootKey = await $wallet.createRootKey(this.seed);
   }
 }
 </script>
