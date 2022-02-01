@@ -57,6 +57,9 @@
         <li class="part">part 3, stored on device (add new device feature)</li>
       </ol>
     </div>
+
+    <!-- Entropy from mouse component test -->
+    <entropy-from-mouse/>
   
   </div>
 </template>
@@ -64,11 +67,12 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
+import EntropyFromMouse from '@/components/EntropyFromMouse.vue';
 import { $wallet } from '../services';
 
 @Options({
   components: {
-    HelloWorld,
+    HelloWorld, EntropyFromMouse,
   },
 })
 export default class Home extends Vue {
