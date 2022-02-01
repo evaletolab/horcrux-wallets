@@ -1,7 +1,7 @@
 //import { $config } from './config-service';
 import * as bip39 from 'bip39';
 import BIP32Factory from 'bip32';
-import * as ecc from 'tiny-secp256k1';
+//import * as ecc from 'tiny-secp256k1';
 import { BIP32Interface } from 'bip32';
 
 class WalletService {
@@ -33,17 +33,17 @@ class WalletService {
   }
 
   async createRootKey(seed: string){
-    const bip32 = BIP32Factory(ecc);
-    const node: BIP32Interface = bip32.fromBase58(seed);
+    // const bip32 = BIP32Factory(ecc);
+    // const node: BIP32Interface = bip32.fromBase58(seed);
     //let child: BIP32Interface = node.derivePath('m/0/0');
 
-    return node.toBase58();
+    //return node.toBase58();
   }
 
   //
   // create public/private eth address
   // - sign Horcrux method call 
-  // - 
+  // https://hackernoon.com/shamir-secret-sharing-vs-multi-sig-124a42bc1662 
   async createHorcrux(shamirSecret: string) {
     //
     //https://docs.ethers.io/v4/cookbook-signing.html
