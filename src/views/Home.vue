@@ -24,7 +24,8 @@
     <div class="form-group">
         <label for="phrase" class="col-sm-2 control-label">BIP39 Mnemonic</label>
         <div class="col-sm-10">
-            <textarea id="phrase" class="phrase private-data form-control" data-show-qr autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+            <textarea v-model="mnemonic" class="phrase private-data form-control" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">              
+            </textarea>
         </div>
     </div>    
 
@@ -32,7 +33,7 @@
     <div class="form-group">
       <label for="seed" class="col-sm-2 control-label">BIP39 Seed</label>
       <div class="col-sm-10">
-          <textarea id="seed" class="seed private-data form-control" data-show-qr="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+          <textarea v-model="seed" class="seed private-data form-control" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
       </div>
     </div>      
 
@@ -40,7 +41,7 @@
     <div class="form-group">
       <label for="root-key" class="col-sm-2 control-label">BIP32 Root Key</label>
       <div class="col-sm-10">
-          <textarea id="root-key" class="root-key private-data form-control" data-show-qr="" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+          <textarea v-model="rootKey" class="root-key private-data form-control"  autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
       </div>
     </div>  
 
@@ -63,11 +64,21 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
+import { $wallet } from '../services';
 
 @Options({
   components: {
     HelloWorld,
   },
 })
-export default class Home extends Vue {}
+export default class Home extends Vue {
+  mnemonic = "";
+  seed = "";
+  rootKey = "";
+  async mounted() {
+    this.mnemonic = await $wallet.createMnemonic();
+    this.seed = (await $wallet.createSeed(this.mnemonic)).toString('hex');
+    this.rootKey = await $wallet.createRootKey(this.seed);
+  }
+}
 </script>
