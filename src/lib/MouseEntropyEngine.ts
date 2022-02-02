@@ -13,6 +13,7 @@ export class MouseEntropyEngine{
     previousDeltaX = 0;
     previousDeltaY = 0;
     isFirstCall = true;
+    collectedValues: number[] = [];
 
     result = ""; // desiredBitCount length binary string
 
@@ -63,17 +64,25 @@ export class MouseEntropyEngine{
 
         // only take value if direction has changed
         if((deltaX * this.previousDeltaX < 0) || (deltaY * this.previousDeltaY < 0)){
-            const xStr = x.toString(2);
-            const yStr = y.toString(2);
+            // extract 2 bits per axis
+            const xStr = x.toString(2).padStart(8, '0').substring(6);
+            const yStr = y.toString(2).padStart(8, '0').substring(6);
+            // xyStr represents nibble of data (4bits)
             const xyStr = xStr + yStr;
-            const randomUint16 = Math.floor(Math.random() * 65536);
+            const randomNibble = Math.floor(Math.random() * 16);
 
-            // newBits = 16 bit binary string 
-            const newBits = (parseInt(xyStr, 2) ^ randomUint16).toString(2).padStart(16, '0'); // salt the random number with the mouse position
+            // newBits = 4 bit binary string 
+            const newBits = (parseInt(xyStr, 2) ^ randomNibble).toString(2).padStart(4, '0'); // salt the random number with the mouse position
 
             this.result += newBits;
+            console.log("trigger");
+            console.log(parseInt(xyStr, 2));
+            console.log(newBits);
+            console.log(this.result);
+            this.collectedValues.push(parseInt(xyStr, 2));
 
             if(this.result.length >= this.desiredBitCount){
+                console.log(JSON.stringify(this.collectedValues, null, 2));
                 this.completionCallback(this.result.substring(0, this.desiredBitCount));
             }
 

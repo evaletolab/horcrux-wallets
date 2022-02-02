@@ -33,7 +33,6 @@ export default class EntropyFromMouse extends Vue {
     const rect = this.target.getBoundingClientRect();
     const x = e.clientX - Math.round(rect.left); 
     const y = e.clientY - Math.round(rect.top);
-    // console.log(`x: ${x} y ${y}`);
     this.entropyEngine.handleMouseMove(x, y);
   }
 
