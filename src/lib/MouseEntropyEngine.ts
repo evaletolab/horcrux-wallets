@@ -15,6 +15,7 @@ export class MouseEntropyEngine{
     isFirstCall = true;
     collectedValues: number[] = [];
 
+    buf = new Uint8Array(1); // 1 byte buf for crypto rand values
     result = ""; // desiredBitCount length binary string
 
     constructor(
@@ -25,6 +26,14 @@ export class MouseEntropyEngine{
         if(this.desiredBitCount < 0){
             this.desiredBitCount = 256;
         }
+    }
+
+    getRandomCryptoNibble(): number{
+        self.crypto.getRandomValues(this.buf);
+        const binaryByteStr = this.buf[0].toString(2).padStart(8, '0');
+        const nibble = parseInt(binaryByteStr.substring(4), 2);
+        // console.log("crypto nibble", this.buf[0], binaryByteStr, nibble.toString(2).padStart(4, '0'), nibble);
+        return nibble;
     }
 
 
@@ -40,14 +49,14 @@ export class MouseEntropyEngine{
             return;
         }
 
-        x = Math.round(x);
-        y = Math.round(y);
+        // x = Math.round(x);
+        // y = Math.round(y);
         
-        // sanity check x and y must be single 8 bit bytes
-        if(x < 0 || y < 0 || x > 255 || y > 255){
-            console.warn("invalid value given");
-            return;
-        }
+        // // sanity check x and y must be single 8 bit bytes
+        // if(x < 0 || y < 0 || x > 255 || y > 255){
+        //     console.warn("invalid value given");
+        //     return;
+        // }
 
         //handle state on first call
         if(this.isFirstCall){
@@ -65,11 +74,14 @@ export class MouseEntropyEngine{
         // only take value if direction has changed
         if((deltaX * this.previousDeltaX < 0) || (deltaY * this.previousDeltaY < 0)){
             // extract 2 bits per axis
-            const xStr = x.toString(2).padStart(8, '0').substring(6);
-            const yStr = y.toString(2).padStart(8, '0').substring(6);
+
+            // 3 is binary 11
+            const xStr = (x & 3).toString(2).padStart(2, '0');
+            const yStr = (y & 3).toString(2).padStart(2, '0');
             // xyStr represents nibble of data (4bits)
             const xyStr = xStr + yStr;
-            const randomNibble = Math.floor(Math.random() * 16);
+            // const randomNibble = Math.floor(Math.random() * 16);
+            const randomNibble = this.getRandomCryptoNibble();
 
             // newBits = 4 bit binary string 
             const newBits = (parseInt(xyStr, 2) ^ randomNibble).toString(2).padStart(4, '0'); // salt the random number with the mouse position
@@ -78,11 +90,14 @@ export class MouseEntropyEngine{
             console.log("trigger");
             console.log(parseInt(xyStr, 2));
             console.log(newBits);
-            console.log(this.result);
-            this.collectedValues.push(parseInt(xyStr, 2));
+            console.log(parseInt(newBits, 2));
+            // console.log(this.result);
+            this.collectedValues.push(parseInt(newBits, 2));
 
             if(this.result.length >= this.desiredBitCount){
-                console.log(JSON.stringify(this.collectedValues, null, 2));
+                // console.log("-------------");
+                // console.log(JSON.stringify(this.collectedValues, null, 2));
+                // console.log("-------------");
                 this.completionCallback(this.result.substring(0, this.desiredBitCount));
             }
 

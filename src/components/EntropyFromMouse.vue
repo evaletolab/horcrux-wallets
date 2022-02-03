@@ -22,17 +22,16 @@ export default class EntropyFromMouse extends Vue {
   }
 
   mounted(){
-    this.target.addEventListener('mousemove', this.mouseMoveHandler);
+    document.body.addEventListener('mousemove', this.mouseMoveHandler);
   }
 
   onDestroy(){
-    this.target.removeEventListener('mousemove', this.mouseMoveHandler);
+    document.body.removeEventListener('mousemove', this.mouseMoveHandler);
   }
 
   mouseMoveHandler(e: MouseEvent){
-    const rect = this.target.getBoundingClientRect();
-    const x = e.clientX - Math.round(rect.left); 
-    const y = e.clientY - Math.round(rect.top);
+    const x = e.clientX; 
+    const y = e.clientY; 
     this.entropyEngine.handleMouseMove(x, y);
   }
 
