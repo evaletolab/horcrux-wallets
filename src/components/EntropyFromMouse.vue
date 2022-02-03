@@ -1,6 +1,6 @@
 <template>
 <div class="container">
-  <div ref="target" class="target"></div>
+  <progress :value="progress"></progress>
 </div>
 </template>
 
@@ -9,17 +9,17 @@ import { Options, Vue } from 'vue-class-component';
 import { MouseEntropyEngine } from '@/lib/MouseEntropyEngine';
 
 @Options({
-  props: {
-    msg: String
-  }
+  props: {}
 })
 export default class EntropyFromMouse extends Vue {
 
-  entropyEngine: MouseEntropyEngine = new MouseEntropyEngine(256, this.onEntropyCollectionComplete); 
+  entropyEngine: MouseEntropyEngine = new MouseEntropyEngine(
+    256, 
+    this.onEntropyCollectionComplete.bind(this), 
+    this.onEntropyCollectionProgress.bind(this)
+  ); 
 
-  get target(): HTMLElement{
-    return this.$refs.target as HTMLElement;
-  }
+  progress = 0;
 
   mounted(){
     document.body.addEventListener('mousemove', this.mouseMoveHandler);
@@ -35,18 +35,16 @@ export default class EntropyFromMouse extends Vue {
     this.entropyEngine.handleMouseMove(x, y);
   }
 
-  onEntropyCollectionComplete(binaryString:string){
+  onEntropyCollectionComplete(binaryString: string){
     console.log("entropy collection complete", binaryString, binaryString.length);
   }
 
+  onEntropyCollectionProgress(progress: number){
+    this.progress = progress;
+  }
 }
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
-  .target {
-    width:256px;
-    height: 256px;
-    background-color: grey;
-  }
 </style>

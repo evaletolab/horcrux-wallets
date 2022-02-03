@@ -1,12 +1,8 @@
 export type BitString = string;
 
-// generates entropy based on mouse movements
+// generates a user defined count of random bits represented as a string
+// uses mouse movements as source of entropy
 // mouse coordinates must be passed to handleMouseMove function
-// this function expects one 8 bit value per axis
-// generates a user defined stream of bits represented as a string
-
-// TODO: implement a progression callback
-
 export class MouseEntropyEngine{
     previousX = 0;
     previousY = 0;
@@ -20,7 +16,9 @@ export class MouseEntropyEngine{
 
     constructor(
         private desiredBitCount:number = 256, 
-        private completionCallback: (a:BitString) => void)
+        private completionCallback: ((a:BitString) => void) | null = null,
+        private progressionCallback: ((progress:number) => void) | null = null,
+    )
     {
         this.desiredBitCount = Math.round(this.desiredBitCount);
         if(this.desiredBitCount < 0){
@@ -39,24 +37,15 @@ export class MouseEntropyEngine{
 
     // based on http://www.russellcottrell.com/mousePointerRNG.htm
     // Numbers are generated based on the position where the mouse changes horizontal or vertical direction.
-    // 1. take coordinates in x an y -> expect coordinate to be in space of [0, 255] (1 8bit byte)
-    // 2. concat binary representation of x and y to form a uint16
-    // 3. xor with random uint16
-    // note: does not implement reuse of coordinates (shuffling)
+    // 1. take coordinates in x and y -> extract 2 least siginificants bits from each value
+    // 2. concat binary representation of x and y to form a nibble (4bits)
+    // 3. xor with random nibble
+    // note: does not implement speedup strategy -> reuse of coordinates (shuffling)
     handleMouseMove(x: number, y: number){
         // are we done?
         if(this.result.length >= this.desiredBitCount){
             return;
         }
-
-        // x = Math.round(x);
-        // y = Math.round(y);
-        
-        // // sanity check x and y must be single 8 bit bytes
-        // if(x < 0 || y < 0 || x > 255 || y > 255){
-        //     console.warn("invalid value given");
-        //     return;
-        // }
 
         //handle state on first call
         if(this.isFirstCall){
@@ -74,31 +63,36 @@ export class MouseEntropyEngine{
         // only take value if direction has changed
         if((deltaX * this.previousDeltaX < 0) || (deltaY * this.previousDeltaY < 0)){
             // extract 2 bits per axis
-
-            // 3 is binary 11
+            // (3 is binary 11)
             const xStr = (x & 3).toString(2).padStart(2, '0');
             const yStr = (y & 3).toString(2).padStart(2, '0');
+            
             // xyStr represents nibble of data (4bits)
             const xyStr = xStr + yStr;
-            // const randomNibble = Math.floor(Math.random() * 16);
             const randomNibble = this.getRandomCryptoNibble();
 
             // newBits = 4 bit binary string 
             const newBits = (parseInt(xyStr, 2) ^ randomNibble).toString(2).padStart(4, '0'); // salt the random number with the mouse position
 
             this.result += newBits;
-            console.log("trigger");
-            console.log(parseInt(xyStr, 2));
-            console.log(newBits);
-            console.log(parseInt(newBits, 2));
-            // console.log(this.result);
+            // console.log("trigger");
+            // console.log(parseInt(xyStr, 2));
+            // console.log(newBits);
+            // console.log(parseInt(newBits, 2));
             this.collectedValues.push(parseInt(newBits, 2));
+
+            if(this.progressionCallback){
+                const progress = Math.min(this.result.length / this.desiredBitCount, 1);
+                this.progressionCallback(progress);
+            }
 
             if(this.result.length >= this.desiredBitCount){
                 // console.log("-------------");
                 // console.log(JSON.stringify(this.collectedValues, null, 2));
                 // console.log("-------------");
-                this.completionCallback(this.result.substring(0, this.desiredBitCount));
+                if(this.completionCallback){
+                    this.completionCallback(this.result.substring(0, this.desiredBitCount));
+                }
             }
 
         }
