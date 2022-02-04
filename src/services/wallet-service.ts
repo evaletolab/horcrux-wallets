@@ -35,13 +35,16 @@ class WalletService {
     const node = utils.HDNode.fromSeed(seed);
     // defaultPath ⇒ "m/44'/60'/0'/0/0"
     const child = node.derivePath('m/0/0');
+    // Get the extended public key
+    // let xpub = child.neuter().extendedKey;
+
+    // Get the extended private key
     return child.extendedKey;
   }
 
   async createShamirSecretFromSeed(seed: string) {
     const hexSeed = seed.split('0x');
-    console.log('----- createShamirSecretFromSeed',hexSeed)
-    return share(hexSeed[1], 3, 2, 256);
+    return share(hexSeed[1], 3, 2, 512);
   }
 
   //

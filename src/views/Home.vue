@@ -58,6 +58,9 @@
       <div class="secret" v-for="(share,index) in shares" :key="index">
         {{share}}
       </div>
+      <div class="combine">
+        {{combineShares}}
+      </div>
     </div>
   
   </div>
@@ -78,13 +81,18 @@
     background: #eee;
     padding: 5px;
   }
+  .combine{
+    overflow-wrap: anywhere;
+    margin: 10px 0;
+    padding: 5px;
+  }
 
 </style>
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
 import { $wallet } from '../services';
-import { Shares, extractShareComponents } from 'secrets.js-34r7h';
+import * as secret from 'secrets.js-34r7h';
 
 @Options({
   components: {
@@ -95,13 +103,24 @@ export default class Home extends Vue {
   mnemonic = "";
   seed = "";
   rootKey = "";
-  shares: Shares = [];
+  shares: secret.Shares = [];
   async mounted() {
     this.mnemonic = await $wallet.createMnemonic();
     this.seed = (await $wallet.getSeed(this.mnemonic));
     this.rootKey = await $wallet.createRootKey(this.seed);
     this.shares = await $wallet.createShamirSecretFromSeed(this.seed);
-    console.log('-->',extractShareComponents(this.shares[0]))
+    console.log('-->',secret.extractShareComponents(this.shares[0]))
+  }
+
+  get combineShares() {
+    if(!this.shares.length) {
+      return ''
+    }
+    for (var i = 0, len = this.shares.length; i < len; i++){
+      console.log('----',this.shares[i]);
+    }
+    
+    return secret.combine(this.shares);
   }
 }
 </script>
