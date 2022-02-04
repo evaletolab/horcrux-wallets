@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "ethers": "^4.0.49",
+    "secrets.js-34r7h": "^2.0.1",
     "vue": "^3.2.29",
     "vue-class-component": "^8.0.0-rc.1",
     "vue-router": "^4.0.12"

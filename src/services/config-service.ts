@@ -1,5 +1,5 @@
 import Vue from "vue";
-import axios from 'axios';
+//import axios from 'axios';
 
 const defaultAxios = {
   headers: { 'Cache-Control': 'no-cache' }

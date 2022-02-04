@@ -1,5 +1,7 @@
 //import { $config } from './config-service';
 import { utils }  from 'ethers';
+import { share, combine } from 'secrets.js-34r7h';
+
 
 class WalletService {
   private _STORAGE = "horcrux-wallet";
@@ -25,7 +27,7 @@ class WalletService {
     return utils.HDNode.entropyToMnemonic(utils.hexlify(entropy))    
   }
 
-  async createSeed(mnemonic: string) {
+  async getSeed(mnemonic: string) {
     return utils.HDNode.mnemonicToSeed(mnemonic);
   }
 
@@ -33,8 +35,13 @@ class WalletService {
     const node = utils.HDNode.fromSeed(seed);
     // defaultPath ⇒ "m/44'/60'/0'/0/0"
     const child = node.derivePath('m/0/0');
-
     return child.extendedKey;
+  }
+
+  async createShamirSecretFromSeed(seed: string) {
+    const hexSeed = seed.split('0x');
+    console.log('----- createShamirSecretFromSeed',hexSeed)
+    return share(hexSeed[1], 3, 2, 256);
   }
 
   //
