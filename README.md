@@ -19,6 +19,7 @@ var isValid = mnemonic.check(phrase);
 # Converting BIP39 mnemonic phrase to shamir secret sharing scheme
 * https://github.com/iancoleman/shamir39
 * https://www.npmjs.com/package/@stablelib/tss
+* https://github.com/grempe/secrets.js
 * https://francoisbest.com/posts/2020/password-reset-for-e2ee-apps
 * use 2/N scheme
 
