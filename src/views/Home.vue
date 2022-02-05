@@ -4,7 +4,7 @@
     <!-- Mnemonic Language -->
     <form>
         <fieldset>
-          <label for="">Mnemonic Language</label>      
+          <label for="">BIP39 Mnemonic </label>      
           <div class="languages">
                   <a href="#english">English</a>
                   <a href="#japanese" title="Japanese">日本語</a>
@@ -22,7 +22,6 @@
 
     <!-- BIP39 Mnemonic -->
     <div class="form-group">
-        <label for="phrase" class="col-sm-2 control-label">BIP39 Mnemonic</label>
         <div class="col-sm-10">
             <textarea v-model="mnemonic" class="phrase private-data form-control" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">              
             </textarea>
@@ -30,7 +29,7 @@
     </div>    
 
     <!-- BIP39 Seed -->
-    <div class="form-group">
+    <div class="form-group hide">
       <label for="seed" class="col-sm-2 control-label">BIP39 Seed</label>
       <div class="col-sm-10">
           <textarea v-model="seed" class="seed private-data form-control" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
@@ -48,15 +47,22 @@
     <!-- Shamir Secret Sharing Scheme -->
     <div class="sharing">
       <div class="col-sm-11">
-          <h1>Shamir Secret Sharing Scheme</h1>
-          <p>With Shamir, you need <b>2</b> parts from <b>3</b> to reconstruct the BIP39 seed secret. 
-            You have differents options to store your 3 parts.
-            1) You can store one part on our Vault SmartContract, 2) or use your google cloud account as a Vault. 
-            3) Use a printed paper, or store it on the current device (with ability to share to a new device)
+          <h1>Store your Horcrux/SSS</h1>
+          <p>Your Horcrux are parts of SSS (Shamir Shared Secret) derived from your secret mnemonic. 
+            You can decide where you want to store each Horcrux. 
+            We provide those solutions for you. 
+            1) Store it in a secure place as a printed paper, 
+            2) Use our public Vault SmartContract, 
+            3) Or use your private google cloud account. 
           </p>
       </div>
       <div class="secret" v-for="(share,index) in shares" :key="index">
-        {{share}}
+        {{share}} 
+        <div class="action">
+          <a href="" class="store">print</a>
+          <a href="" class="store">vault</a>
+          <a href="" class="store">cloud</a>
+        </div>
       </div>
       <div class="combine">
         {{combineShares}}
@@ -80,6 +86,14 @@
     margin: 10px 0;
     background: #eee;
     padding: 5px;
+    .action{
+      display: inline-block;
+      border-left: 3px solid #ddd;
+      .store{
+        margin: 0 3px;
+        border-bottom: 1px dotted blue;
+      }
+    }
   }
   .combine{
     overflow-wrap: anywhere;

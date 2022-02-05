@@ -1,7 +1,10 @@
 <template>
-  <nav id="nav" class="navigation">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
+  <nav id="nav" class="mg-tabs navigation">
+    <ul>
+      <li><router-link to="/">Create Identity</router-link> |</li>
+      <li><router-link to="/recover">Recover Identity</router-link> |</li>
+      <li><router-link to="/about">About </router-link></li>
+    </ul>
   </nav>
   <router-view/>
 </template>
@@ -30,4 +33,41 @@
     }
   }
 }
+
+:root{
+  --mg-color-primary: blue;
+  --mg-color-secondary: blue;
+  --mg-color-tertiary: blue;
+}
+.mg-tabs{
+  .mg-tabs--items{
+    margin-left: 0.2em;
+    margin-right: 0.2em;
+    padding-left: 0.2em;
+    padding-right: 0.2em;      
+  }
+  ul{
+    display: flex;
+    text-align: center;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    list-style: none;
+    cursor: pointer;
+    margin: 0;    
+    li{
+      font-weight: bold;
+      border-bottom: 0.3rem solid transparent;
+      color: var(--mg-color-tertiary);
+      opacity: 0.7;
+      flex: 0 0 auto;      
+      &.active{
+        color: var(--mg-color-primary);
+        border-color: var(--mg-color-primary);
+        overflow-y: hidden;
+        opacity: 1;          
+      }
+    }
+  }
+}
+
 </style>
