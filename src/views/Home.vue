@@ -50,11 +50,12 @@
           <h1>Store your Horcrux/SSS</h1>
           <p>Your Horcrux are parts of SSS (Shamir Shared Secret) derived from your secret mnemonic. 
             You can decide where you want to store each Horcrux. 
-            We provide those solutions for you. 
-            1) Store it in a secure place as a printed paper, 
-            2) Use our public Vault SmartContract, 
+            We provide some solutions for you. 
+            1) Store them in a secure place as a printed paper, 
+            2) Use our Vault SmartContract a simple and secure space where Horcrux are stored, 
             3) Or use your private google cloud account. 
           </p>
+
       </div>
       <div class="secret" v-for="(share,index) in shares" :key="index">
         {{share}} 
