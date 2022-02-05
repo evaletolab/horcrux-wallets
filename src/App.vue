@@ -1,5 +1,5 @@
 <template>
-  <nav id="nav" class="mg-tabs navigation">
+  <nav id="nav" class="container mg-tabs navigation">
     <ul>
       <li><router-link to="/">Create Identity</router-link> |</li>
       <li><router-link to="/recover">Recover Identity</router-link> |</li>
@@ -23,7 +23,6 @@
 }
 
 #nav {
-  padding: 30px;
 
   a {
     font-weight: bold;

@@ -1,5 +1,5 @@
 <template>
-  <div class="about">
+  <div class="about  container">
     <h1>Horcrux are made with</h1>
     <ul>
       <li>Entropy</li>
