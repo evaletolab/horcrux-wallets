@@ -1,6 +1,12 @@
 <template>
   <div class="home container">
 
+    <!-- Digital identity -->
+    <div class="">
+        <h2>Protect your Digital Identity </h2>
+        <p>Learn to protect your digital identity</p>
+    </div>
+
     <!-- Mnemonic Language -->
     <form>
         <fieldset>
@@ -47,7 +53,7 @@
     <!-- Shamir Secret Sharing Scheme -->
     <div class="sharing">
       <div class="col-sm-11">
-          <h1>Store your Horcrux/SSS</h1>
+          <h1>Store your Horcruxs/SSS</h1>
           <p>Your Horcrux are parts of SSS (Shamir Shared Secret) derived from your secret mnemonic. 
             You can decide where you want to store each Horcrux. 
             We provide some solutions for you. 

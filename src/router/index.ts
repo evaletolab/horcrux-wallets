@@ -8,6 +8,11 @@ const routes: Array<RouteRecordRaw> = [
     component: Home
   },
   {
+    path: '/recover',
+    name: 'Recover',
+    component: () => import(/* webpackChunkName: "recover" */ '../views/Recover.vue')
+  },
+  {
     path: '/about',
     name: 'About',
     // route level code-splitting
@@ -15,6 +20,7 @@ const routes: Array<RouteRecordRaw> = [
     // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
   }
+
 ]
 
 const router = createRouter({

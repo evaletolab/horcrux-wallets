@@ -22,11 +22,16 @@
   font-family: 'Roboto', serif;
 }
 
-#nav {
+.navigation {
+  display: flex;
+  align-content: center;
+  align-items: center;
+  height: 40px;
+  border-bottom: 2px solid #eee;
+  margin-bottom: 10px;
 
   a {
     font-weight: bold;
-    color: #2c3e50;
 
     &.router-link-exact-active {
     }
@@ -59,7 +64,9 @@
       color: var(--mg-color-tertiary);
       opacity: 0.7;
       flex: 0 0 auto;      
-      &.active{
+      margin: 0;
+      padding: 4px 10px;
+      .router-link-active{
         color: var(--mg-color-primary);
         border-color: var(--mg-color-primary);
         overflow-y: hidden;
