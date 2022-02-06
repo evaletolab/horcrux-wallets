@@ -129,17 +129,16 @@ export default class Home extends Vue {
     this.mnemonic = await $wallet.createMnemonic();
     this.seed = (await $wallet.getSeed(this.mnemonic));
     this.rootKey = await $wallet.createRootKey(this.seed);
-    this.shares = await $wallet.createShamirSecretFromSeed(this.seed);
-    console.log('-->',secret.extractShareComponents(this.shares[0]))
+    this.shares = await $wallet.createShamirSecretFromSeed();
   }
 
   get combineShares() {
     if(!this.shares.length) {
       return ''
     }
-    for (var i = 0, len = this.shares.length; i < len; i++){
-      console.log('----',this.shares[i]);
-    }
+    // for (var i = 0, len = this.shares.length; i < len; i++){
+    //   console.log('----',this.shares[i]);
+    // }
     
     return secret.combine(this.shares);
   }

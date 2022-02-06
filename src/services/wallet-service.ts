@@ -1,11 +1,12 @@
 //import { $config } from './config-service';
-import { utils }  from 'ethers';
+import { ethers, utils }  from 'ethers';
 import { share, combine } from 'secrets.js-34r7h';
 
 
 class WalletService {
   private _STORAGE = "horcrux-wallet";
 
+  entropy: Uint8Array = new Uint8Array();
   //
   // FIXME, replace all import by ethers@4.0
   // https://docs.ethers.io/v4/api-wallet.html
@@ -22,9 +23,9 @@ class WalletService {
     return await this.entropy256Bits();
   }
 
-  async createMnemonic() {
-    const entropy = await this.createEntropy() as Uint8Array ;
-    return utils.HDNode.entropyToMnemonic(utils.hexlify(entropy))    
+  async createMnemonic(entropy?: Uint8Array) {
+    this.entropy = await this.createEntropy() as Uint8Array ;
+    return utils.HDNode.entropyToMnemonic(utils.hexlify(this.entropy))    
   }
 
   async getSeed(mnemonic: string) {
@@ -42,8 +43,8 @@ class WalletService {
     return child.extendedKey;
   }
 
-  async createShamirSecretFromSeed(seed: string) {
-    const hexSeed = seed.split('0x');
+  async createShamirSecretFromSeed(entropy?: Uint8Array) {
+    const hexSeed = utils.hexlify(this.entropy).split('0x');
     return share(hexSeed[1], 3, 2, 512);
   }
 
