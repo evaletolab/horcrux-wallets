@@ -1,11 +1,11 @@
 <template>
-  <div class="home container">
+  <div class="recover container">
     <!-- Shamir Secret Sharing Scheme -->
     <div class="sharing">
       <div class="col-sm-11">
           <h2>Restore your Digital Identity </h2>
           <p>Your Horcrux are parts of your digital identity. 
-            To restore your digital identity, you need atleast of two Horcrux.             
+            To restore it you need atleast of two Horcruxs.
           </p>
 
       </div>
@@ -98,7 +98,7 @@ export default class Recover extends Vue {
   mnemonic = "";
   entropy = "";
   shares: secret.Shares = [];
-  horcruxs = [0,1,2];
+  horcruxs = [0,1];
   // async mounted() {
   // }
 
