@@ -37,6 +37,7 @@ export default class EntropyFromMouse extends Vue {
 
   onEntropyCollectionComplete(binaryString: string){
     console.log("entropy collection complete", binaryString, binaryString.length);
+    this.$emit("complete", {entropyBitStr: binaryString});
   }
 
   onEntropyCollectionProgress(progress: number){
