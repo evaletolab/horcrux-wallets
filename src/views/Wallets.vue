@@ -2,7 +2,7 @@
   <div class="wallets container">
     <div class="sharing">
       <div class="col-sm-11">
-          <h2>BIP32 Wallets</h2>
+          <h2>Wallets for ETH and BTC</h2>
           <p>BIP32 Root Key and derivation path
           </p>
       </div>

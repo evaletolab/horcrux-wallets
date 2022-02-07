@@ -5,7 +5,7 @@
       <div class="col-sm-11">
           <h2>Restore your Digital Identity </h2>
           <p>Your Horcrux are parts of your digital identity. 
-            To restore it you need atleast two Horcruxs.
+            To restore it you need atleast two of them.
           </p>
 
       </div>

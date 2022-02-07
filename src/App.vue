@@ -59,6 +59,9 @@
     list-style: none;
     cursor: pointer;
     margin: 0;    
+    @media (max-width:500px) {
+      font-size: 12px;
+    }
     li{
       font-weight: bold;
       border-bottom: 0.3rem solid transparent;
