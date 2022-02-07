@@ -9,9 +9,9 @@
           </p>
 
       </div>
-      <div class="horcrux" v-for="(horcrux,index) in horcruxs" :key="index">
+      <div class="horcrux" v-for="(index) in [0,1]" :key="index">
         <div class="form-group">
-          <textarea  class="phrase private-data " :placeholder="'Horcrux '+ index" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+          <textarea v-model="horcruxs[index]" class="phrase private-data " :placeholder="'Horcrux '+ index" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
         </div>    
         
         <div class="action"> 
@@ -20,9 +20,6 @@
           <a href="" class="store">vault</a>
           <a href="" class="store">cloud</a>
         </div>
-      </div>
-      <div class="combine">
-        {{combineShares}}
       </div>
       <!-- Mnemonic Language -->
       <form>
@@ -43,7 +40,7 @@
           </fieldset>
       </form>  
       <div class="secret" >
-
+        {{mnemonic}}
       </div>
     </div>
   
@@ -76,7 +73,7 @@
   }
   .secret {
     background: #eee;
-    min-height: 100px;
+    min-height: 60px;
   }
   .combine{
     overflow-wrap: anywhere;
@@ -89,28 +86,31 @@
 import { Options, Vue } from 'vue-class-component';
 import { $wallet } from '../services';
 import * as secret from 'secrets.js-34r7h';
+import { ethers } from 'ethers';
 
 @Options({
   components: {
   },
 })
 export default class Recover extends Vue {
-  mnemonic = "";
-  entropy = "";
-  shares: secret.Shares = [];
-  horcruxs = [0,1];
+  horcruxs:any = [null,null];
   // async mounted() {
   // }
 
-  get combineShares() {
-    if(!this.shares.length) {
+  get entropy() {    
+    if(!this.horcruxs.length || !this.horcruxs[0] || !this.horcruxs[1]) {
       return ''
     }
-    for (var i = 0, len = this.shares.length; i < len; i++){
-      console.log('----',this.shares[i]);
+
+    return secret.combine(this.horcruxs as secret.Shares);
+  }
+
+  get mnemonic() {
+    if(!this.entropy.length){
+      return "";
     }
-    
-    return secret.combine(this.shares);
+    const entropy = ethers.utils.arrayify('0x'+this.entropy);
+    return $wallet.createMnemonic(entropy);
   }
 }
 </script>

@@ -12,7 +12,7 @@ class WalletService {
   // https://docs.ethers.io/v4/api-wallet.html
 
   async entropy256Bits() {
-    const bytes = new Uint8Array(32);
+    const bytes = new Uint8Array(20);
     const self: any = window;
     const cryptoObj = self.crypto || self.msCrypto; // for IE
     cryptoObj.getRandomValues(bytes);
@@ -20,12 +20,11 @@ class WalletService {
   }
 
   async createEntropy() {
-    return await this.entropy256Bits();
+    return this.entropy = await this.entropy256Bits();
   }
 
-  async createMnemonic(entropy?: Uint8Array) {
-    this.entropy = await this.createEntropy() as Uint8Array ;
-    return utils.HDNode.entropyToMnemonic(utils.hexlify(this.entropy))    
+  createMnemonic(entropy: Uint8Array) {
+    return utils.HDNode.entropyToMnemonic(utils.hexlify(entropy))    
   }
 
   async getSeed(mnemonic: string) {

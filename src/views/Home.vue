@@ -71,9 +71,6 @@
           <a href="" class="store">cloud</a>
         </div>
       </div>
-      <div class="combine">
-        {{combineShares}}
-      </div>
     </div>
   
   </div>
@@ -126,7 +123,8 @@ export default class Home extends Vue {
   rootKey = "";
   shares: secret.Shares = [];
   async mounted() {
-    this.mnemonic = await $wallet.createMnemonic();
+    await $wallet.createEntropy();
+    this.mnemonic = await $wallet.createMnemonic($wallet.entropy);
     this.seed = (await $wallet.getSeed(this.mnemonic));
     this.rootKey = await $wallet.createRootKey(this.seed);
     this.shares = await $wallet.createShamirSecretFromSeed();
