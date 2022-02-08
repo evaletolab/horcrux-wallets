@@ -23,6 +23,12 @@
   font-family: 'Roboto', serif;
 }
 
+.container {
+  @media (max-width:500px) {
+    padding: 0 0.4rem!important;
+  }
+}
+
 .navigation {
   display: flex;
   align-content: center;
