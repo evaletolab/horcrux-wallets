@@ -75,6 +75,9 @@
         </div>
       </div>
     </div>
+
+    <!-- Entropy from mouse component test -->
+    <entropy-from-mouse v-on:complete="onEntropyCollected" :bitCount="256"/>
   
   </div>
 </template>
@@ -125,12 +128,13 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
+import EntropyFromMouse from '@/components/EntropyFromMouse.vue';
 import { $wallet } from '../services';
 import * as secret from 'secrets.js-34r7h';
 
 @Options({
   components: {
-    HelloWorld,
+    HelloWorld, EntropyFromMouse,
   },
 })
 export default class Home extends Vue {
@@ -155,6 +159,10 @@ export default class Home extends Vue {
     // }
     
     return secret.combine(this.shares);
+  }
+
+  onEntropyCollected(entropyBitStr: string){
+    console.log("entropy collected", entropyBitStr);
   }
 }
 </script>
