@@ -32,6 +32,9 @@
             <textarea v-model="mnemonic" class="phrase private-data form-control" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">              
             </textarea>
         </div>
+        <div class="actions">
+          <button class="button -button-outline">New identity</button>
+        </div>
     </div>    
 
     <!-- BIP39 Seed -->
@@ -52,8 +55,8 @@
 
     <!-- Shamir Secret Sharing Scheme -->
     <div class="sharing">
-      <div class="col-sm-11">
-          <h1>Store your Horcruxs/SSS</h1>
+      <div class="header">
+          <h2>Store your Horcruxs/SSS</h2>
           <p>Your Horcruxs are parts of SSS (Shamir Shared Secret) derived from your secret identity. 
             You can decide where you want to store each Horcrux. 
             We provide some solutions for you. 
@@ -83,6 +86,19 @@
     a{
       padding: 0 5px;
     }
+  }
+  .actions{
+    text-align: right;
+  }
+
+  .sharing{
+    margin-top: 50px;
+    padding-top: 50px;
+    border-top: 1px solid #eee;
+    .header{
+
+    }
+
   }
   .secret{
     overflow-wrap: anywhere;
