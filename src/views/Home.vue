@@ -77,7 +77,7 @@
     </div>
 
     <!-- Entropy from mouse component test -->
-    <entropy-from-mouse/>
+    <entropy-from-mouse v-on:complete="onEntropyCollected" :bitCount="256"/>
   
   </div>
 </template>
@@ -159,6 +159,10 @@ export default class Home extends Vue {
     // }
     
     return secret.combine(this.shares);
+  }
+
+  onEntropyCollected(entropyBitStr: string){
+    console.log("entropy collected", entropyBitStr);
   }
 }
 </script>

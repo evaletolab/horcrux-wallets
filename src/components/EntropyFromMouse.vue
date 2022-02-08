@@ -9,19 +9,28 @@ import { Options, Vue } from 'vue-class-component';
 import { MouseEntropyEngine } from '@/lib/MouseEntropyEngine';
 
 @Options({
-  props: {}
+  props: {
+    bitCount: {
+      default: 256,
+      type: Number
+    },
+  }
 })
 export default class EntropyFromMouse extends Vue {
 
-  entropyEngine: MouseEntropyEngine = new MouseEntropyEngine(
-    256, 
-    this.onEntropyCollectionComplete.bind(this), 
-    this.onEntropyCollectionProgress.bind(this)
-  ); 
+  // props
+  bitCount!:number;
 
+  entropyEngine!: MouseEntropyEngine;
   progress = 0;
 
   mounted(){
+    this.entropyEngine = new MouseEntropyEngine(
+      this.bitCount, 
+      this.onEntropyCollectionComplete.bind(this), 
+      this.onEntropyCollectionProgress.bind(this)
+    ); 
+
     document.body.addEventListener('mousemove', this.mouseMoveHandler);
   }
 
@@ -36,7 +45,6 @@ export default class EntropyFromMouse extends Vue {
   }
 
   onEntropyCollectionComplete(binaryString: string){
-    console.log("entropy collection complete", binaryString, binaryString.length);
     this.$emit("complete", {entropyBitStr: binaryString});
   }
 
