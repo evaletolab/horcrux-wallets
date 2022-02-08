@@ -139,6 +139,7 @@ import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
 import EntropyFromMouse from '@/components/EntropyFromMouse.vue';
 import { $wallet } from '../services';
 import * as secret from 'secrets.js-34r7h';
+import { I_MouseEntropyResult } from '@/lib/MouseEntropyEngine';
 
 @Options({
   components: {
@@ -169,8 +170,8 @@ export default class Home extends Vue {
     return secret.combine(this.shares);
   }
 
-  onEntropyCollected(entropyBitStr: string){
-    console.log("entropy collected", entropyBitStr);
+  onEntropyCollected(entropyResult: I_MouseEntropyResult){
+    console.log("entropy collected", entropyResult);
   }
 }
 </script>

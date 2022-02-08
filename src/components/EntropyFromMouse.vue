@@ -6,7 +6,7 @@
 
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import { MouseEntropyEngine } from '@/lib/MouseEntropyEngine';
+import { I_MouseEntropyResult, MouseEntropyEngine } from '@/lib/MouseEntropyEngine';
 
 @Options({
   props: {
@@ -44,8 +44,8 @@ export default class EntropyFromMouse extends Vue {
     this.entropyEngine.handleMouseMove(x, y);
   }
 
-  onEntropyCollectionComplete(binaryString: string){
-    this.$emit("complete", {entropyBitStr: binaryString});
+  onEntropyCollectionComplete(mouseEntropyResult: I_MouseEntropyResult){
+    this.$emit("complete", mouseEntropyResult);
   }
 
   onEntropyCollectionProgress(progress: number){

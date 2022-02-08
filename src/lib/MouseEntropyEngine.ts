@@ -1,5 +1,26 @@
 export type BitString = string;
 
+
+export function bitStrToUint8Array(bitStr:string): Uint8Array{
+    const byteCount = Math.ceil(bitStr.length / 8);
+    // console.log("byteCount", byteCount);
+    const result: Uint8Array = new Uint8Array(byteCount);
+    const paddedStr = bitStr.padStart(byteCount * 8, '0');
+    // console.log("padded bitstr", paddedStr, byteCount);
+
+    for(let i = 0; i < byteCount; i++){
+        const str = paddedStr.substring(i * 8, (i + 1) * 8);
+        result[i] = parseInt(str, 2);
+    }
+
+    return result;
+}
+
+export interface I_MouseEntropyResult {
+    bitString: string,
+    bytes: Uint8Array,
+}
+
 // generates a user defined count of random bits represented as a string
 // uses mouse movements as source of entropy
 // mouse coordinates must be passed to handleMouseMove function
@@ -16,7 +37,7 @@ export class MouseEntropyEngine{
 
     constructor(
         private desiredBitCount:number = 256, 
-        private completionCallback: ((a:BitString) => void) | null = null,
+        private completionCallback: ((res: I_MouseEntropyResult) => void) | null = null,
         private progressionCallback: ((progress:number) => void) | null = null,
     )
     {
@@ -41,7 +62,7 @@ export class MouseEntropyEngine{
     // 2. concat binary representation of x and y to form a nibble (4bits)
     // 3. xor with random nibble
     // note: does not implement speedup strategy -> reuse of coordinates (shuffling)
-    handleMouseMove(x: number, y: number){
+    handleMouseMove(x: number, y: number): void{
         // are we done?
         if(this.result.length >= this.desiredBitCount){
             return;
@@ -91,7 +112,13 @@ export class MouseEntropyEngine{
                 // console.log(JSON.stringify(this.collectedValues, null, 2));
                 // console.log("-------------");
                 if(this.completionCallback){
-                    this.completionCallback(this.result.substring(0, this.desiredBitCount));
+                    const bitString: string = this.result.substring(0, this.desiredBitCount); 
+                    const bytes:Uint8Array = bitStrToUint8Array(bitString);
+                    const result: I_MouseEntropyResult = {
+                        bitString, 
+                        bytes,
+                    }
+                    this.completionCallback(result);
                 }
             }
 
