@@ -1,5 +1,14 @@
 export type BitString = string;
 
+
+export function bitStrToUint8Array(bitStr:string): Uint8Array{
+    throw new Error("not implemented");
+    const byteCount = Math.ceil(bitStr.length / 8);
+    const result: Uint8Array = new Uint8Array(byteCount);
+
+    return result;
+}
+
 // generates a user defined count of random bits represented as a string
 // uses mouse movements as source of entropy
 // mouse coordinates must be passed to handleMouseMove function
