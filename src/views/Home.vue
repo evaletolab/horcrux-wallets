@@ -45,6 +45,9 @@
       </div>
     </div>      
 
+    <!-- Entropy from mouse component test -->
+    <entropy-from-mouse v-on:complete="onEntropyCollected" :bitCount="256"/>
+    
     <!-- BIP32 Root Key -->
     <div class="form-group hide">
       <label for="root-key" class="col-sm-2 control-label">BIP32 Root Key</label>
@@ -56,13 +59,16 @@
     <!-- Shamir Secret Sharing Scheme -->
     <div class="sharing">
       <div class="header">
-          <h2>Store your Horcruxs/SSS</h2>
-          <p>Your Horcruxs are parts of SSS (Shamir Shared Secret) derived from your secret identity. 
-            You can decide where you want to store each Horcrux. 
-            We provide some solutions for you. 
-            <b>1)</b> Store them in a secure place as a printed paper, 
-            <b>2)</b> Use our Vault SmartContract a simple and secure space where Horcrux are stored, 
-            <b>3)</b> Or use your private google cloud account. 
+          <h2>Store your Horcruxes/SSS</h2>
+          <p>To increase the security of your identity, You can break it in 3 separate pieces (called Horcruxes).
+            Your need at least two pieces to reconstitute your identity. 
+            You decide where you want to store each Horcrux. We recomend you keep them in separate places/locations. 
+            We provide a few alternatives:
+            <ol>
+              <li>Store them on printed paper.</li>
+              <li>Use our Vault SmartContract a simple and secure space to store Horcruxes.</li>
+              <li>Or use your private google cloud account.</li>
+            </ol>
           </p>
 
       </div>
@@ -76,8 +82,6 @@
       </div>
     </div>
 
-    <!-- Entropy from mouse component test -->
-    <entropy-from-mouse v-on:complete="onEntropyCollected" :bitCount="256"/>
   
   </div>
 </template>
@@ -92,6 +96,10 @@
   }
   .actions{
     text-align: right;
+  }
+
+  ol{
+    list-style-type: decimal;
   }
 
   .sharing{
