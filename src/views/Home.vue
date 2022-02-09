@@ -33,7 +33,14 @@
             </textarea>
         </div>
         <div class="actions">
-          <button class="button -button-outline">New identity</button>
+          <button class="button button-outline" @click="onStart">
+            <span class="initial" :class="{ hide : entropyStart }">Generate</span>
+            <!-- Entropy from mouse component test -->
+            <entropy-from-mouse ref="entropyGen" :class="{ hide : !entropyStart }" v-on:start="onEntropyStart" v-on:complete="onEntropyCollected" :bitCount="160">
+              Move the cursor!
+            </entropy-from-mouse>
+
+          </button>
         </div>
     </div>    
 
@@ -44,9 +51,6 @@
           <textarea v-model="seed" class="seed private-data form-control" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
       </div>
     </div>      
-
-    <!-- Entropy from mouse component test -->
-    <entropy-from-mouse v-on:complete="onEntropyCollected" :bitCount="256"/>
     
     <!-- BIP32 Root Key -->
     <div class="form-group hide">
@@ -135,7 +139,6 @@
 </style>
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
-import HelloWorld from '@/components/HelloWorld.vue'; // @ is an alias to /src
 import EntropyFromMouse from '@/components/EntropyFromMouse.vue';
 import { $wallet } from '../services';
 import * as secret from 'secrets.js-34r7h';
@@ -143,35 +146,50 @@ import { I_MouseEntropyResult } from '@/lib/MouseEntropyEngine';
 
 @Options({
   components: {
-    HelloWorld, EntropyFromMouse,
+    EntropyFromMouse,
   },
 })
 export default class Home extends Vue {
+  entropyStart = false;
   mnemonic = "";
   seed = "";
   rootKey = "";
   shares: secret.Shares = [];
+
+  //
+  // helpers for typescript
+  $refs!: {
+    entropyGen: EntropyFromMouse
+  }  
   async mounted() {
-    await $wallet.createEntropy();
-    this.mnemonic = await $wallet.createMnemonic($wallet.entropy);
-    this.seed = (await $wallet.getSeed(this.mnemonic));
-    this.rootKey = await $wallet.createRootKey(this.seed);
-    this.shares = await $wallet.createShamirSecretFromSeed();
+    this.entropyStart = false;
   }
 
   get combineShares() {
     if(!this.shares.length) {
       return ''
-    }
-    // for (var i = 0, len = this.shares.length; i < len; i++){
-    //   console.log('----',this.shares[i]);
-    // }
-    
+    }    
     return secret.combine(this.shares);
   }
 
-  onEntropyCollected(entropyResult: I_MouseEntropyResult){
-    console.log("entropy collected", entropyResult);
+  async onEntropyCollected(entropyResult: I_MouseEntropyResult){
+    console.log("entropy collected", entropyResult.bytes);
+    this.entropyStart = false;
+
+    $wallet.entropy = entropyResult.bytes;
+    this.mnemonic = await $wallet.createMnemonic($wallet.entropy);
+    this.seed = (await $wallet.getSeed(this.mnemonic));
+    this.rootKey = await $wallet.createRootKey(this.seed);
+    this.shares = await $wallet.createShamirSecretFromSeed();
+
+  }
+
+  onEntropyStart(){
+    this.entropyStart = true;
+  }
+
+  onStart() {
+    this.$refs.entropyGen.start();
   }
 }
 </script>

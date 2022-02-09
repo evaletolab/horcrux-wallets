@@ -1,7 +1,10 @@
 <template>
-<div class="container">
-  <progress :value="progress"></progress>
-</div>
+ <div>
+   <progress :value="progress"></progress>
+   <span><slot/></span>
+ </div>
+  
+  
 </template>
 
 <script lang="ts">
@@ -24,18 +27,14 @@ export default class EntropyFromMouse extends Vue {
   entropyEngine!: MouseEntropyEngine;
   progress = 0;
 
-  mounted(){
+
+  start() {
+    document.body.addEventListener('mousemove', this.mouseMoveHandler);
     this.entropyEngine = new MouseEntropyEngine(
       this.bitCount, 
       this.onEntropyCollectionComplete.bind(this), 
       this.onEntropyCollectionProgress.bind(this)
     ); 
-
-    document.body.addEventListener('mousemove', this.mouseMoveHandler);
-  }
-
-  onDestroy(){
-    document.body.removeEventListener('mousemove', this.mouseMoveHandler);
   }
 
   mouseMoveHandler(e: MouseEvent){
@@ -45,10 +44,15 @@ export default class EntropyFromMouse extends Vue {
   }
 
   onEntropyCollectionComplete(mouseEntropyResult: I_MouseEntropyResult){
+    document.body.removeEventListener('mousemove', this.mouseMoveHandler);
     this.$emit("complete", mouseEntropyResult);
+    this.progress = 0;
   }
 
   onEntropyCollectionProgress(progress: number){
+    if(!this.progress) {
+      this.$emit("start");      
+    }
     this.progress = progress;
   }
 }
