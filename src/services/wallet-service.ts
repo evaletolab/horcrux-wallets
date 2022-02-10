@@ -2,9 +2,11 @@
 import { ethers, utils }  from 'ethers';
 import { share, combine } from 'secrets.js-34r7h';
 
+type i18n = 'en'|'fr'|'it'|'es';
 
 class WalletService {
   private _STORAGE = "horcrux-wallet";
+  private defaultLang:i18n = 'en';
 
   entropy: Uint8Array = new Uint8Array();
   //
@@ -23,8 +25,19 @@ class WalletService {
     return this.entropy = await this.entropy256Bits();
   }
 
+  retrieveEntropy(mnemonic: string) {
+    const strEntropy = utils.HDNode.mnemonicToEntropy(mnemonic,ethers.wordlists[this.defaultLang]);
+    return this.entropy = utils.toUtf8Bytes(strEntropy);
+  }
+
   createMnemonic(entropy: Uint8Array) {
-    return utils.HDNode.entropyToMnemonic(utils.hexlify(entropy))    
+    // https://docs.ethers.io/v5/api/utils/hdnode/#Mnemonic
+    const mnemonic =utils.HDNode.entropyToMnemonic(utils.hexlify(entropy),ethers.wordlists[this.defaultLang])
+    return mnemonic;
+  }
+
+  isValidMnemonic(mnemonic:string) {
+    return utils.HDNode.isValidMnemonic(mnemonic,ethers.wordlists[this.defaultLang]);
   }
 
   async getSeed(mnemonic: string) {
@@ -66,11 +79,11 @@ class WalletService {
 
     // sign
     //let flatSig = await wallet.signMessage(method);
-    // let sig = ethers.utils.splitSignature(flatSig);
+    // let sig = ethers.utils.splitSignature(flatSig)
+  }
 
-
-
-
+  setDefaultLang(i18n:i18n) {
+    this.defaultLang = i18n;
   }
 
 } 
