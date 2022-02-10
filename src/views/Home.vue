@@ -12,16 +12,16 @@
         <fieldset>
           <label for="">BIP39 Mnemonic </label>      
           <div class="languages">
-                  <a href="#english">English</a>
-                  <a href="#japanese" title="Japanese">日本語</a>
-                  <a href="#spanish"  title="Spanish">Español</a>
-                  <a href="#chinese_simplified"  title="Chinese (Simplified)">中文(简体)</a>
-                  <a href="#chinese_traditional"  title="Chinese (Traditional)">中文(繁體)</a>
-                  <a href="#french"  title="French">Français</a>
-                  <a href="#italian"  title="Italian">Italiano</a>
-                  <a href="#korean"  title="Korean">한국어</a>
-                  <a href="#czech" title="Czech">Čeština</a>
-                  <a href="#portuguese" title="Portuguese">Português</a>
+                  <a @click="onI18n('en')" href="#english">English</a>
+                  <a @click="onI18n('jp')" href="#japanese" title="Japanese">日本語</a>
+                  <a @click="onI18n('es')" href="#spanish"  title="Spanish">Español</a>
+                  <a @click="onI18n('fr')" href="#chinese_simplified"  title="Chinese (Simplified)">中文(简体)</a>
+                  <a @click="onI18n('fr')" href="#chinese_traditional"  title="Chinese (Traditional)">中文(繁體)</a>
+                  <a @click="onI18n('fr')" href="#french"  title="French">Français</a>
+                  <a @click="onI18n('it')" href="#italian"  title="Italian">Italiano</a>
+                  <a @click="onI18n('ko')" href="#korean"  title="Korean">한국어</a>
+                  <a @click="onI18n('cz')" href="#czech" title="Czech">Čeština</a>
+                  <a @click="onI18n('po')" href="#portuguese" title="Portuguese">Português</a>
           </div>
         </fieldset>
     </form>  
@@ -33,14 +33,17 @@
             </textarea>
         </div>
         <div class="actions">
+          <button class="button button-outline" :disabled="isInvalidMnemonic" @click="onRetrieve">LOAD</button>
+
           <button class="button button-outline" @click="onStart">
             <span class="initial" :class="{ hide : entropyStart }">Generate</span>
             <!-- Entropy from mouse component test -->
-            <entropy-from-mouse ref="entropyGen" :class="{ hide : !entropyStart }" v-on:start="onEntropyStart" v-on:complete="onEntropyCollected" :bitCount="160">
+            <entropy-from-mouse ref="entropyGen" :disabled="!isInvalidMnemonic" :class="{ hide : !entropyStart }" v-on:start="onEntropyStart" v-on:complete="onEntropyCollected" :bitCount="160">
               Move the cursor!
             </entropy-from-mouse>
 
           </button>
+
         </div>
     </div>    
 
@@ -100,6 +103,9 @@
   }
   .actions{
     text-align: right;
+    button{
+      margin-left: 10px;
+    }
   }
 
   ol{
@@ -172,6 +178,13 @@ export default class Home extends Vue {
     return secret.combine(this.shares);
   }
 
+  get isInvalidMnemonic() {
+    if(!this.mnemonic || this.mnemonic == '') {
+      return true;
+    }
+    return !$wallet.isValidMnemonic(this.mnemonic);
+  }
+
   async onEntropyCollected(entropyResult: I_MouseEntropyResult){
     console.log("entropy collected", entropyResult.bytes);
     this.entropyStart = false;
@@ -184,8 +197,19 @@ export default class Home extends Vue {
 
   }
 
+  onI18n(ln:string) {
+    
+  }
+
   onEntropyStart(){
     this.entropyStart = true;
+  }
+
+  async onRetrieve(){
+    this.seed = (await $wallet.getSeed(this.mnemonic));
+    this.rootKey = await $wallet.createRootKey(this.seed);
+    this.shares = await $wallet.createShamirSecretFromSeed();
+
   }
 
   onStart() {
