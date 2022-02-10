@@ -33,7 +33,7 @@
             </textarea>
         </div>
         <div class="actions">
-          <button class="button button-outline" :disabled="isInvalidMnemonic" @click="onRetrieve">LOAD</button>
+          <button class="button button-outline" :disabled="isInvalidMnemonic" @click="onRetrieve">CREATE HORCRUXES</button>
 
           <button class="button button-outline" @click="onStart">
             <span class="initial" :class="{ hide : entropyStart }">Generate</span>
