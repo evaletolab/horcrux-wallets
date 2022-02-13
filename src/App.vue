@@ -1,5 +1,5 @@
 <template>
-  <nav id="nav" class="container mg-tabs navigation">
+  <nav id="nav" class="container mg-tabs navigation media-display">
     <ul>
       <li><router-link to="/">Create Identity</router-link> |</li>
       <li><router-link to="/recover">Recover Identity</router-link> |</li>
@@ -11,23 +11,6 @@
 </template>
 
 <style lang="scss">
-
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin: auto;
-  max-width: 80rem;
-  font-family: 'Roboto', serif;
-}
-
-.container {
-  @media (max-width:500px) {
-    padding: 0 0.4rem!important;
-  }
-}
 
 .navigation {
   display: flex;
@@ -45,11 +28,6 @@
   }
 }
 
-:root{
-  --mg-color-primary: blue;
-  --mg-color-secondary: blue;
-  --mg-color-tertiary: blue;
-}
 .mg-tabs{
   .mg-tabs--items{
     margin-left: 0.2em;
@@ -71,14 +49,14 @@
     li{
       font-weight: bold;
       border-bottom: 0.3rem solid transparent;
-      color: var(--mg-color-tertiary);
+      color: var(--mg-md-theme-default-tertiary);
       opacity: 0.7;
       flex: 0 0 auto;      
       margin: 0;
       padding: 4px 10px;
       .router-link-active{
-        color: var(--mg-color-primary);
-        border-color: var(--mg-color-primary);
+        color: var(--md-theme-default-primary);
+        border-color: var(--md-theme-default-primary);
         overflow-y: hidden;
         opacity: 1;          
       }

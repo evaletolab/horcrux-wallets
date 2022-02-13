@@ -1,0 +1,60 @@
+
+:root {
+  --md-theme-default-primary:#fff;
+  --md-theme-default-primary-text:#000203;
+  --md-theme-default-secondary:#eee;
+  --md-theme-default-secondary-text:#000203;
+  --md-theme-default-tertiary:#63a1d9;
+  --md-theme-default-tertiary-text:#000203;
+  --md-theme-toolbar-height:40px;
+}
+
+
+body {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin: auto;
+  max-width: 80rem;
+  font-family: 'Roboto', serif;
+}
+
+.body-lock{
+  overflow: hidden!important;
+}
+
+.text-center {
+  text-align: center;
+}
+.hide {
+  display: none;
+}
+
+
+ol{
+  list-style-type: decimal;
+}
+
+code {
+  padding: .2em .4em;
+  padding-left:0;
+  margin: 0;
+  font-size: 85%;
+  background-color: rgb(175 184 193 / 20%);
+  border-radius: 6px;    
+}
+
+
+.container {
+  @media (max-width:500px) {
+    padding: 0 0.4rem!important;
+  }
+}
+
+.media-display {
+  @media print {
+    display: none!important;
+  }
+}
