@@ -2,13 +2,13 @@
   <div class="home container">
 
     <!-- Digital identity -->
-    <div class="">
+    <div class="media-display">
         <h2>Protect your Digital Identity </h2>
         <p>Learn to protect your digital identity</p>
     </div>
 
     <!-- Mnemonic Language -->
-    <form>
+    <form class="media-display">
         <fieldset>
           <label for="">BIP39 Mnemonic </label>      
           <div class="languages">
@@ -27,13 +27,13 @@
     </form>  
 
     <!-- BIP39 Mnemonic -->
-    <div class="form-group">
+    <div class="form-group media-display">
         <div class="col-sm-10">
             <textarea v-model="mnemonic" class="phrase private-data form-control" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">              
             </textarea>
         </div>
         <div class="actions">
-          <button class="button button-outline" :disabled="isInvalidMnemonic" @click="onRetrieve">LOAD</button>
+          <button class="button button-outline" :disabled="isInvalidMnemonic" @click="onRetrieve">HORCRUXES</button>
 
           <button class="button button-outline" @click="onStart">
             <span class="initial" :class="{ hide : entropyStart }">Generate</span>
@@ -74,7 +74,7 @@
             <ol>
               <li>Store them on printed paper.</li>
               <li>Use our Vault SmartContract a simple and secure space to store Horcruxes.</li>
-              <li>Or use your private google cloud account.</li>
+              <li>Or use our Steganography</li>
             </ol>
           </p>
 
@@ -82,20 +82,24 @@
       <div class="secret" v-for="(share,index) in shares" :key="index">
         {{share}} 
         <div class="action">
-          <a href="" class="store">print</a>
-          <a href="" class="store">vault</a>
-          <a href="" class="store">cloud</a>
+          <a href="#" class="store" @click="onHorcrux(share,'print')">print</a>
+          <a href="#" class="store" @click="onHorcrux(share,'vault')">vault</a>
+          <a href="#" class="store">Steganography</a>
         </div>
       </div>
     </div>
 
-  
+    <drawer ref="print"  @bind:close="onHorcrux()">
+      <horcrux-print :value="currentHorcrux" />
+    </drawer>
+
+    <drawer ref="vault"  @bind:close="onHorcrux()">
+      <horcrux-vault :value="currentHorcrux" />
+    </drawer>
+
   </div>
 </template>
 <style scoped lang="scss">
-  .hide {
-    display: none;
-  }
   .languages {
     a{
       padding: 0 5px;
@@ -108,9 +112,6 @@
     }
   }
 
-  ol{
-    list-style-type: decimal;
-  }
 
   .sharing{
     margin-top: 50px;
@@ -142,21 +143,30 @@
     padding: 5px;
   }
 
+
 </style>
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import EntropyFromMouse from '@/components/EntropyFromMouse.vue';
-import { $wallet } from '../services';
+import Drawer from '@/components/Drawer.vue';
+import HorcruxPrint from '@/components/HorcruxPrint.vue';
+import HorcruxVault from '@/components/HorcruxVault.vue';
+import { $wallet, i18n } from '../services';
 import * as secret from 'secrets.js-34r7h';
 import { I_MouseEntropyResult } from '@/lib/MouseEntropyEngine';
 
 @Options({
   components: {
-    EntropyFromMouse,
+    EntropyFromMouse, 
+    Drawer, 
+    HorcruxPrint,
+    HorcruxVault
   },
 })
 export default class Home extends Vue {
-  entropyStart = false;
+  private _currentHorcrux = '';
+
+entropyStart = false;
   mnemonic = "";
   seed = "";
   rootKey = "";
@@ -165,7 +175,9 @@ export default class Home extends Vue {
   //
   // helpers for typescript
   $refs!: {
-    entropyGen: EntropyFromMouse
+    entropyGen: EntropyFromMouse,
+    print:Drawer,
+    vault:Drawer
   }  
   async mounted() {
     this.entropyStart = false;
@@ -176,6 +188,17 @@ export default class Home extends Vue {
       return ''
     }    
     return secret.combine(this.shares);
+  }
+
+  get currentHorcrux() {
+    if(!this._currentHorcrux) {
+      return {};
+    }
+    return {
+      version:this._currentHorcrux.substring(0,3),
+      share:this._currentHorcrux,
+      base64:($wallet.b64.encode('0x'+this._currentHorcrux))
+    };
   }
 
   get isInvalidMnemonic() {
@@ -197,8 +220,8 @@ export default class Home extends Vue {
 
   }
 
-  onI18n(ln:string) {
-    
+  onI18n(ln:i18n) {
+    $wallet.setDefaultLang(ln);
   }
 
   onEntropyStart(){
@@ -210,6 +233,15 @@ export default class Home extends Vue {
     this.rootKey = await $wallet.createRootKey(this.seed);
     this.shares = await $wallet.createShamirSecretFromSeed();
 
+  }
+
+  onHorcrux(share: string, destination:string) {
+    const route:any = {
+      'print':()=> this.$refs.print,
+      'vault':()=> this.$refs.vault,
+    }
+    this._currentHorcrux = share;
+    route[destination]().onToggle();
   }
 
   onStart() {

@@ -86,7 +86,7 @@
 import { Options, Vue } from 'vue-class-component';
 import { $wallet } from '../services';
 import * as secret from 'secrets.js-34r7h';
-import { ethers } from 'ethers';
+import { arrayify, base64 } from 'ethers/utils';
 
 @Options({
   components: {
@@ -102,14 +102,16 @@ export default class Recover extends Vue {
       return ''
     }
 
-    return secret.combine(this.horcruxs as secret.Shares);
+    const b64 = secret.combine(this.horcruxs as secret.Shares);
+    return base64.decode(b64);
   }
 
   get mnemonic() {
     if(!this.entropy.length){
       return "";
     }
-    const entropy = ethers.utils.arrayify('0x'+this.entropy);
+    console.log('----DB entropy',this.entropy);
+    const entropy = arrayify('0x'+this.entropy);
     return $wallet.createMnemonic(entropy);
   }
 }

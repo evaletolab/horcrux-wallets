@@ -1,14 +1,25 @@
 //import { $config } from './config-service';
-import { ethers, utils }  from 'ethers';
-import { share, combine } from 'secrets.js-34r7h';
+import { wordlists }  from 'ethers';
+import { HDNode, hexlify, toUtf8Bytes, base64 }  from 'ethers/utils';
+import { Share, share, str2hex } from 'secrets.js-34r7h';
 
-type i18n = 'en'|'fr'|'it'|'es';
+export type i18n = 'en'|'fr'|'it'|'es';
+
+export interface Horcrux {
+  share: string;
+  base64: string;
+  version: string;
+}
 
 class WalletService {
   private _STORAGE = "horcrux-wallet";
   private defaultLang:i18n = 'en';
 
   entropy: Uint8Array = new Uint8Array();
+
+  get b64() {
+    return base64;
+  }
   //
   // FIXME, replace all import by ethers@4.0
   // https://docs.ethers.io/v4/api-wallet.html
@@ -26,26 +37,26 @@ class WalletService {
   }
 
   retrieveEntropy(mnemonic: string) {
-    const strEntropy = utils.HDNode.mnemonicToEntropy(mnemonic,ethers.wordlists[this.defaultLang]);
-    return this.entropy = utils.toUtf8Bytes(strEntropy);
+    const strEntropy = HDNode.mnemonicToEntropy(mnemonic,wordlists[this.defaultLang]);
+    return this.entropy = toUtf8Bytes(strEntropy);
   }
 
   createMnemonic(entropy: Uint8Array) {
     // https://docs.ethers.io/v5/api/utils/hdnode/#Mnemonic
-    const mnemonic =utils.HDNode.entropyToMnemonic(utils.hexlify(entropy),ethers.wordlists[this.defaultLang])
+    const mnemonic =HDNode.entropyToMnemonic(hexlify(entropy),wordlists[this.defaultLang])
     return mnemonic;
   }
 
   isValidMnemonic(mnemonic:string) {
-    return utils.HDNode.isValidMnemonic(mnemonic,ethers.wordlists[this.defaultLang]);
+    return HDNode.isValidMnemonic(mnemonic,wordlists[this.defaultLang]);
   }
 
   async getSeed(mnemonic: string) {
-    return utils.HDNode.mnemonicToSeed(mnemonic);
+    return HDNode.mnemonicToSeed(mnemonic);
   }
 
   async createRootKey(seed: string){
-    const node = utils.HDNode.fromSeed(seed);
+    const node = HDNode.fromSeed(seed);
     // defaultPath ⇒ "m/44'/60'/0'/0/0"
     const child = node.derivePath('m/0/0');
     // Get the extended public key
@@ -56,7 +67,9 @@ class WalletService {
   }
 
   async createShamirSecretFromSeed(entropy?: Uint8Array) {
-    const hexSeed = utils.hexlify(this.entropy).split('0x');
+    const hexSeed = hexlify(this.entropy).split('0x');
+    const b64 = base64.encode('0x'+hexSeed[1]);
+    console.log('----DB entropy',hexSeed,b64, str2hex(b64));
     return share(hexSeed[1], 3, 2, 512);
   }
 
@@ -84,6 +97,7 @@ class WalletService {
 
   setDefaultLang(i18n:i18n) {
     this.defaultLang = i18n;
+    this.createMnemonic(this.entropy);
   }
 
 } 
