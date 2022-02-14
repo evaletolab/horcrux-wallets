@@ -1,4 +1,3 @@
-import utils from 'ethers/utils';
 import { BigNumber, id } from 'ethers/utils';
 
 const defaultDifficulty = new BigNumber('0xfff')

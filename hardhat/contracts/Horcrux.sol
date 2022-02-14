@@ -1,21 +1,28 @@
-pragma solidity ^0.8.10;
+pragma solidity ^0.8.0;
 // SPDX-License-Identifier: MIT
+
+import "hardhat/console.sol";
 
 
 contract Horcrux {
   mapping (uint256 => uint256) public index;
 
+
   // (to be validated)
   // using log instead memory to preserve gas cost 
-  event Vault(uint256 sender, uint block, bytes horcrux);
+  event Vault(uint block, string horcrux);
+
+  constructor() {
+  }
 
   //
   // source hash of the encryptor address
   // horcrux content is the encrypted shamir secret part
   // The Nonce is a random whole number that becomes a valid number to be used for hashing the value
-  function create(uint256 source,uint256 nonce, bytes calldata horcrux ) external {
+  function create(uint256 source,uint256 nonce, string calldata horcrux ) external {
+    console.log("create '%s'  '%s' '%s' ", source, nonce,horcrux);
     index[(source)] = block.number;
-    emit Vault(source, block.number,horcrux);
+    emit Vault(block.number,horcrux);
   }
 
   //
