@@ -1,7 +1,7 @@
 <template>
 <!--- SOURCE -->
-  <section class="drawer " :class="{'open primary':open,'primary':!open}" @click="onToggle">
-    <!-- <PRIcons name="sources-bar"  /> -->
+  <section class="drawer " :class="{'open primary':open,'primary':!open}" @click="onClose(false)">
+    <button class="icon" v-if="closeButton" @click="onClose(true)"></button>
     <div ref="container" class="content">
       <slot />
     </div>        
@@ -13,21 +13,35 @@
 import { Options, Vue } from 'vue-class-component';
 
 @Options({
+ props: {
+    closeButton: {
+      default: false,
+      type: Boolean
+    },
+ }  
 })
 export default class Drawer extends Vue {
   open = false;
+  closeButton!:boolean;
 
-
-
-  onToggle(){
-    this.open = !this.open;
-    if(this.open){
-      document.body.classList.add('body-lock');
-    }else{
-      document.body.classList.remove('body-lock');
-      this.$emit("close", null);
+  onClose(button?:boolean){
+    //
+    // only quit on click button 
+    if(this.closeButton && !button) {
+      return;
     }
+
+    this.open=false;
+    document.body.classList.remove('body-lock');
+    this.$emit("close", null);
   }
+
+
+  onOpen(){
+    this.open=true;
+    document.body.classList.add('body-lock');
+  }
+
 
 }
 </script>
@@ -41,11 +55,11 @@ export default class Drawer extends Vue {
     z-index: 100;
     bottom: 0;
     left:5px;
-    height: calc(95vh);
+    height: calc(98vh);
     text-align: center;
     border-radius: 20px 20px 0 0;
     padding: 0 5px;    
-    transform: translateY(calc(95vh));
+    transform: translateY(calc(98vh));
     transition: all 200ms;     
     box-shadow: 0 0 0px 1px #ddd;
     width: calc( 100vw - 10px );

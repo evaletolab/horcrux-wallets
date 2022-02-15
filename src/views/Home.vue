@@ -93,7 +93,7 @@
       <horcrux-print :value="currentHorcrux" />
     </drawer>
 
-    <drawer ref="vault"  @bind:close="onHorcrux()">
+    <drawer ref="vault" closeButton="true" @bind:close="onHorcrux()">
       <horcrux-vault :value="currentHorcrux" />
     </drawer>
 
@@ -197,7 +197,7 @@ entropyStart = false;
     return {
       version:this._currentHorcrux.substring(0,3),
       share:this._currentHorcrux,
-      base64:($wallet.b64.encode('0x'+this._currentHorcrux))
+      base64:($wallet.b64.encode('0x'+this._currentHorcrux+'0'))
     };
   }
 
@@ -240,8 +240,10 @@ entropyStart = false;
       'print':()=> this.$refs.print,
       'vault':()=> this.$refs.vault,
     }
+    // FIXME share len = 131 (odd)
+    // lend village excuse sort climb muscle blue shell measure crumble divide section reason income buffalo
     this._currentHorcrux = share;
-    route[destination]().onToggle();
+    route[destination]().onOpen();
   }
 
   onStart() {
