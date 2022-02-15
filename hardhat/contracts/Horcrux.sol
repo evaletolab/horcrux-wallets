@@ -3,7 +3,9 @@ pragma solidity ^0.8.0;
 
 // import "hardhat/console.sol";
 
-
+// FIXME use upgrade contracts
+// https://docs.openzeppelin.com/learn/upgrading-smart-contracts
+// https://medium.com/coinmonks/upgrading-smart-contracts-with-openzeppelin-upgrades-plugins-in-typescript-hardhat-dd5ca6d01585
 contract Horcrux {
   mapping (uint256 => uint256) public index;
 
