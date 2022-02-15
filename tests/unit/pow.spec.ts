@@ -1,10 +1,10 @@
 import { expect } from 'chai'
-import { proofOfWork, requiresWork } from '@/lib/POW'
-import { BigNumber } from 'ethers/utils';
+import { proofOfWork, requiresWork } from '../../src/lib/POW'
+import { BigNumber } from 'ethers';
 
 describe('POW', () => {
-  const difficulty = new BigNumber('0x7ffff');
-  it('generate pow from medium string', () => {
+  const difficulty = BigNumber.from('0x7ffff');
+  it('generate pow from medium string', async () => {
     const msg = 'new message as pow seed';
     const work = requiresWork(msg,difficulty);
     expect(work).to.exist;
