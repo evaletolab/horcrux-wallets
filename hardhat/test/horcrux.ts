@@ -1,11 +1,11 @@
 import { expect } from "chai";
-import { BigNumber } from "ethers/utils";
+import { BigNumber } from "ethers";
 import { ethers } from "hardhat";
 import { requiresWork, proofOfWork } from "../../src/lib/POW";
 import { stringToHEX256 } from "../../src/lib/utils";
 describe("Horcrux", function () {
 
-  const difficulty = new BigNumber('0x1ffff');
+  const difficulty = BigNumber.from('0xffff');
   const abiCreate = [
     "function create(uint256 source, string calldata horcrux )"
   ];
