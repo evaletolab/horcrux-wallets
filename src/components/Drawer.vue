@@ -1,7 +1,7 @@
 <template>
 <!--- SOURCE -->
   <section class="drawer " :class="{'open primary':open,'primary':!open}" @click="onClose(false)">
-    <button class="icon" v-if="closeButton" @click="onClose(true)"></button>
+    <button class="icon" v-if="closeButton" @click="onClose(true)">X</button>
     <div ref="container" class="content">
       <slot />
     </div>        
@@ -82,6 +82,21 @@ export default class Drawer extends Vue {
     section.drawer.open {
       transform: translateY(45px)!important;
     }
+  }
+
+  section.drawer .icon {
+    background: transparent;
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    width: 50px;
+    height: 50px;
+    padding-left: 5px;
+    padding-right: 5px;
+    color: black;
+    font-size: 24px;
+    font-weight: 100;
+    font-family: cursive;
   }
 
   section.drawer.open {
