@@ -15,7 +15,8 @@
     "vue": "^3.2.29",
     "vue-class-component": "^8.0.0-rc.1",
     "vue-property-decorator": "^9.1.2",
-    "vue-router": "^4.0.12"
+    "vue-router": "^4.0.12",
+    "zxcvbn-typescript": "^5.0.1"
   },
   "devDependencies": {
     "@types/chai": "^4.3.0",
