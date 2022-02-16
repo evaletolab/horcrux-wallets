@@ -3,7 +3,8 @@
     <h1>Horcrux </h1>
     <h3>{{date}} / <span class="bold">v{{value?.version}}</span> </h3>
     <p class="description">        
-      Use our Vault SmartContract a simple and secure space to store Horcruxes.
+      Your Horcrux will be anonimously stored in our <a href="#">Vault</a> SmartContract without any needed credential. 
+      It's a simple and secure space to store content.
     </p>
     <div class="secret">
       {{value?.base64}}
@@ -11,9 +12,9 @@
 
     <form>
       <fieldset>
-        <label for="email">Use an email to generate your secret</label>
+        <label for="email">Use an email to generate your the first part of the secret</label>
         <input type="email"  v-model="username" placeholder="email@g.com" id="email" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-        <password label="Complete your secret with a hard password (min 8 chars)" 
+        <password label="Complete your secret with a hard password (choose min 10 chars)" 
                   v-model="password" />
 
         <button @click="onPublish" class="button-primary" >Generate Vault </button>
@@ -27,7 +28,7 @@
 
 <style scoped lang="scss">
   .content{
-    max-width: 400px;
+    max-width: 700px;
     margin: auto;      
     .description,
     .version{
