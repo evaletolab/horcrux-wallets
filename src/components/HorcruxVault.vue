@@ -3,25 +3,29 @@
     <h1>Horcrux </h1>
     <h3>{{date}} / <span class="bold">v{{value?.version}}</span> </h3>
     <p class="description">        
-      Your Horcrux will be anonimously stored in our <a href="#">Vault</a> SmartContract without any needed credential. 
-      It's a simple and secure space to store content.
+      Your Horcrux will be stored in our Ethereum Vault without any thirdparties. 
+      Contract addresse here : 0xFF
     </p>
-    <div class="secret">
-      {{value?.base64}}
-    </div>
 
-    <form>
+    <div>
       <fieldset>
         <label for="email">Use an email to generate your the first part of the secret</label>
         <input type="email"  v-model="username" placeholder="email@g.com" id="email" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
         <password label="Complete your secret with a hard password (choose min 10 chars)" 
-                  v-model="password" />
+                  v-model="password" @score="onScore"/>
 
-        <button @click="onPublish" class="button-primary" >Generate Vault </button>
-        <button class="button-primary" >Publish </button>
+        <button @click="onGenerate" class="button-primary" :disabled="score < 4">Generate Vault  </button>
+        <button @click="onPublish" class="button-primary" :disabled="seed == ''" >Publish </button>
       </fieldset>
-    </form>
-
+    </div>
+    <h3>Horcrux</h3>
+    <div class="secret">
+      {{value?.base64}}
+    </div>
+    <h3>Vault secret</h3>
+    <div class="secret" :class="{hide:seed==''}">
+      {{seed}} / 0x{{nonce}}
+    </div>
  </div>  
   
 </template>
@@ -32,9 +36,9 @@
     margin: auto;      
     .description,
     .version{
-      border-left: 7px solid rgb(175 184 193 / 20%);
-      padding-left: 10px;
-      padding-top: 20px;
+      // border-left: 7px solid rgb(175 184 193 / 20%);
+      // padding-left: 10px;
+      // padding-top: 20px;
     }
 
     .secret{
@@ -42,7 +46,7 @@
       text-align: left;
       margin: 10px 0;
       background: #eee;
-      padding: 5px;
+      padding: 25px;
       width: 100%;
     }
 
@@ -84,6 +88,7 @@ export default class HorcruxVault extends Vue {
 
   password = "";
   username = "";
+  score = 0;
   difficulty = BigNumber.from('0x1ffff');
 
   // Web3
@@ -91,6 +96,10 @@ export default class HorcruxVault extends Vue {
   account = "";
   balance = "0";
 
+  //
+  // POW
+  nonce = "";
+  seed = "";
 
   get date() {
     return this.currentDate.toLocaleString();
@@ -130,6 +139,15 @@ export default class HorcruxVault extends Vue {
     this.balance = (await provider.getBalance(this.account)).toString();
   }
 
+  async onGenerate($event:Event) {
+    $event.preventDefault();
+    //
+    // proof of Work
+    this.seed = stringToHEX256(this.username+""+this.password);
+    this.nonce = requiresWork(this.seed,this.difficulty)[1];
+    console.log('--- DEBUG',this.seed,this.nonce);
+  }
+
     //
     //load contracts
   //   try {
@@ -160,14 +178,6 @@ export default class HorcruxVault extends Vue {
     try{
       await this.initMetamask();
 
-      //
-      // proof of Work
-      const seed = stringToHEX256(this.username+""+this.password);
-      const nonce = '0x'+requiresWork(seed,this.difficulty)[1];
-
-      console.log('----- POW is done: ',seed,nonce);
-      window.alert('POW is done,' + seed);
-
       // const node = ethers.utils.HDNode.fromSeed(seed);
       // const hash =  ethers.utils.keccak256(ethers.utils.defaultAbiCoder.encode(['uint256','uint256'],[seed,nonce]));
       //horcrux.create(hash,this.value.base64);
@@ -176,6 +186,10 @@ export default class HorcruxVault extends Vue {
       console.debug(err);
       window.alert(err.message);
     }
+  }
+
+  onScore(value:number){
+    this.score = value;
   }
 
 }
