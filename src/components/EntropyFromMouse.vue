@@ -30,16 +30,18 @@ export default class EntropyFromMouse extends Vue {
 
   start() {
     document.body.addEventListener('mousemove', this.mouseMoveHandler);
+    document.body.addEventListener('touchmove', this.mouseMoveHandler);
     this.entropyEngine = new MouseEntropyEngine(
       this.bitCount, 
       this.onEntropyCollectionComplete.bind(this), 
       this.onEntropyCollectionProgress.bind(this)
     ); 
+    this.$emit("start");      
   }
 
-  mouseMoveHandler(e: MouseEvent){
-    const x = e.clientX; 
-    const y = e.clientY; 
+  mouseMoveHandler(e: MouseEvent|TouchEvent){
+    const x = (e instanceof MouseEvent)? e.clientX : e.touches[0].clientX;
+    const y = (e instanceof MouseEvent)? e.clientY : e.touches[0].clientY;
     this.entropyEngine.handleMouseMove(x, y);
   }
 
@@ -50,9 +52,6 @@ export default class EntropyFromMouse extends Vue {
   }
 
   onEntropyCollectionProgress(progress: number){
-    if(!this.progress) {
-      this.$emit("start");      
-    }
     this.progress = progress;
   }
 }
