@@ -12,23 +12,22 @@ contract Horcrux {
 
   // (to be validated)
   // using log instead memory to preserve gas cost 
-  event Vault(uint block, string horcrux);
+  event Vault(uint block, uint256 horcrux);
 
   constructor() {
   }
 
   //
-  // source hash of the encryptor address
-  // horcrux content is the encrypted shamir secret part
-  // The Nonce is a random whole number that becomes a valid number to be used for hashing the value
-  function create(uint256 source, string calldata horcrux ) external {
-    index[(source)] = block.number;
+  // Source is the destination place of the Horcrux
+  // Horcrux is the encrypted shamir secret part
+  function create(uint256 source, uint256 horcrux ) external {
+    require(index[source] == 0,"Horcrux: this destination is not available"); // cost 47 gas
+    index[(source)] = horcrux;
     emit Vault(block.number,horcrux);
   }
 
   //
-  // source is the obfuscated hash of encryptor address
-  // it should return the encryption data that belongs to the source address
+  // The Seed and the Nonce are elements that becomes the destination place of the Horcrux
   function redeem(uint256 seed, uint256 nonce) external view returns(uint256) {
     uint256 source =uint256(keccak256(abi.encodePacked(seed,nonce)));
     return (index[source]);

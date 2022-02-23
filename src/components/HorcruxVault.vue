@@ -4,15 +4,13 @@
     <h3>{{date}} / <span class="bold">v{{value?.version}}</span> </h3>
     <p class="description">        
       Your Horcrux will be anonimously stored in our <a href="#">Vault</a> SmartContract without any needed credential. 
-      It's a simple and secure space to store content.
+      It's a simple and secure that will store your Horcrux 
+      in a hidden place derived from your selected email and passord.
     </p>
-    <div class="secret">
-      {{value?.base64}}
-    </div>
 
     <form>
       <fieldset>
-        <label for="email">Use an email to generate your the first part of the secret</label>
+        <label for="email">Use an email of your choise to generate your the first part of the secret</label>
         <input type="email"  v-model="username" placeholder="email@g.com" id="email" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
         <password label="Complete your secret with a hard password (choose min 10 chars)" 
                   v-model="password" />
@@ -21,6 +19,10 @@
         <button class="button-primary" >Publish </button>
       </fieldset>
     </form>
+
+    <div class="secret">
+      {{value?.base64}}
+    </div>
 
  </div>  
   
