@@ -62,4 +62,7 @@ export default class EntropyFromMouse extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+  progress{
+    width: 50px;
+  }
 </style>
