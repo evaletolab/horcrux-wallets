@@ -36,6 +36,8 @@ export default class EntropyFromMouse extends Vue {
       this.onEntropyCollectionComplete.bind(this), 
       this.onEntropyCollectionProgress.bind(this)
     ); 
+
+    document.body.classList.add('body-lock');
     this.$emit("start");      
   }
 
@@ -49,6 +51,7 @@ export default class EntropyFromMouse extends Vue {
     document.body.removeEventListener('mousemove', this.mouseMoveHandler);
     this.$emit("complete", mouseEntropyResult);
     this.progress = 0;
+    document.body.classList.remove('body-lock');
   }
 
   onEntropyCollectionProgress(progress: number){
