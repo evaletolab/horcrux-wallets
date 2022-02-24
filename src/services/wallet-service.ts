@@ -70,7 +70,7 @@ class WalletService {
     const hexSeed = ethers.utils.hexlify(this.entropy).split('0x');
     const b64 = ethers.utils.base64.encode('0x'+hexSeed[1]);
     console.log('----DB entropy',hexSeed,b64, str2hex(b64));
-    return share(hexSeed[1], 3, 2, 512);
+    return share(hexSeed[1], 3, 2, 256);
   }
 
   //
