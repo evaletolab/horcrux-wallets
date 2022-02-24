@@ -3,14 +3,23 @@
 
     <!-- Digital identity -->
     <div class="media-display">
-        <h2>Protect your Digital Identity </h2>
-        <p>Learn to protect your digital identity</p>
+        <h2>Protect your Digital Identity</h2>
+        <p>
+          Digital identity is a new reality, it appears complex or wird because we have no practice on that subject.
+          The goal of this application is to provide a few solutions to protect your identiy without the needs of a trusted thirdparties.
+        </p>
     </div>
 
     <!-- Mnemonic Language -->
     <form class="media-display">
         <fieldset>
-          <label for="">BIP39 Mnemonic </label>      
+          <label for="">The BIP39 Mnemonic standard </label>      
+        <p>
+          Mnemonic phrase constitutes all the necessary information required to recover your wallets 
+          and «digital states» if your device is stolen or gets damaged. 
+          In such instances, you can recover your wallets by keying in the mnemonic 
+          phrase words on all wallets software that use standardised BIP39.
+        </p>
           <div class="languages">
                   <a @click="onI18n('en')" href="#english">English</a>
                   <a @click="onI18n('jp')" href="#japanese" title="Japanese">日本語</a>
@@ -27,11 +36,9 @@
     </form>  
 
     <!-- BIP39 Mnemonic -->
-    <div class="form-group media-display">
-        <div class="col-sm-10">
-            <textarea v-model="mnemonic" class="phrase private-data form-control" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">              
-            </textarea>
-        </div>
+    <div class="media-display">        
+        <textarea  v-model="mnemonic" class="phrase private-data form-control" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">              
+        </textarea>
         <div class="actions">
           <button class="button button-outline" :disabled="isInvalidMnemonic" @click="onRetrieve">HORCRUXES</button>
 
@@ -64,27 +71,27 @@
     </div>  
 
     <!-- Shamir Secret Sharing Scheme -->
-    <div class="sharing">
+    <div class="sharing" :class="{hide:(!shares.length)}">
       <div class="header">
-          <h2>Store your Horcruxes/SSS</h2>
-          <p>To increase the security of your identity, You can break it in 3 separate pieces (called Horcruxes).
-            Your need at least two pieces to reconstitute your identity. 
+          <h2>Use Horcruxes/SSS to recover your identity</h2>
+          <p>To increase the security of your identity, You can break the Menominc phrase in 3 separate pieces (called Horcruxes).
+            Your need at <b>least two pieces</b> to reconstitute your identity. 
             You decide where you want to store each Horcrux. We recomend you keep them in separate places/locations. 
-            We provide a few alternatives:
-            <ol>
+            We provide a few alternatives all independant of trusted thirdparties:
+            <ul>
               <li>Store them on printed paper.</li>
-              <li>Use our Vault SmartContract a simple and secure space to store Horcruxes.</li>
-              <li>Or use our Steganography</li>
-            </ol>
+              <li>Use our Vault SmartContract a digital and secure space to store Horcruxes.</li>
+              <li>Or store them on digital pipcture with our Steganography solution.</li>
+            </ul>
           </p>
 
       </div>
       <div class="secret" v-for="(share,index) in shares" :key="index">
         {{share}} 
         <div class="action">
-          <a href="#" class="store" @click="onHorcrux(share,'print')">print</a>
-          <a href="#" class="store" @click="onHorcrux(share,'vault')">vault</a>
-          <a href="#" class="store">Steganography</a>
+          <a  class="store" @click="onHorcrux(share,'print')">print</a>
+          <a  class="store" @click="onHorcrux(share,'vault')">vault</a>
+          <a  class="store">Steganography</a>
         </div>
       </div>
     </div>
@@ -112,13 +119,24 @@
     }
   }
 
+  textarea{
+    resize: none;
+    height: 8.5rem;
+  }
+
 
   .sharing{
     margin-top: 50px;
     padding-top: 50px;
     border-top: 1px solid #eee;
     .header{
-
+      ul{
+        list-style-type: disclosure-closed;
+        text-align: left;
+        border: 1px solid #eee;
+        padding: 25px;        
+        margin-top: 20px;
+      }
     }
 
   }
@@ -127,7 +145,8 @@
     text-align: left;
     margin: 10px 0;
     background: #eee;
-    padding: 5px;
+    padding: 25px;
+    
     .action{
       display: inline-block;
       border-left: 3px solid #ddd;
@@ -166,7 +185,7 @@ import { I_MouseEntropyResult } from '@/lib/MouseEntropyEngine';
 export default class Home extends Vue {
   private _currentHorcrux = '';
 
-entropyStart = false;
+  entropyStart = false;
   mnemonic = "";
   seed = "";
   rootKey = "";

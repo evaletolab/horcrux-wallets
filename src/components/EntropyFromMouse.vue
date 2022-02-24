@@ -30,16 +30,20 @@ export default class EntropyFromMouse extends Vue {
 
   start() {
     document.body.addEventListener('mousemove', this.mouseMoveHandler);
+    document.body.addEventListener('touchmove', this.mouseMoveHandler);
     this.entropyEngine = new MouseEntropyEngine(
       this.bitCount, 
       this.onEntropyCollectionComplete.bind(this), 
       this.onEntropyCollectionProgress.bind(this)
     ); 
+
+    document.body.classList.add('body-lock');
+    this.$emit("start");      
   }
 
-  mouseMoveHandler(e: MouseEvent){
-    const x = e.clientX; 
-    const y = e.clientY; 
+  mouseMoveHandler(e: MouseEvent|TouchEvent){
+    const x = (e instanceof MouseEvent)? e.clientX : e.touches[0].clientX;
+    const y = (e instanceof MouseEvent)? e.clientY : e.touches[0].clientY;
     this.entropyEngine.handleMouseMove(x, y);
   }
 
@@ -47,12 +51,10 @@ export default class EntropyFromMouse extends Vue {
     document.body.removeEventListener('mousemove', this.mouseMoveHandler);
     this.$emit("complete", mouseEntropyResult);
     this.progress = 0;
+    document.body.classList.remove('body-lock');
   }
 
   onEntropyCollectionProgress(progress: number){
-    if(!this.progress) {
-      this.$emit("start");      
-    }
     this.progress = progress;
   }
 }
@@ -60,4 +62,7 @@ export default class EntropyFromMouse extends Vue {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+  progress{
+    width: 50px;
+  }
 </style>

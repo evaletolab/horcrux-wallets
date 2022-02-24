@@ -55,7 +55,7 @@ export default class Drawer extends Vue {
     z-index: 100;
     bottom: 0;
     left:5px;
-    height: calc(98vh);
+    height: calc(95vh);
     text-align: center;
     border-radius: 20px 20px 0 0;
     padding: 0 5px;    

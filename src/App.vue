@@ -55,8 +55,8 @@
       margin: 0;
       padding: 4px 10px;
       .router-link-active{
-        color: var(--md-theme-default-primary);
-        border-color: var(--md-theme-default-primary);
+        color: var(--md-theme-default-primary-text);
+        border-color: var(--md-theme-default-primary-text);
         overflow-y: hidden;
         opacity: 1;          
       }
