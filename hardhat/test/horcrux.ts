@@ -55,10 +55,10 @@ describe("Horcrux", function () {
 
 
     const seed = stringToHEX256("userfrom1233@bigcomp.com1LP#QOlp09");
-    const node = ethers.utils.HDNode.fromSeed(seed);
     const share = "0x0801fde48137222a357d4a70db809ae103aae7864b2312ab448a9301df635ea8020b";
     const nonce = '0x'+requiresWork(seed,difficulty)[1];
     const hash =  ethers.utils.keccak256(ethers.utils.defaultAbiCoder.encode(['uint256','uint256'],[seed,nonce]));
+    const node = ethers.utils.HDNode.fromSeed(hash);
 
     
     //
@@ -87,7 +87,10 @@ describe("Horcrux", function () {
   
 
 
-  it("produce offline Vault function", async function() {
+  // https://github.com/bitclave/Feeless
+  it("produce offline Vault and delegate transaction", async function() {
+    this.timeout(70000);
+
     const seed = stringToHEX256("userfrom1233@bigcomp.com1LP#QOlp09");
 
     const iface = new ethers.utils.Interface(abiCreate);
@@ -95,9 +98,53 @@ describe("Horcrux", function () {
     const nonce = '0x'+requiresWork(seed,difficulty)[1];
     const encoder = ethers.utils.defaultAbiCoder.encode(['uint256','uint256'],[seed,nonce])
     const source = ethers.utils.keccak256(encoder);
-    const embeded = iface.encodeFunctionData("create", [source,share]);    
-    // console.log('---calldata ',encoder);
-    expect(embeded).to.be.a.string;
+    const encoded = iface.encodeFunctionData("create", [source,share]);    
+    console.log('---calldata ',encoded);
+    expect(encoded).to.be.a.string;
+
+    //
+    // get contract address
+    const Horcrux = await ethers.getContractFactory("Horcrux");
+    const horcrux = await Horcrux.deploy();
+    await horcrux.deployed();
+
+
+    //
+    // sign transaction 
+    const node = ethers.utils.HDNode.fromSeed(source);
+    const [deployer, alice, bob] = await ethers.getSigners();
+
+    const signer = new ethers.Wallet(node.privateKey);
+    const encodedtx = await alice.sendTransaction({
+      from:node.address,
+      to: horcrux.address,
+      value: ethers.utils.parseEther("0.0"),
+      gasLimit: BigNumber.from('210000'),
+      data:encoded
+    })
+    console.log('----',encodedtx)
+
+    //
+    // TODO https://github.com/status-im/account-contracts/blob/develop/contracts/account/AccountGasAbstract.sol
+    const provider = await ethers.getDefaultProvider('homestead');
+
+    // "homestead",{etherscan:'VJZQT6ENDVAPJHZSXM5NZ14SHD5ZGA66Z6'}
+    // const tx = await ethers.provider.sendTransaction(encodedtx);
+    // const receipt = await provider.getTransactionReceipt(tx.hash);
+
+    // const tx = await alice.sendTransaction({
+    //   from:alice.address,
+    //   to: horcrux.address,
+    //   value: ethers.utils.parseEther("0.0"),
+    //   data:encoded
+    // });    
+
+    const result = await horcrux.redeem(seed,nonce);
+
+    //console.log('----',receipt)
+    console.log('----',share)
+    console.log('----',result)
+    //console.log('----',tx)
 
   })  
 

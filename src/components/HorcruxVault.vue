@@ -111,11 +111,16 @@ export default class HorcruxVault extends Vue {
     // const account = accounts[0] || metamask[0];
     //
     // initialize metamask
-    const [account] = await $window.ethereum.request({ method: 'eth_requestAccounts' });
+    // const [account] = await $window.ethereum.request({ method: 'eth_requestAccounts' });
+    // if(!account){
+    //   throw new Error('Please login with MetaMask');
+    // }
+    const provider = new ethers.providers.Web3Provider($window.ethereum);
+    const [account] = await provider.send("eth_requestAccounts", []);
     if(!account){
       throw new Error('Please login with MetaMask');
     }
-    const provider = new ethers.providers.Web3Provider($window.ethereum);
+
     this.signer = provider.getSigner();
     // console.log('--- DBG signer0',await this.signer.getAddress());
     // console.log('--- DBG signer1',await this.signer.getChainId());
