@@ -1,7 +1,7 @@
 pragma solidity ^0.8.0;
 // SPDX-License-Identifier: MIT
 
-// import "hardhat/console.sol";
+import "hardhat/console.sol";
 
 // FIXME use upgrade contracts
 // https://docs.openzeppelin.com/learn/upgrading-smart-contracts
@@ -22,6 +22,7 @@ contract Horcrux {
   // Horcrux is the encrypted shamir secret part
   function create(uint256 source, string calldata horcrux ) external isWallet {
     require(bytes(index[source]).length == 0 ,"Horcrux: this destination is not available"); // cost 47 gas
+    console.log("create %s",source);
     index[(source)] = horcrux;
     emit Vault(block.number,horcrux);
   }
@@ -29,7 +30,9 @@ contract Horcrux {
   //
   // The Seed and the Nonce are elements that becomes the destination place of the Horcrux
   function redeem(uint256 seed, uint256 nonce) external view isWallet returns(string memory) {
-    uint256 source =uint256(keccak256(abi.encodePacked(seed,nonce)));
+    bytes32 hash = (keccak256(abi.encodePacked(seed,nonce)));
+    uint256 source =uint256(keccak256(abi.encodePacked(hash)));
+    console.log("redeem %s",source);
     return (index[source]);
   }
 
