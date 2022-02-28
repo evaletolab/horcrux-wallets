@@ -16,7 +16,7 @@
         
         <div class="action"> 
           restore from 
-          <a href="" class="store">print</a>
+          <a class="store" @click="() => openScanDrawerForIndex(index)" >print</a>
           <a href="" class="store">vault</a>
           <a href="" class="store">cloud</a>
         </div>
@@ -43,10 +43,16 @@
         {{mnemonic}}
       </div>
     </div>
+
+    <drawer ref="qrscan">
+      <h2>scan qrcode</h2>
+      <qr-scan v-on:decoded="onQrScanDecoded"/>
+    </drawer>
   
   </div>
 </template>
 <style scoped lang="scss">
+
   .hide {
     display: none;
   }
@@ -87,15 +93,17 @@ import { Options, Vue } from 'vue-class-component';
 import { $wallet } from '../services';
 import * as secret from 'secrets.js-34r7h';
 import { ethers } from 'ethers';
+import Drawer from '@/components/Drawer.vue';
+import QrScan from '@/components/QrScan.vue';
 
 @Options({
   components: {
+    Drawer, QrScan,
   },
 })
 export default class Recover extends Vue {
   horcruxs:any = [null,null];
-  // async mounted() {
-  // }
+  currentIndex = -1;
 
   get entropy() {    
     if(!this.horcruxs.length || !this.horcruxs[0] || !this.horcruxs[1]) {
@@ -113,6 +121,17 @@ export default class Recover extends Vue {
     console.log('----DB entropy',this.entropy);
     const entropy = ethers.utils.arrayify('0x'+this.entropy);
     return $wallet.createMnemonic(entropy);
+  }
+
+  openScanDrawerForIndex(index: number){
+    this.currentIndex = index;
+    (this.$refs.qrscan as any).onOpen();
+  }
+
+  onQrScanDecoded(result:{value:string}){
+    // console.log("got qrscan", result.value);
+    (this.$refs.qrscan as any).onClose();
+    this.horcruxs[this.currentIndex] = result.value;
   }
 }
 </script>
