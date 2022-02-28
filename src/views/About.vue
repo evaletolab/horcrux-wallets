@@ -9,8 +9,9 @@
       <li>SSS (Shamir Shared Secret)</li>
       <li>Vault Solidity Smart Contract</li>
       <li>Licence code is available on <a href="https://github.com/evaletolab/horcrux-wallets">github</a></li>
-      <li>Authors </li>
+      <li>Authors </li>      
     </ul>
+    <package-versions />
   </div>
 </template>
 
@@ -19,3 +20,21 @@
     text-align: left;
   }
 </style>
+
+
+<script lang="ts">
+import { Options, Vue } from 'vue-class-component';
+import PackageVersions from '@/components/PackageVersions.vue';
+
+@Options({
+  components: {
+    PackageVersions
+  }
+})
+export default class About extends Vue {
+
+  mounted() {
+    //
+  }
+}
+</script>

@@ -10,7 +10,6 @@ export interface Horcrux {
   base64: string;
   version: string;
 }
-
 class WalletService {
   private _STORAGE = "horcrux-wallet";
   private defaultLang:i18n = 'en';
