@@ -46,7 +46,7 @@
 
 <style scoped lang="scss">
   input{
-    margin-bottom: 5px!important;
+    margin-bottom: 3px!important;
   }
 
   .strenght{
@@ -54,22 +54,22 @@
     display: flex;
     justify-content: space-between;
     .pad{
-      width: 24%;
-      height: 5px;
-      border-radius: 5px;
+      width: 24.5%;
+      height: 4px;
+      border-radius: 3px;
       display: block;    
     }
     .red{
-      background: red;
+      background: #ff7171;
     }
     .orange{
       background: orange;
     }
     .yellow{
-      background: yellow;
+      background: greenyellow;
     }
     .green{
-      background: green;
+      background: lightgreen;
     }
 
     .gray{
@@ -110,8 +110,8 @@ export default class Password extends Vue {
   }
   set password(value) {
     this.score = zxcvbn(value||'').score;
-    console.log('-----emit',value, this.score)
     this.$emit('input', value);   
+    this.$emit('score', this.score);   
   }
 }
 </script>
