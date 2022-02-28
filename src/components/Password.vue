@@ -5,39 +5,10 @@
       <input type="password"  @input="password = $event.target.value"
         _pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+-]).{8,12}$" autocomplete="new-password" autocorrect="off" autocapitalize="off" spellcheck="false"/>
       <div class="strenght">
-        <span class="green" :class="{hide:(score==4)}">Strength: Strong!</span>
-        <span class="yellow" :class="{hide:(score==3)}">Strength: Medium!</span>
-        <span class="orange" :class="{hide:(score==2)}">Strength: Weak!</span>
-        <span class="red" :class="{hide:(score==1)}">Your password must be at least 6 characters long.</span>
-        <!-- <span class="pad"
-          :class="{
-            red: score <= 1,
-            orange: score == 2,
-            yellow: score == 3,
-            green: score == 4,
-          }"
-        ></span>
-        <span class="pad"
-          :class="{
-            gray: score <= 1,
-            orange: score == 2,
-            yellow: score == 3,
-            green: score == 4,
-          }"
-        ></span>
-        <span class="pad"
-          :class="{
-            gray: score <= 2,
-            yellow: score == 3,
-            green: score == 4,
-          }"
-        ></span>
-        <span class="pad"
-          :class="{
-            gray: score <= 3,
-            green: score == 4,
-          }"
-        ></span> -->
+        <span class="green" :class="{hide:(score!==4)}">Strength: Strong!</span>
+        <span class="yellow" :class="{hide:(score!==3)}">Strength: Medium!</span>
+        <span class="orange" :class="{hide:(score!==2)}">Strength: Weak!</span>
+        <span class="red" :class="{hide:(score!==1)}">Your password must be at least 6 characters long.</span>
       </div>
 
     </div>
@@ -60,20 +31,20 @@
       display: block;    
     }
     .red{
-      background: #ff7171;
+      color: #ff7171;
     }
     .orange{
-      background: orange;
+      color: orange;
     }
     .yellow{
-      background: greenyellow;
+      color: rgb(136, 202, 38);
     }
     .green{
-      background: lightgreen;
+      color: rgb(102, 168, 102);
     }
 
     .gray{
-      background: #eee;
+      color: rgb(141, 140, 140);
     }
 
   }
