@@ -15,13 +15,13 @@
       <div class="secret">
         {{value?.share}}
       </div>
-      <div class="qrcode"></div>
+      <qr class="qrcode" :message="value.share" />
       <hr>
       <h4 class="title">Base64</h4>
       <div class="secret">
         {{value?.base64}}
       </div>
-      <div class="qrcode"></div>
+      <qr class="qrcode" :message="value.base64" />
         
 
     </div>
@@ -76,6 +76,7 @@
 <script lang="ts">
 import { Options, Vue } from 'vue-class-component';
 import { $wallet, Horcrux } from '../services';
+import Qr from './Qr.vue';
 
 @Options({
   props: {
@@ -84,7 +85,8 @@ import { $wallet, Horcrux } from '../services';
       required: true,
       type: Object
     },
-  }
+  },
+  components: { Qr }
 })
 export default class HorcruxPrint extends Vue {
 
