@@ -87,8 +87,10 @@ describe("Horcrux", function () {
   
 
 
+  // https://opengsn.org/
   // https://github.com/bitclave/Feeless
-  xit("produce offline Vault and delegate transaction", async function() {
+  // https://www.freecodecamp.org/news/universal-ethereum-delegated-transactions-no-more-ethereum-fees/
+  xit("understanding of delegate transaction", async function() {
     this.timeout(70000);
 
     const seed = stringToHEX256("userfrom1233@bigcomp.com1LP#QOlp09");
@@ -99,7 +101,7 @@ describe("Horcrux", function () {
     const encoder = ethers.utils.defaultAbiCoder.encode(['uint256','uint256'],[seed,nonce])
     const source = ethers.utils.keccak256(encoder);
     const encoded = iface.encodeFunctionData("create", [source,share]);    
-    console.log('---calldata ',encoded);
+    //console.log('---calldata ',encoded);
     expect(encoded).to.be.a.string;
 
     //
@@ -108,28 +110,38 @@ describe("Horcrux", function () {
     const horcrux = await Horcrux.deploy();
     await horcrux.deployed();
 
-
     //
     // sign transaction 
     const node = ethers.utils.HDNode.fromSeed(source);
+
+
+
     const [deployer, alice, bob] = await ethers.getSigners();
 
     const signer = new ethers.Wallet(node.privateKey);
-    const encodedtx = await alice.sendTransaction({
+    const txRequest = await horcrux.populateTransaction.create(source,share);
+    txRequest.from=node.address;
+    txRequest.value= ethers.utils.parseEther("0.0");
+    txRequest.gasLimit= BigNumber.from('210000');
+
+
+    const encodedtx1 = await signer.signTransaction(txRequest);
+    const encodedtx2 = await signer.signTransaction({
       from:node.address,
       to: horcrux.address,
       value: ethers.utils.parseEther("0.0"),
       gasLimit: BigNumber.from('210000'),
-      data:encoded
+      data:encoded,
+      chainId:1
     })
-    console.log('----',encodedtx)
+    console.log('----1',encodedtx1)
+    console.log('----2',encodedtx2)
 
     //
     // TODO https://github.com/status-im/account-contracts/blob/develop/contracts/account/AccountGasAbstract.sol
-    const provider = await ethers.getDefaultProvider('homestead');
+    // const provider = await ethers.getDefaultProvider('homestead');
 
-    // "homestead",{etherscan:'VJZQT6ENDVAPJHZSXM5NZ14SHD5ZGA66Z6'}
-    // const tx = await ethers.provider.sendTransaction(encodedtx);
+    const tx = await ethers.provider.sendTransaction(encodedtx1);
     // const receipt = await provider.getTransactionReceipt(tx.hash);
 
     // const tx = await alice.sendTransaction({
@@ -139,11 +151,11 @@ describe("Horcrux", function () {
     //   data:encoded
     // });    
 
-    const result = await horcrux.redeem(seed,nonce);
+    //const result = await horcrux.redeem(seed,nonce);
 
     //console.log('----',receipt)
     console.log('----',share)
-    console.log('----',result)
+    //console.log('----',result)
     //console.log('----',tx)
 
   })  
