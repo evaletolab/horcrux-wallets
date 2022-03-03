@@ -22,7 +22,7 @@
         </div>
       </div>
       <!-- Mnemonic Language -->
-      <form>
+      <form class="hide">
           <fieldset>
             <label for="">Restore BIP39 Mnemonic </label>      
             <div class="languages">
@@ -120,7 +120,7 @@ export default class Recover extends Vue {
     }
     console.log('----DB entropy',this.entropy);
     const entropy = ethers.utils.arrayify('0x'+this.entropy);
-    return $wallet.createMnemonic(entropy);
+    return $wallet.createMnemonic(entropy, 16);
   }
 
   openScanDrawerForIndex(index: number){
