@@ -1,5 +1,4 @@
 //import { $config } from './config-service';
-import { wordlists }  from 'ethers';
 import { ethers }  from 'ethers';
 import { share, str2hex } from 'secrets.js-34r7h';
 
@@ -19,35 +18,23 @@ class WalletService {
   get b64() {
     return ethers.utils.base64;
   }
-  //
-  // FIXME, replace all import by ethers@4.0
-  // https://docs.ethers.io/v4/api-wallet.html
-
-  async entropy256Bits() {
-    const bytes = new Uint8Array(20);
-    const self: any = window;
-    const cryptoObj = self.crypto || self.msCrypto; // for IE
-    cryptoObj.getRandomValues(bytes);
-    return bytes;
-  }
-
-  async createEntropy() {
-    return this.entropy = await this.entropy256Bits();
-  }
 
   retrieveEntropy(mnemonic: string) {
-    const strEntropy = ethers.utils.mnemonicToEntropy(mnemonic,wordlists[this.defaultLang]);
+    const strEntropy = ethers.utils.mnemonicToEntropy(mnemonic,ethers.wordlists[this.defaultLang]);
     return this.entropy = ethers.utils.toUtf8Bytes(strEntropy);
   }
 
-  createMnemonic(entropy: Uint8Array) {
+  createMnemonic(entropy: Uint8Array, size:number) {
     // https://docs.ethers.io/v5/api/utils/hdnode/#Mnemonic
-    const mnemonic =ethers.utils.entropyToMnemonic(ethers.utils.hexlify(entropy),wordlists[this.defaultLang])
+    // https://github.com/ethers-io/ethers.js/issues/34
+    const sizedEntropy = entropy.slice(0,size);
+    console.log('--- entropySized',sizedEntropy,size);
+    const mnemonic =ethers.utils.entropyToMnemonic(ethers.utils.hexlify(sizedEntropy),ethers.wordlists[this.defaultLang])
     return mnemonic;
   }
 
   isValidMnemonic(mnemonic:string) {
-    return ethers.utils.isValidMnemonic(mnemonic,wordlists[this.defaultLang]);
+    return ethers.utils.isValidMnemonic(mnemonic,ethers.wordlists[this.defaultLang]);
   }
 
   async getSeed(mnemonic: string) {
@@ -68,7 +55,7 @@ class WalletService {
   async createShamirSecretFromSeed(entropy?: Uint8Array) {
     const hexSeed = ethers.utils.hexlify(this.entropy).split('0x');
     const b64 = ethers.utils.base64.encode('0x'+hexSeed[1]);
-    console.log('----DB entropy',hexSeed,b64, str2hex(b64));
+    console.log('----DB entropy',hexSeed,this.entropy);
     return share(hexSeed[1], 3, 2, 256);
   }
 
@@ -94,9 +81,9 @@ class WalletService {
     // let sig = ethers.utils.splitSignature(flatSig)
   }
 
-  setDefaultLang(i18n:i18n) {
+  setDefaultLang(i18n:i18n,size: number) {
     this.defaultLang = i18n;
-    this.createMnemonic(this.entropy);
+    this.createMnemonic(this.entropy,size);
   }
 
 } 

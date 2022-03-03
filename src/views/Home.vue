@@ -20,7 +20,7 @@
           In such instances, you can recover your wallets by keying in the mnemonic 
           phrase words on all wallets software that use standardised BIP39.
         </p>
-          <div class="languages">
+          <div class="languages hide">
                   <a @click="onI18n('en')" href="#english">English</a>
                   <a @click="onI18n('jp')" href="#japanese" title="Japanese">日本語</a>
                   <a @click="onI18n('es')" href="#spanish"  title="Spanish">Español</a>
@@ -36,16 +36,28 @@
     </form>  
 
     <!-- BIP39 Mnemonic -->
-    <div class="media-display">        
+    <div class="media-display mnemonic">        
         <textarea  v-model="mnemonic" class="phrase private-data form-control" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">              
         </textarea>
+        <qr class="qrcode" :message="mnemonic" v-if="seed" />
+
         <div class="actions">
+          <select  @change="onChange($event)">
+            <option v-for="(option,value) in mnemonicLength" :selected="option.selected" :value="value" :key="value">{{option.label}}</option>
+          </select>
           <button class="button button-outline" :disabled="isInvalidMnemonic" @click="onRetrieve">HORCRUXES</button>
 
           <button class="button button-outline" @click="onStart">
             <span class="initial" :class="{ hide : entropyStart }">Generate</span>
             <!-- Entropy from mouse component test -->
-            <entropy-from-mouse ref="entropyGen" :disabled="!isInvalidMnemonic" :class="{ hide : !entropyStart }" v-on:start="onEntropyStart" v-on:complete="onEntropyCollected" :bitCount="160">
+            <entropy-from-mouse 
+              ref="entropyGen" 
+              :disabled="!isInvalidMnemonic" 
+              :class="{ hide : !entropyStart }" 
+              :bitCount="0xFF"
+              v-on:start="onEntropyStart" 
+              v-on:complete="onEntropyCollected" 
+              >
               Move the cursor!
             </entropy-from-mouse>
 
@@ -96,11 +108,11 @@
       </div>
     </div>
 
-    <drawer ref="print"  @bind:close="onHorcrux()">
+    <drawer :open="drawer.print" @close="onHorcrux(null,'print')">
       <horcrux-print :value="currentHorcrux" />
     </drawer>
 
-    <drawer ref="vault" closeButton="true" @bind:close="onHorcrux()">
+    <drawer :open="drawer.vault" :displayClose="true" @close="onHorcrux(null,'vault')">
       <horcrux-vault :value="currentHorcrux" />
     </drawer>
 
@@ -112,16 +124,41 @@
       padding: 0 5px;
     }
   }
-  .actions{
-    text-align: right;
-    button{
-      margin-left: 10px;
-    }
-  }
 
-  textarea{
-    resize: none;
-    height: 8.5rem;
+  .mnemonic{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content:flex-end;
+    textarea{
+      font-size: 19px;
+      resize: none;
+      height: 120px;
+      flex: 1;
+      margin-right: 4px;
+    }
+
+    .qrcode {
+      width: 120px!important;
+      height: 120px!important;
+      border: 1px solid #ddd;
+    }
+
+    .actions{
+      text-align: right;
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+      select{
+        width: 100%;
+        margin-left: 0;
+        margin-right: 4px;
+      }
+
+      button{
+        margin-right: 5px;        
+      }
+    }
+
   }
 
 
@@ -170,6 +207,7 @@ import EntropyFromMouse from '@/components/EntropyFromMouse.vue';
 import Drawer from '@/components/Drawer.vue';
 import HorcruxPrint from '@/components/HorcruxPrint.vue';
 import HorcruxVault from '@/components/HorcruxVault.vue';
+import Qr from '@/components/Qr.vue';
 import { $wallet, i18n } from '../services';
 import * as secret from 'secrets.js-34r7h';
 import { I_MouseEntropyResult } from '@/lib/MouseEntropyEngine';
@@ -178,12 +216,28 @@ import { I_MouseEntropyResult } from '@/lib/MouseEntropyEngine';
   components: {
     EntropyFromMouse, 
     Drawer, 
+    Qr,
     HorcruxPrint,
     HorcruxVault
   },
 })
 export default class Home extends Vue {
   private _currentHorcrux = '';
+
+  drawer: any = {
+    vault: false,
+    print: false
+  }
+
+  mnemonicLength:any = {
+    12:{value:16,selected:true,label:"12-word: Argent Coinbase Wallet, Mycelium, Electrum, Ledger, Metamask, Trezor"},
+    //15:{value:20,selected:false,label:""},
+    18:{value:24,selected:false,label:"18-word: Ledger"},
+    //21:{value:28,selected:false,label:""},
+    24:{value:32,selected:false,label:"24-word: Trezor One, Ledger"}
+  };
+  mnemonicBytes = 16;
+
 
   entropyStart = false;
   mnemonic = "";
@@ -194,10 +248,11 @@ export default class Home extends Vue {
   //
   // helpers for typescript
   $refs!: {
-    entropyGen: EntropyFromMouse,
-    print:Drawer,
-    vault:Drawer
+    entropyGen: EntropyFromMouse
   }  
+
+
+
   async mounted() {
     this.entropyStart = false;
   }
@@ -227,20 +282,29 @@ export default class Home extends Vue {
     return !$wallet.isValidMnemonic(this.mnemonic);
   }
 
-  async onEntropyCollected(entropyResult: I_MouseEntropyResult){
-    console.log("entropy collected", entropyResult.bytes);
-    this.entropyStart = false;
-
-    $wallet.entropy = entropyResult.bytes;
-    this.mnemonic = await $wallet.createMnemonic($wallet.entropy);
+  async onChange($event: any) {
+    this.mnemonicBytes = this.mnemonicLength[$event.target.value].value;
+    this.mnemonic = await $wallet.createMnemonic($wallet.entropy,this.mnemonicBytes);
     this.seed = (await $wallet.getSeed(this.mnemonic));
     this.rootKey = await $wallet.createRootKey(this.seed);
     this.shares = await $wallet.createShamirSecretFromSeed();
 
   }
 
-  onI18n(ln:i18n) {
-    $wallet.setDefaultLang(ln);
+  async onEntropyCollected(entropyResult: I_MouseEntropyResult){
+    console.log("entropy collected", entropyResult.bytes);
+    this.entropyStart = false;
+
+    $wallet.entropy = entropyResult.bytes;
+    this.mnemonic = await $wallet.createMnemonic($wallet.entropy,this.mnemonicBytes);
+    this.seed = (await $wallet.getSeed(this.mnemonic));
+    this.shares = await $wallet.createShamirSecretFromSeed();
+
+  }
+
+  async onI18n(ln:i18n) {
+    $wallet.setDefaultLang(ln,this.mnemonicBytes);
+    this.mnemonic = await $wallet.createMnemonic($wallet.entropy,this.mnemonicBytes);
   }
 
   onEntropyStart(){
@@ -255,14 +319,16 @@ export default class Home extends Vue {
   }
 
   onHorcrux(share: string, destination:string) {
-    const route:any = {
-      'print':()=> this.$refs.print,
-      'vault':()=> this.$refs.vault,
-    }
+    // const route:any = {
+    //   'print':()=> this.$refs.print,
+    //   'vault':()=> this.$refs.vault,
+    // }
+    // route[destination]().open = true;
     // FIXME share len = 131 (odd)
     // lend village excuse sort climb muscle blue shell measure crumble divide section reason income buffalo
     this._currentHorcrux = share;
-    route[destination]().onOpen();
+    this.drawer[destination] = !this.drawer[destination];
+    console.log('---- open horcrux',destination,this.drawer[destination])
   }
 
   onStart() {
