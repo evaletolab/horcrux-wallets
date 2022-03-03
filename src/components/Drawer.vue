@@ -1,11 +1,12 @@
 <template>
-<!--- SOURCE -->
-  <section class="drawer " :class="{'open primary':open,'primary':!open}" @click="onClose(false)">
-    <button class="icon" v-if="closeButton" @click="onClose(true)">X</button>
-    <div ref="container" class="content">
-      <slot />
-    </div>        
-  </section>
+  <transition name="slide">
+    <section v-if="open" class="drawer open primary" @click="onClose(false)">
+      <button class="icon" v-if="displayClose" @click="onClose(true)">X</button>
+      <div ref="container" class="content">
+        <slot />
+      </div>        
+    </section>
+  </transition>
 </template>
 
 <script lang="ts">
@@ -14,34 +15,39 @@ import { Options, Vue } from 'vue-class-component';
 
 @Options({
  props: {
-    closeButton: {
-      default: false,
-      type: Boolean
-    },
+   open:{
+     default: false,
+     type: Boolean
+   },
+   displayClose: {
+     default: false,
+     type: Boolean
+   },
  }  
 })
 export default class Drawer extends Vue {
-  open = false;
-  closeButton!:boolean;
+  open!:boolean;
+  displayClose!:boolean;
+
+  // mounted() {
+  //   document.body.classList.add('body-lock');
+  //   console.log('----- mounted drawer -----')
+  // }
+
+  
+
+
 
   onClose(button?:boolean){
     //
     // only quit on click button 
-    if(this.closeButton && !button) {
+    if(this.displayClose && !button) {
       return;
     }
 
-    this.open=false;
     document.body.classList.remove('body-lock');
     this.$emit("close", null);
   }
-
-
-  onOpen(){
-    this.open=true;
-    document.body.classList.add('body-lock');
-  }
-
 
 }
 </script>
@@ -66,6 +72,19 @@ export default class Drawer extends Vue {
     margin-left: auto;
     margin-right: auto;
   }  
+
+  .slide-enter-active, .slide-leave-active {
+    transition: transform .3s ease-in-out;
+  }
+
+  .slide-enter, .slide-leave-to {
+    transform: translateX(-100%);
+  }
+
+  .slide-enter-to, .slide-leave {
+    transform: translateX(0);
+  }
+
   @media print {
     section.drawer{
       box-shadow: none!important;
