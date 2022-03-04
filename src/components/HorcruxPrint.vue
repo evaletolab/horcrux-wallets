@@ -1,13 +1,13 @@
 <template>
  <div v-if="!!value.share" class="content">
     <h1>Horcrux </h1>
-    <h3>{{date}} / <span class="bold">v{{value?.version}}</span> </h3>
-    <p class="version hide">
-      <code>secrets.js-34r7h@2.0.1</code> is an implementation of <a href="http://en.wikipedia.org/wiki/Shamir's_Secret_Sharing" rel="nofollow">Shamir's threshold secret sharing scheme</a> in javascript.<br/>
-    </p>
+    <h3>{{date}} / <span class=" under bold">v{{value?.version}}</span> </h3>
     <p class="description">        
       Horcrux generated from {{location}}
     </p>
+
+    <input class="title" ref="title" type="text" placeholder="Your printed title">
+
 
     <div class="print">
       <h4 class="title">Hexadecimal</h4>
@@ -26,11 +26,16 @@
   .content{
     max-width: 940px;
     margin: auto;      
-    .description,
-    .version{
+    input.title {
+      height: 6rem;
+      font-size: 3rem;
+      border-radius: 0px;
+      border: 0;
+      border-bottom: 1px solid #eee;
+      margin-left: -10px;      
     }
-
   }
+
   .print{
     display: flex;
     flex-wrap: wrap;
@@ -48,7 +53,7 @@
       margin: 10px 0;
       background: #eee;
       padding: 25px;
-      width: 80%;
+      width: 75%;
       display: flex;
       align-items: center;
       @media (max-width:500px) {
@@ -56,10 +61,12 @@
         margin: 5px auto;
       }
     }
+
+
     .qrcode {
-      height: 150px;
-      width: 150px;
-      border:1px solid #a22580;
+      height: 150px!important;
+      width: 150px!important;
+      border:1px solid #ddd;
       margin-right: 0;
       margin-left: auto;
       margin-top: 10px;
@@ -95,6 +102,16 @@ export default class HorcruxPrint extends Vue {
   value!:Horcrux;
   currentDate: Date = new Date();
 
+  //
+  // helpers for typescript
+  $refs!: {
+    title: HTMLInputElement
+  }  
+
+  mounted() {
+    this.$refs.title.focus()
+
+  }
 
 
   get date() {

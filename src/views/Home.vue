@@ -2,7 +2,7 @@
   <div class="home container">
 
     <!-- Digital identity -->
-    <div class="media-display">
+    <div class="">
         <h2>Protect your Digital Identity</h2>
         <p>
           Digital identity is a new reality, it appears complex or wird because we have no practice on that subject.
@@ -36,12 +36,12 @@
     </form>  
 
     <!-- BIP39 Mnemonic -->
-    <div class="media-display mnemonic">        
-        <textarea  v-model="mnemonic" class="phrase private-data form-control" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">              
+    <div class="mnemonic">        
+        <textarea  v-model="mnemonic" class="phrase private-data " autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">              
         </textarea>
         <qr class="qrcode" :message="mnemonic" v-if="seed" />
 
-        <div class="actions">
+        <div class="media-display actions">
           <select  @change="onChange($event)">
             <option v-for="(option,value) in mnemonicLength" :selected="option.selected" :value="value" :key="value">{{option.label}}</option>
           </select>
@@ -64,13 +64,21 @@
           </button>
 
         </div>
+        <div class="media-display monero hide">
+          <input type="checkbox" id="monero" @change="()=> monero = !monero">
+          <label class="label-inline" for="monero">Display Monero Mnemonic</label>
+          <textarea  v-model="moneroMnemonic" class="phrase private-data " :class="{hide:!monero}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">              
+          </textarea>
+          <qr class="qrcode" :message="mnemonic" v-if="seed" />
+        </div>
+
     </div>    
 
     <!-- BIP39 Seed -->
     <div class="form-group hide">
       <label for="seed" class="col-sm-2 control-label">BIP39 Seed</label>
       <div class="col-sm-10">
-          <textarea v-model="seed" class="seed private-data form-control" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+          <textarea v-model="seed" class="seed private-data " autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
       </div>
     </div>      
     
@@ -78,7 +86,7 @@
     <div class="form-group hide">
       <label for="root-key" class="col-sm-2 control-label">BIP32 Root Key</label>
       <div class="col-sm-10">
-          <textarea v-model="rootKey" class="root-key private-data form-control"  autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
+          <textarea v-model="rootKey" class="root-key private-data "  autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
       </div>
     </div>  
 
@@ -158,7 +166,10 @@
         margin-right: 5px;        
       }
     }
-
+    .monero{
+      width: 100%;
+      text-align: left;      
+    }
   }
 
 
@@ -230,7 +241,7 @@ export default class Home extends Vue {
   }
 
   mnemonicLength:any = {
-    12:{value:16,selected:true,label:"12-word: Argent Coinbase Wallet, Mycelium, Electrum, Ledger, Metamask, Trezor"},
+    12:{value:16,selected:true,label:"12-word: Argent, Coinbase Wallet, Mycelium, Electrum, Ledger, Metamask, Trezor"},
     //15:{value:20,selected:false,label:""},
     18:{value:24,selected:false,label:"18-word: Ledger"},
     //21:{value:28,selected:false,label:""},
