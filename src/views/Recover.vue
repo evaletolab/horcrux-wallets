@@ -92,10 +92,12 @@
       height: 120px;
   }
   .error {
-    background: rgb(255, 164, 164);
+    background: #ffdbdb;
     min-height: 60px;
-      font-size: 19px;
-      height: 120px;
+    font-size: 19px;
+    height: 70px;
+    text-align: center;
+    padding: 20px;
   }
 
   .combine{

@@ -41,15 +41,11 @@ class WalletService {
     return ethers.utils.mnemonicToSeed(mnemonic);
   }
 
-  async createRootKey(seed: string){
+  createRootKey(seed: string){
+    const derived = "m/44'/60'/0'/0/";
     const node = ethers.utils.HDNode.fromSeed(seed);
-    // defaultPath ⇒ "m/44'/60'/0'/0/0"
-    const child = node.derivePath('m/0/0');
-    // Get the extended public key
-    // let xpub = child.neuter().extendedKey;
-
-    // Get the extended private key
-    return child.extendedKey;
+    const wallets = [0,1,2,3,4,5,6,7,8,9,10].map((index)=> node.derivePath(derived+index));
+    return wallets;
   }
 
   async createShamirSecretFromSeed(entropy?: Uint8Array) {

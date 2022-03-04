@@ -253,7 +253,6 @@ export default class Home extends Vue {
   entropyStart = false;
   mnemonic = "";
   seed = "";
-  rootKey = "";
   shares: secret.Shares = [];
 
   //
@@ -297,7 +296,6 @@ export default class Home extends Vue {
     this.mnemonicBytes = this.mnemonicLength[$event.target.value].value;
     this.mnemonic = await $wallet.createMnemonic($wallet.entropy,this.mnemonicBytes);
     this.seed = (await $wallet.getSeed(this.mnemonic));
-    this.rootKey = await $wallet.createRootKey(this.seed);
     this.shares = await $wallet.createShamirSecretFromSeed();
 
   }
@@ -324,9 +322,7 @@ export default class Home extends Vue {
 
   async onRetrieve(){
     this.seed = (await $wallet.getSeed(this.mnemonic));
-    this.rootKey = await $wallet.createRootKey(this.seed);
     this.shares = await $wallet.createShamirSecretFromSeed();
-
   }
 
   onHorcrux(share: string, destination:string) {
