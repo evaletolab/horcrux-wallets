@@ -39,9 +39,13 @@
             </div>
           </fieldset>
       </form>  
-      <div class="secret" >
+      <div class="secret" :class="{hide:!mnemonic}">
         {{mnemonic}}
       </div>
+      <div class="error" :class="{hide:!error.length}">
+        {{error}}
+      </div>
+
     </div>
 
     <drawer ref="qrscan">
@@ -66,7 +70,11 @@
     overflow-wrap: anywhere;
     text-align: left;
     margin: 10px 0;
-    padding: 5px;
+    padding: 15px 5px;
+    textarea {
+      font-size: 19px;
+      resize: none;
+    }
     .action{
       display: inline-block;
       border-left: 3px solid #ddd;
@@ -80,7 +88,16 @@
   .secret {
     background: #eee;
     min-height: 60px;
+      font-size: 19px;
+      height: 120px;
   }
+  .error {
+    background: rgb(255, 164, 164);
+    min-height: 60px;
+      font-size: 19px;
+      height: 120px;
+  }
+
   .combine{
     overflow-wrap: anywhere;
     margin: 10px 0;
@@ -104,14 +121,21 @@ import QrScan from '@/components/QrScan.vue';
 export default class Recover extends Vue {
   horcruxs:any = [null,null];
   currentIndex = -1;
+  error = "";
 
   get entropy() {    
-    if(!this.horcruxs.length || !this.horcruxs[0] || !this.horcruxs[1]) {
-      return ''
-    }
+    try{
+      if(!this.horcruxs.length || !this.horcruxs[0] || !this.horcruxs[1]) {
+        return ''
+      }
+      this.error = "";
 
-    const b64 = secret.combine(this.horcruxs as secret.Shares);
-    return ethers.utils.base64.decode(b64);
+
+      return secret.combine(this.horcruxs as secret.Shares);
+    }catch(err: any){
+      this.error = err.message;
+    }
+    return "";
   }
 
   get mnemonic() {

@@ -12,6 +12,7 @@
 <script lang="ts">
 
 import { Options, Vue } from 'vue-class-component';
+import { Watch } from 'vue-property-decorator'
 
 @Options({
  props: {
@@ -29,12 +30,16 @@ export default class Drawer extends Vue {
   open!:boolean;
   displayClose!:boolean;
 
-  // mounted() {
-  //   document.body.classList.add('body-lock');
-  //   console.log('----- mounted drawer -----')
-  // }
-
   
+  @Watch('open')
+  onOpenChanged(value: boolean, oldValue: boolean) {
+    console.log('----',value)
+    if(value) {
+      document.body.classList.add('body-lock');
+    }else{
+      document.body.classList.remove('body-lock');
+    }
+  }
 
 
 
@@ -45,7 +50,6 @@ export default class Drawer extends Vue {
       return;
     }
 
-    document.body.classList.remove('body-lock');
     this.$emit("close", null);
   }
 

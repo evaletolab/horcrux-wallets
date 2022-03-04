@@ -54,7 +54,15 @@
     a{
       padding: 0 5px;
     }
+
   }
+
+  textarea {
+    font-size: 19px;
+    resize: none;
+    height: 120px;
+  }
+
 
 </style>
 <script lang="ts">
