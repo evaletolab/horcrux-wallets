@@ -30,8 +30,8 @@
 
     <div class="mg-tabs">
       <ul >
-        <li @click="defaultDerivation=0"  :class="{active:!defaultDerivation}">BTC</li>
-        <li @click="defaultDerivation=60" :class="{active:(defaultDerivation == 60)}">ETH</li>
+        <li @click="onDerivation(0)"  :class="{active:!defaultDerivation}">BTC</li>
+        <li @click="onDerivation(60)" :class="{active:(defaultDerivation == 60)}">ETH</li>
       </ul>
       <h3>Protect your online services</h3>
       <p>Your Mail, Social, Admin, Customers, etc. security</p>
@@ -187,6 +187,11 @@ export default class Wallets extends Vue {
       return;
     }
     await this.createWallets();
+  }
+
+  async onDerivation(token: number) {
+    this.defaultDerivation = token;
+    this.createWallets()
   }
 }
 </script>
