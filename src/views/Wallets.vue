@@ -70,6 +70,25 @@
         </tbody>
       </table>      
 
+      <h3>Be your pension fund</h3>
+      <p>Secure your retirement</p>
+      <table>
+        <thead>
+          <tr>
+            <th style="width:80px">index</th>
+            <th>Public</th>
+            <th style="width:100%">Private</th>
+          </tr>
+        </thead>        
+        <tbody>
+          <tr v-for="(wallet,index) in pension" :key="index">
+            <td><b>{{index+10}}</b></td>
+            <td>{{wallet.address}}</td>
+            <td class="private">{{wallet.privateKey}}</td>
+          </tr>
+        </tbody>
+      </table>      
+
 
     </div>
 
@@ -146,6 +165,7 @@ export default class Wallets extends Vue {
   mnemonic = "";
   wallets:HDNode[] = [];
   services:HDNode[] = [];
+  pension:HDNode[] = [];
   //
   // defaultPath ⇒ "m/44'/60'/0'/0/0"
   // - monero = 128
@@ -157,7 +177,8 @@ export default class Wallets extends Vue {
     const seed= await $wallet.getSeed(this.mnemonic);
     this.wallets = $wallet.createRootKey(seed,this.defaultDerivation, 5);
     this.services = $wallet.createRootKey(seed,this.defaultDerivation, 5,5);
-    return this.wallets;
+    this.pension = $wallet.createRootKey(seed,this.defaultDerivation, 5,10);
+    return;
   }
 
   async updateMnemonic($event:any) {
