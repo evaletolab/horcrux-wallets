@@ -37,7 +37,7 @@
 
     <!-- BIP39 Mnemonic -->
     <div class="mnemonic">        
-        <textarea  v-model="mnemonic" class="phrase private-data " autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">              
+        <textarea ref="textarea" v-model="mnemonic" class="phrase private-data " autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">              
         </textarea>
         <qr class="qrcode" :message="mnemonic" v-if="seed" />
 
@@ -258,7 +258,8 @@ export default class Home extends Vue {
   //
   // helpers for typescript
   $refs!: {
-    entropyGen: EntropyFromMouse
+    entropyGen: EntropyFromMouse,
+    textarea: HTMLInputElement
   }  
 
 
@@ -323,6 +324,18 @@ export default class Home extends Vue {
   async onRetrieve(){
     this.seed = (await $wallet.getSeed(this.mnemonic));
     this.shares = await $wallet.createShamirSecretFromSeed();
+  }
+
+  onFocus() {
+    if(!this.mnemonic){
+      return;
+    }
+    this.$refs.textarea.select();
+    this.$refs.textarea.setSelectionRange(0, 99999); /* For mobile devices */
+
+    /* Copy the text inside the text field */
+    navigator.clipboard.writeText(this.mnemonic);
+
   }
 
   onHorcrux(share: string, destination:string) {
