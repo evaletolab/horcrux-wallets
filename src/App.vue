@@ -8,6 +8,9 @@
     </ul>
   </nav>
   <router-view/>
+  <footer>
+    <span>You can use this tool without having to be online.</span>
+  </footer>
 </template>
 
 <style lang="scss">
@@ -25,43 +28,14 @@
 
     &.router-link-exact-active {
     }
-  }
+  }  
+}
+footer{
+  margin-top: 50px;
+  padding: 30px 0;
+  border-top: 1px solid #ddd;
 }
 
-.mg-tabs{
-  .mg-tabs--items{
-    margin-left: 0.2em;
-    margin-right: 0.2em;
-    padding-left: 0.2em;
-    padding-right: 0.2em;      
-  }
-  ul{
-    display: flex;
-    text-align: center;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    list-style: none;
-    cursor: pointer;
-    margin: 0;    
-    @media (max-width:500px) {
-      font-size: 12px;
-    }
-    li{
-      font-weight: bold;
-      border-bottom: 0.3rem solid transparent;
-      color: var(--mg-md-theme-default-tertiary);
-      opacity: 0.7;
-      flex: 0 0 auto;      
-      margin: 0;
-      padding: 4px 10px;
-      .router-link-active{
-        color: var(--md-theme-default-primary-text);
-        border-color: var(--md-theme-default-primary-text);
-        overflow-y: hidden;
-        opacity: 1;          
-      }
-    }
-  }
-}
+
 
 </style>

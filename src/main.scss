@@ -30,6 +30,10 @@ body {
   background-color: #efefef;
 }
 
+td,th{
+  padding: 1.2rem 0.8rem;
+}
+
 .text-center {
   text-align: center;
 }
@@ -61,5 +65,41 @@ code {
 .media-display {
   @media print {
     display: none!important;
+  }
+}
+
+.mg-tabs{
+  .mg-tabs--items{
+    margin-left: 0.2em;
+    margin-right: 0.2em;
+    padding-left: 0.2em;
+    padding-right: 0.2em;      
+  }
+  ul{
+    display: flex;
+    text-align: center;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    list-style: none;
+    cursor: pointer;
+    margin: 0;    
+    @media (max-width:500px) {
+      font-size: 12px;
+    }
+    li{
+      font-weight: bold;
+      border-bottom: 0.3rem solid transparent;
+      color: var(--mg-md-theme-default-tertiary);
+      opacity: 0.7;
+      flex: 0 0 auto;      
+      margin: 0;
+      padding: 4px 10px;
+      .router-link-active{
+        color: var(--md-theme-default-primary-text);
+        border-color: var(--md-theme-default-primary-text);
+        overflow-y: hidden;
+        opacity: 1;          
+      }
+    }
   }
 }
