@@ -37,7 +37,7 @@
 
     <!-- BIP39 Mnemonic -->
     <div class="mnemonic">        
-        <textarea ref="textarea" v-model="mnemonic" class="phrase private-data " autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">              
+        <textarea ref="textarea" @focus="onFocus" v-model="mnemonic" class="phrase private-data " autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">              
         </textarea>
         <qr class="qrcode" :message="mnemonic" v-if="seed" />
 
@@ -334,7 +334,7 @@ export default class Home extends Vue {
     this.$refs.textarea.setSelectionRange(0, 99999); /* For mobile devices */
 
     /* Copy the text inside the text field */
-    navigator.clipboard.writeText(this.mnemonic);
+    //navigator.clipboard.writeText(this.mnemonic);
 
   }
 
