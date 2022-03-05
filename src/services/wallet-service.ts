@@ -41,10 +41,11 @@ class WalletService {
     return ethers.utils.mnemonicToSeed(mnemonic);
   }
 
-  createRootKey(seed: string){
-    const derived = "m/44'/60'/0'/0/";
+  createRootKey(seed: string,token: number,count?: number,start?:number){
+    const derived = `m/44'/${token}'/0'/0/`;
     const node = ethers.utils.HDNode.fromSeed(seed);
-    const wallets = [0,1,2,3,4,5,6,7,8,9,10].map((index)=> node.derivePath(derived+index));
+    start = start || 0;
+    const wallets = new Array(count||5).fill(0).map((elem,index)=> node.derivePath(derived+index+start));
     return wallets;
   }
 
