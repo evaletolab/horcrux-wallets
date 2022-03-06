@@ -28,7 +28,7 @@
     <div class="derivation">
       <h3>Derived Addresses</h3>
       <p>
-        BIP32 Root Key and derivation path which is defined by BIP44 standard.
+        BIP32 Root Key and derivation path BIP44 are the standards used to create your wallets.
         The following addresses are derived from your Mnemonic.
       </p>
 
