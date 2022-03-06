@@ -9,6 +9,10 @@
     <div class="mnemonic">        
         <textarea  :value="''" @input="updateMnemonic" class="phrase private-data " autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">              
         </textarea>
+
+        <div class="warning" :class="{hide:!isValidMnemonic}">
+
+        </div>
     </div>    
 
 
@@ -166,6 +170,10 @@ export default class Wallets extends Vue {
   wallets:HDNode[] = [];
   services:HDNode[] = [];
   pension:HDNode[] = [];
+
+  get isValidMnemonic() {
+    return $wallet.isValidMnemonic(this.mnemonic);
+  }
   //
   // defaultPath ⇒ "m/44'/60'/0'/0/0"
   // - monero = 128
@@ -174,6 +182,10 @@ export default class Wallets extends Vue {
   // Bitcoin Core, MultiBit HD  ⇒ "m/0'
   // Ethereum, Ledger, Blockchain.info, Coinomi ⇒ "m/44'
   async createWallets() {
+    if(!this.isValidMnemonic){
+      return;
+    }
+
     const seed= await $wallet.getSeed(this.mnemonic);
     this.wallets = $wallet.createRootKey(seed,this.defaultDerivation, 5);
     this.services = $wallet.createRootKey(seed,this.defaultDerivation, 5,5);
@@ -183,9 +195,6 @@ export default class Wallets extends Vue {
 
   async updateMnemonic($event:any) {
     this.mnemonic = $event.target.value;
-    if(this.mnemonic.length<40){
-      return;
-    }
     await this.createWallets();
   }
 
