@@ -22,9 +22,9 @@
     </div>  
 
     <div class="derivation">
-      <h3>Derived Addresses for ETH and BTC</h3>
+      <h3>Derived Addresses</h3>
       <p>
-        BIP32 Root Key and derivation path. 
+        BIP32 Root Key and derivation path which is defined by BIP44 standard.
         The following addresses are derived from your Mnemonic.
       </p>
 
@@ -33,7 +33,7 @@
         <li @click="onDerivation(0)"  :class="{active:!defaultDerivation}">BTC</li>
         <li @click="onDerivation(60)" :class="{active:(defaultDerivation == 60)}">ETH</li>
       </ul>
-      <h3>Protect your online services</h3>
+      <h3>Slot for your online services</h3>
       <p>Your Mail, Social, Admin, Customers, etc. security</p>
       <table>
         <thead>
@@ -45,14 +45,14 @@
         </thead>        
         <tbody>
           <tr v-for="(wallet,index) in services" :key="index">
-            <td><b>{{index}}</b></td>
+            <td><b>/{{index}}</b></td>
             <td>{{wallet.address}}</td>
             <td class="private">{{wallet.privateKey}}</td>
           </tr>
         </tbody>
       </table>      
-      <h3>Be your bank</h3>
-      <p>Your financial secutiry</p>
+      <h3>Slot for your bank</h3>
+      <p>Secure your financial activities</p>
       <table>
         <thead>
           <tr>
@@ -70,7 +70,7 @@
         </tbody>
       </table>      
 
-      <h3>Be your pension fund</h3>
+      <h3>Slot for your pension fund</h3>
       <p>Secure your retirement</p>
       <table>
         <thead>

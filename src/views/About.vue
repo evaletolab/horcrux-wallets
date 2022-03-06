@@ -3,13 +3,13 @@
     <h1>Horcruxs are made with</h1>
     <ul>
       <li>Entropy</li>
-      <li>BIP 39</li>
-      <li>BIP 39 seed</li>
-      <li>BIP32 Root Key</li>
+      <li><a href="https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki">BIP39</a> Mnemonic</li>
+      <li><a href="https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki">BIP39</a> Seed</li>
+      <li><a href="https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki">BIP32</a> Root Key</li>
+      <li><a href="https://github.com/bitcoin/bips/blob/master/bip-0044.mediawiki">BIP44</a> derivation path</li>
       <li>SSS (Shamir Shared Secret)</li>
       <li>Vault Solidity Smart Contract</li>
-      <li>Licence code is available on <a href="https://github.com/evaletolab/horcrux-wallets">github</a></li>
-      <li>Authors </li>      
+      <li>Source code with MIT on <a href="https://github.com/evaletolab/horcrux-wallets">github</a></li>
     </ul>
     <package-versions />
   </div>
