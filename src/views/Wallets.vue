@@ -34,11 +34,11 @@
 
     <div class="mg-tabs">
       <ul >
-        <li @click="onDerivation(0)"  :class="{active:!defaultDerivation}">BTC</li>
-        <li @click="onDerivation(60)" :class="{active:(defaultDerivation == 60)}">ETH</li>
+        <li @click="onDerivation('btc')"  :class="{active:!defaultDerivation.index}">BTC</li>
+        <li @click="onDerivation('segwit')"  :class="{active:defaultDerivation.index == 1}">BTC segwit</li>
+        <li @click="onDerivation('eth')" :class="{active:(defaultDerivation.index == 2)}">ETH</li>
       </ul>
-      <h3>Slot for your online services</h3>
-      <p>Your Mail, Social, Admin, Customers, etc. security</p>
+      <h3>Day-to-day expenses</h3>
       <table>
         <thead>
           <tr>
@@ -50,8 +50,8 @@
         <tbody>
           <tr v-for="(wallet,index) in services" :key="index">
             <td><b>/{{index}}</b></td>
-            <td>{{wallet.address}}</td>
-            <td class="private">{{wallet.privateKey}}</td>
+            <td>{{formatB58(wallet.address)}}</td>
+            <td class="private">{{formatB58(wallet.privateKey)}}</td>
           </tr>
         </tbody>
       </table>      
@@ -68,8 +68,8 @@
         <tbody>
           <tr v-for="(wallet,index) in wallets" :key="index">
             <td><b>{{index+5}}</b></td>
-            <td>{{wallet.address}}</td>
-            <td class="private">{{wallet.privateKey}}</td>
+            <td>{{formatB58(wallet.address)}}</td>
+            <td class="private">{{formatB58(wallet.privateKey)}}</td>
           </tr>
         </tbody>
       </table>      
@@ -87,8 +87,8 @@
         <tbody>
           <tr v-for="(wallet,index) in pension" :key="index">
             <td><b>{{index+10}}</b></td>
-            <td>{{wallet.address}}</td>
-            <td class="private">{{wallet.privateKey}}</td>
+            <td>{{formatB58(wallet.address)}}</td>
+            <td class="private">{{formatB58(wallet.privateKey)}}</td>
           </tr>
         </tbody>
       </table>      
@@ -124,7 +124,7 @@
   .derivation{
     text-align: left;
     table{
-      font-size: 13px;
+      font-size: 14px;
     }
     .private{
       overflow: hidden;
@@ -156,6 +156,7 @@
 </style>
 <script lang="ts">
 import { HDNode } from '@ethersproject/hdnode';
+import { ethers } from 'ethers';
 import { Options, Vue } from 'vue-class-component';
 import { $wallet } from '../services';
 
@@ -165,14 +166,44 @@ import { $wallet } from '../services';
 })
 export default class Wallets extends Vue {
 
-  defaultDerivation = 0;
   mnemonic = "";
   wallets:HDNode[] = [];
   services:HDNode[] = [];
   pension:HDNode[] = [];
 
+  // FIXME config should be centralized 
+  derivationOptions: any = {
+    btc : {
+      index: 0,
+      path: "m/44'/0'/0'/0/0",
+      b58:true
+    },
+    segwit : {
+      index: 1,
+      path: "m/84'/0'/0'/0/0",
+      b58:true
+    },
+    eth : {
+      index: 2,
+      path: "m/44'/60'/0'/0/0",
+      b58:false
+    },
+    monero : {
+      index: 3,
+      path: "m/44'/128'/0'/0/0",
+      b58:true
+    }
+  };
+
+  defaultDerivation = this.derivationOptions.btc;
+
+
   get isValidMnemonic() {
     return $wallet.isValidMnemonic(this.mnemonic);
+  }
+
+  formatB58(string: string) {
+    return (this.defaultDerivation.b58)? ethers.utils.base58.encode(string):string;
   }
   //
   // defaultPath ⇒ "m/44'/60'/0'/0/0"
@@ -198,8 +229,8 @@ export default class Wallets extends Vue {
     await this.createWallets();
   }
 
-  async onDerivation(token: number) {
-    this.defaultDerivation = token;
+  async onDerivation(token: string) {
+    this.defaultDerivation = this.derivationOptions[token] || this.derivationOptions.btc;
     this.createWallets()
   }
 }

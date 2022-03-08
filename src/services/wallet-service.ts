@@ -19,6 +19,10 @@ class WalletService {
     return ethers.utils.base64;
   }
 
+  get b58() {
+    return ethers.utils.base58;
+  }
+
   retrieveEntropy(mnemonic: string) {
     const strEntropy = ethers.utils.mnemonicToEntropy(mnemonic,ethers.wordlists[this.defaultLang]);
     return this.entropy = ethers.utils.toUtf8Bytes(strEntropy);
@@ -41,8 +45,11 @@ class WalletService {
     return ethers.utils.mnemonicToSeed(mnemonic);
   }
 
-  createRootKey(seed: string,token: number,count?: number,start?:number){
-    const derived = `m/44'/${token}'/0'/0/`;
+  //
+  // generate wallets 
+  // https://github.com/iancoleman/bip39/blob/c3c7cebfe4c0b5a9b97e71e781b69e6a08e1fb57/src/js/index.js#L1225
+  createRootKey(seed: string,options: any,count?: number,start?:number){
+    const derived = options.path;
     const node = ethers.utils.HDNode.fromSeed(seed);
     start = start || 0;
     const wallets = new Array(count||5).fill(0).map((elem,index)=> node.derivePath(derived+index+start));
