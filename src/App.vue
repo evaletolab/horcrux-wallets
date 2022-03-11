@@ -10,6 +10,7 @@
   <router-view/>
   <footer>
     <span>You can use this tool without having to be online.</span>
+    <div>Horcrux is an educational project made with <span class="pink">❤️</span></div>
   </footer>
 </template>
 

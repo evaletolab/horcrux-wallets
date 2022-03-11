@@ -1,11 +1,13 @@
 <template>
   <transition name="slide">
-    <section v-if="open" class="drawer open primary" @click="onClose(false)">
+    <section  class="drawer primary" :class="{open:open}" @click="onClose(false)">
       <button class="icon" v-if="displayClose" @click="onClose(true)">X</button>
-      <div ref="container" class="content">
+
+      <div ref="container" v-if="open" class="content">
         <slot />
       </div>        
     </section>
+
   </transition>
 </template>
 
