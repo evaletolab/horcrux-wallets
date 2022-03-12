@@ -2,12 +2,13 @@
  <div v-if="!!value.share" class="content">
     <h1>Horcrux </h1>
     <h3>{{date}} / <span class="bold">v{{value?.version}}</span> </h3>
-    <p class="description">        
-      Your Horcrux will be stored in our Ethereum Vault without any thirdparties. 
-      Contract addresse here : 0xFF
+    <p class="description">    
+      Horcrux generated from {{location}} <br/>    
+      It will be stored in our Ethereum Vault without any thirdparties. 
+      Contract addresse here : 
     </p>
 
-    <div>
+    <div class="media-display">
       <fieldset>
         <label for="email">Use an email of your choise to generate your the first part of the secret</label>
         <input type="email"  v-model="username" placeholder="email@g.com" id="email" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
@@ -18,13 +19,17 @@
         <button @click="onPublish" class="button-primary" :disabled="seed == ''" >Publish </button>
       </fieldset>
     </div>
-    <h3>Horcrux</h3>
-    <div class="secret">
-      {{value?.base64}}
+    <p><b>Psst;</b> Print this document if you want a rescue tip</p>
+    <div class="secret media-display">
+      {{value?.share}}
     </div>
-    <h3>Vault secret</h3>
+    <h3>Vault secret 🖨️</h3>
+    <div>
+
+    </div>
     <div class="secret" :class="{hide:seed==''}">
-      {{seed}} / 0x{{nonce}}
+      <span class="hideemail">{{hideUsermail}}</span><br/>
+      0x{{seed}} 
     </div>
  </div>  
   
@@ -48,6 +53,11 @@
       background: #eee;
       padding: 25px;
       width: 100%;
+    }
+    .hideemail {
+      font-family: monospace;
+      font-weight: 600;
+      font-size: 14px;      
     }
 
     button{
@@ -102,9 +112,28 @@ export default class HorcruxVault extends Vue {
   seed = "";
 
   get date() {
-    return this.currentDate.toLocaleString();
+    return this.currentDate.toLocaleDateString();
   }
 
+  get hideUsermail() {
+    let hidden = "";
+    let indexOfMail = this.username.indexOf("@");
+    if(indexOfMail == -1 ) {
+      indexOfMail = (this.username.length / 2)|0;
+    }
+    for (let i = 0; i < this.username.length; i++) {
+      if(i == 0 ||
+         i == indexOfMail - 1 ||
+         i == indexOfMail ||
+         i == indexOfMail + 1 ||
+         i == this.username.length - 1){
+        hidden+= this.username[i];
+      } else{
+        hidden += "*";
+      }
+    }
+    return hidden;
+  }
 
   async initMetamask() {
     const $window = window as any;

@@ -1,7 +1,7 @@
 <template>
  <div v-if="!!value.share" class="content">
     <h1>Horcrux </h1>
-    <h3>{{date}} / <span class=" under bold">v{{value?.version}}</span> </h3>
+    <h3>{{date}} / <span class=" bold">v{{value?.version}}</span> </h3>
     <p class="description">        
       Horcrux generated from {{location}}
     </p>
@@ -115,7 +115,7 @@ export default class HorcruxPrint extends Vue {
 
 
   get date() {
-    return this.currentDate.toLocaleString();
+    return this.currentDate.toLocaleDateString();
   }
 
   get location (){

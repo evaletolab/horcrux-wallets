@@ -1,7 +1,9 @@
 <template>
   <transition name="slide">
     <section  class="drawer primary" :class="{open:open}" @click="onClose(false)">
-      <button class="icon" v-if="displayClose" @click="onClose(true)">X</button>
+      <button class="icon" v-if="displayClose" @click="onClose(true)">
+        ❌ <span class="hide material-icons-outlined">playlist_remove</span>
+      </button>
 
       <div ref="container" v-if="open" class="content">
         <slot />
@@ -119,9 +121,10 @@ export default class Drawer extends Vue {
     padding-left: 5px;
     padding-right: 5px;
     color: black;
-    font-size: 24px;
+    font-size: 48px;
     font-weight: 100;
     font-family: cursive;
+    border: 0;
   }
 
   section.drawer.open {

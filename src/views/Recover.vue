@@ -4,12 +4,12 @@
     <div class="sharing">
       <div class="col-sm-11">
           <h2>Restore your Digital Identity </h2>
-          <p>Your Horcrux are parts of your digital identity. 
+          <p>Your Horcruxes are parts of your digital identity. 
             To restore it you need atleast two of them.
           </p>
 
       </div>
-      <div class="horcrux" v-for="(index) in [0,1]" :key="index">
+      <div class="horcrux media-display" v-for="(index) in [0,1]" :key="index">
         <div class="form-group">
           <textarea v-model="horcruxs[index]" class="phrase private-data " :placeholder="'Horcrux '+ index" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
         </div>    
@@ -22,7 +22,7 @@
         </div>
       </div>
       <!-- Mnemonic Language -->
-      <form class="hide">
+      <form class="hide media-display">
           <fieldset>
             <label for="">Restore BIP39 Mnemonic </label>      
             <div class="languages">
