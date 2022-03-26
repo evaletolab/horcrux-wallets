@@ -4,16 +4,20 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
+    "build": "vue-cli-service build --skip-plugins @vue/cli-plugin-eslint",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
-    "deploy": "node scripts/gh-pages-deploy.js"
+    "deploy": "node scripts/gh-pages-deploy.js",
+    "btc": "browserify bitcoinjs.js --standalone bitcoinjs > ./bitcoinjs-lib.js"
   },
   "dependencies": {
+    "bitcoinjs-lib": "^6.0.1",
+    "ecpair": "^2.0.1",
     "ethers": "^5.5.4",
     "qr-scanner": "^1.4.1",
     "qrcode": "^1.5.0",
     "secrets.js-34r7h": "^2.0.1",
+    "tiny-secp256k1": "^2.2.1",
     "vue": "^3.2.29",
     "vue-class-component": "^8.0.0-rc.1",
     "vue-property-decorator": "^9.1.2",
@@ -21,8 +25,11 @@
     "zxcvbn-typescript": "^5.0.1"
   },
   "devDependencies": {
+    "@babel/core": "^7.17.7",
+    "@babel/preset-typescript": "^7.16.7",
     "@types/chai": "^4.3.0",
     "@types/mocha": "^5.2.7",
+    "@types/node": "^17.0.23",
     "@types/qrcode": "^1.4.2",
     "@typescript-eslint/eslint-plugin": "^4.33.0",
     "@typescript-eslint/parser": "^4.33.0",
@@ -34,6 +41,7 @@
     "@vue/compiler-sfc": "^3.2.29",
     "@vue/eslint-config-typescript": "^7.0.0",
     "@vue/test-utils": "^2.0.0-rc.18",
+    "browserify": "^17.0.0",
     "chai": "^4.3.4",
     "eslint": "^6.8.0",
     "eslint-plugin-vue": "^7.20.0",

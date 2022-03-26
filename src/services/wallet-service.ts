@@ -1,6 +1,6 @@
 //import { $config } from './config-service';
 import { ethers }  from 'ethers';
-import { share, str2hex } from 'secrets.js-34r7h';
+import { share } from 'secrets.js-34r7h';
 
 export type i18n = 'en'|'fr'|'it'|'es';
 
@@ -51,8 +51,7 @@ class WalletService {
   createRootKey(seed: string,options: any,count?: number,start?:number){
     const derived = options.path;
     const node = ethers.utils.HDNode.fromSeed(seed);
-    start = start || 0;
-    const wallets = new Array(count||5).fill(0).map((elem,index)=> node.derivePath(derived+index+start));
+    const wallets = new Array(count||5).fill(0).map((elem,index)=> node.derivePath(derived+'/'+(index+(start||0))));
     return wallets;
   }
 

@@ -50,8 +50,8 @@
         <tbody>
           <tr v-for="(wallet,index) in services" :key="index">
             <td><b>/{{index}}</b></td>
-            <td>{{formatB58(wallet.address)}}</td>
-            <td class="private">{{formatB58(wallet.privateKey)}}</td>
+            <td>{{(wallet.address)}}</td>
+            <td class="private">{{address(wallet.privateKey)}}</td>
           </tr>
         </tbody>
       </table>      
@@ -67,9 +67,9 @@
         </thead>        
         <tbody>
           <tr v-for="(wallet,index) in wallets" :key="index">
-            <td><b>{{index+5}}</b></td>
-            <td>{{formatB58(wallet.address)}}</td>
-            <td class="private">{{formatB58(wallet.privateKey)}}</td>
+            <td><b>/{{index+5}}</b></td>
+            <td>{{(wallet.address)}}</td>
+            <td class="private">{{address(wallet.privateKey)}}</td>
           </tr>
         </tbody>
       </table>      
@@ -86,9 +86,9 @@
         </thead>        
         <tbody>
           <tr v-for="(wallet,index) in pension" :key="index">
-            <td><b>{{index+10}}</b></td>
-            <td>{{formatB58(wallet.address)}}</td>
-            <td class="private">{{formatB58(wallet.privateKey)}}</td>
+            <td><b>/{{index+10}}</b></td>
+            <td>{{(wallet.address)}}</td>
+            <td class="private">{{address(wallet.privateKey)}}</td>
           </tr>
         </tbody>
       </table>      
@@ -160,6 +160,12 @@ import { ethers } from 'ethers';
 import { Options, Vue } from 'vue-class-component';
 import { $wallet } from '../services';
 
+//
+// btc specific
+// https://forum.stacks.org/t/how-to-sign-data-with-app-private-key/6603
+
+const bitcoin = require('../../bitcoinjs-lib');
+
 @Options({
   components: {
   },
@@ -167,30 +173,38 @@ import { $wallet } from '../services';
 export default class Wallets extends Vue {
 
   mnemonic = "";
-  wallets:HDNode[] = [];
-  services:HDNode[] = [];
-  pension:HDNode[] = [];
+  wallets:HDNode[]|any[] = [];
+  services:HDNode[]|any[] = [];
+  pension:HDNode[]|any[] = [];
 
+  // address type (Legacy, P2HS Segwit, P2WPKH Segwit) 
   // FIXME config should be centralized 
+  // P2PK: "Pay To Public Key"
+  // P2SH: "Pay To Script Hash"
+  // P2PKH:Legacy is the original bitcoin address (1...)
+  // P2PSH: Nested SegWit is an improvement on Legacy (3...); they have a 40% lesser transaction sizes
+  // P2WPKH: Native SegWit (Bech32): SegWit, short for Segregated Witness (bc1...), has a 80% smaller transaction sizes
+  // https://bitcoin.stackexchange.com/questions/64733/what-is-p2pk-p2pkh-p2sh-p2wpkh-eli5
+  // https://www.quora.com/Can-you-differentiate-between-a-Bitcoin-and-an-Ethereum-address
   derivationOptions: any = {
     btc : {
       index: 0,
-      path: "m/44'/0'/0'/0/0",
+      path: "m/44'/0'/0'/0",
       b58:true
     },
     segwit : {
       index: 1,
-      path: "m/84'/0'/0'/0/0",
+      path: "m/84'/0'/0'/0",
       b58:true
     },
     eth : {
       index: 2,
-      path: "m/44'/60'/0'/0/0",
+      path: "m/44'/60'/0'/0",
       b58:false
     },
     monero : {
       index: 3,
-      path: "m/44'/128'/0'/0/0",
+      path: "m/44'/128'/0'/0",
       b58:true
     }
   };
@@ -202,8 +216,9 @@ export default class Wallets extends Vue {
     return $wallet.isValidMnemonic(this.mnemonic);
   }
 
-  formatB58(string: string) {
-    return (this.defaultDerivation.b58)? ethers.utils.base58.encode(string):string;
+  address(string: string) {
+    return string;
+    //return (this.defaultDerivation.b58)? ethers.utils.base58.encode('0x'+string):string;
   }
   //
   // defaultPath ⇒ "m/44'/60'/0'/0/0"
@@ -217,10 +232,32 @@ export default class Wallets extends Vue {
       return;
     }
 
+
+    const network = (wallet:HDNode) => {
+      const privateKey = ethers.utils.arrayify(wallet.privateKey);
+      const keyPair = bitcoin.ECPair.fromPrivateKey(Buffer.from(privateKey));    
+      switch(this.defaultDerivation.index){
+        case 0:// P2PK et P2PKH
+        return { 
+          address:bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey }).address,
+          pubicKey:keyPair.publicKey.toString('hex'),
+          privateKey:keyPair.toWIF()
+        };
+        case 1:
+        return { 
+          address:bitcoin.payments.p2wpkh({ pubkey: keyPair.publicKey }).address,
+          pubicKey:keyPair.publicKey.toString('hex'),
+          privateKey:keyPair.toWIF()
+        };
+        default:
+        return wallet;
+      }
+    };
+
     const seed= await $wallet.getSeed(this.mnemonic);
-    this.wallets = $wallet.createRootKey(seed,this.defaultDerivation, 5);
-    this.services = $wallet.createRootKey(seed,this.defaultDerivation, 5,5);
-    this.pension = $wallet.createRootKey(seed,this.defaultDerivation, 5,10);
+    this.services = $wallet.createRootKey(seed,this.defaultDerivation, 5,0).map(network);
+    this.wallets = $wallet.createRootKey(seed,this.defaultDerivation, 5,5).map(network);
+    this.pension = $wallet.createRootKey(seed,this.defaultDerivation, 5,10).map(network);
     return;
   }
 
