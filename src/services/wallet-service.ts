@@ -58,8 +58,11 @@ class WalletService {
   async createShamirSecretFromSeed(entropy?: Uint8Array) {
     const hexSeed = ethers.utils.hexlify(this.entropy).split('0x');
     const b64 = ethers.utils.base64.encode('0x'+hexSeed[1]);
-    console.log('----DB entropy',hexSeed,this.entropy);
-    return share(hexSeed[1], 3, 2, 256);
+    console.log('----DB entropy',this.entropy.length,this.entropy);
+    const shares = share(hexSeed[1], 3, 2,32);
+    console.log('----SSS share',shares[0].length,shares[0]);
+
+    return shares;
   }
 
   //

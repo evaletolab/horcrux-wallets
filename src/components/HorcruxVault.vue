@@ -23,7 +23,7 @@
     <div class="secret media-display">
       {{value?.share}}
     </div>
-    <h3>Vault secret 🖨️</h3>
+    <h3>Vault secret 🔑</h3>
     <div>
 
     </div>

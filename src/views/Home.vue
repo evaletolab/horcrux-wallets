@@ -54,7 +54,7 @@
               ref="entropyGen" 
               :disabled="!isInvalidMnemonic" 
               :class="{ hide : !entropyStart }" 
-              :bitCount="0xFF"
+              :bitCount="192"
               v-on:start="onEntropyStart" 
               v-on:complete="onEntropyCollected" 
               >
@@ -245,7 +245,7 @@ export default class Home extends Vue {
     //15:{value:20,selected:false,label:""},
     18:{value:24,selected:false,label:"18-word: Ledger"},
     //21:{value:28,selected:false,label:""},
-    24:{value:32,selected:false,label:"24-word: Trezor One, Ledger"}
+    //24:{value:32,selected:false,label:"24-word: Trezor One, Ledger"}
   };
   mnemonicBytes = 16;
 
@@ -322,6 +322,9 @@ export default class Home extends Vue {
   }
 
   async onRetrieve(){
+    if(!$wallet.entropy.length) {
+      $wallet.entropy = $wallet.retrieveEntropy(this.mnemonic);
+    }
     this.seed = (await $wallet.getSeed(this.mnemonic));
     this.shares = await $wallet.createShamirSecretFromSeed();
   }
