@@ -7,12 +7,18 @@ import "hardhat/console.sol";
 // https://docs.openzeppelin.com/learn/upgrading-smart-contracts
 // https://medium.com/coinmonks/upgrading-smart-contracts-with-openzeppelin-upgrades-plugins-in-typescript-hardhat-dd5ca6d01585
 contract Horcrux {
-  mapping (uint256 => string) public index;
+  //01 0x8312c1d40a7417364d711fe93578dee347da4553106f2a0ac8563950
+  struct Vault {
+    bytes1 id;
+    bytes28 sss;
+  }
+
+  mapping (uint256 => uint256) public index;
 
 
   // (to be validated)
   // using log instead memory to preserve gas cost 
-  event Vault(uint block, string horcrux);
+  event HorcruxVault(uint block, uint horcrux);
 
   constructor() {
   }
@@ -20,16 +26,16 @@ contract Horcrux {
   //
   // Source is the destination place of the Horcrux
   // Horcrux is the encrypted shamir secret part
-  function create(uint256 source, string calldata horcrux ) external isWallet {
-    require(bytes(index[source]).length == 0 ,"Horcrux: this destination is not available"); // cost 47 gas
+  function create(uint256 source, uint horcrux ) external isWallet {
+    require((index[source]) == 0 ,"Horcrux: this destination is not available"); // cost 47 gas
     console.log("create %s",source);
-    index[(source)] = horcrux;
-    emit Vault(block.number,horcrux);
+    index[(source)] = uint256(horcrux);
+    emit HorcruxVault(block.number,horcrux);
   }
 
   //
   // The Seed and the Nonce are elements that becomes the destination place of the Horcrux
-  function redeem(uint256 seed, uint256 nonce) external view isWallet returns(string memory) {
+  function redeem(uint256 seed, uint256 nonce) external view isWallet returns(uint) {
     bytes32 hash = (keccak256(abi.encodePacked(seed,nonce)));
     uint256 source =uint256(keccak256(abi.encodePacked(hash)));
     console.log("redeem %s",source);

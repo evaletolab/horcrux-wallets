@@ -26,7 +26,7 @@ describe("Horcrux", function () {
 
   it("mix and unmix (XOR) buffer data", async function () {
     const pkey ="0xc2cdaf9afe1289a5545326e2";
-    const share = "0x0801fde48137222a357d4a70db809ae103aae7864b2312ab448a9301df635ea8020b";
+    const share = "0x0801ac30b898476dfb96b65ba8ce36eac7b07d3f0ad18c970eb7b49381c6";
 
     //
     // simple mixer
@@ -55,7 +55,7 @@ describe("Horcrux", function () {
 
 
     const seed = stringToHEX256("userfrom1233@bigcomp.com1LP#QOlp09");
-    const share = "0x0801fde48137222a357d4a70db809ae103aae7864b2312ab448a9301df635ea8020b";
+    const share = "0x0801ac30b898476dfb96b65ba8ce36eac7b07d3f0ad18c970eb7b49381c6";
     const nonce = '0x'+requiresWork(seed,difficulty)[1];
     const privateKey =  ethers.utils.keccak256(ethers.utils.defaultAbiCoder.encode(['uint256','uint256'],[seed,nonce]));
     const hash = ethers.utils.keccak256(privateKey);
@@ -96,7 +96,7 @@ describe("Horcrux", function () {
     const seed = stringToHEX256("userfrom1233@bigcomp.com1LP#QOlp09");
 
     const iface = new ethers.utils.Interface(abiCreate);
-    const share = "0x801fde48137222a357d4a70db809ae103aae7864b2312ab448a9301df635ea8020b";
+    const share = "0x0801ac30b898476dfb96b65ba8ce36eac7b07d3f0ad18c970eb7b49381c6";
     const nonce = '0x'+requiresWork(seed,difficulty)[1];
     const encoder = ethers.utils.defaultAbiCoder.encode(['uint256','uint256'],[seed,nonce])
     const source = ethers.utils.keccak256(encoder);
