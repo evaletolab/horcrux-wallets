@@ -8,7 +8,7 @@ describe("Horcrux", function () {
 
   const difficulty = BigNumber.from('0xafff');
   const abiCreate = [
-    "function create(uint256 source, string calldata  horcrux )"
+    "function create(uint256 source, uint horcrux )"
   ];
 
 

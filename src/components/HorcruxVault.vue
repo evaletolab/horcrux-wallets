@@ -6,6 +6,7 @@
       Horcrux generated from {{location}} <br/>    
       It will be stored in our Ethereum Vault without any thirdparties. 
       Contract addresse here : 
+      <a :href="'https://ropsten.etherscan.io/address/'+address">{{address}}</a>
     </p>
 
     <div class="media-display">
@@ -15,8 +16,8 @@
         <password label="Complete your secret with a hard password (choose min 10 chars)" 
                   v-model="password" @score="onScore"/>
 
-        <button @click="onGenerate" class="button-primary" :disabled="score < 4">Generate Vault  </button>
-        <button @click="onPublish" class="button-primary" :disabled="seed == ''" >Publish </button>
+        <button @click="onGenerate" class="button-primary" :disabled="(score < 4)||receipt">Generate Vault  </button>
+        <button @click="onPublish" class="button-primary" :disabled="(seed == '')||receipt" >Publish </button>
       </fieldset>
     </div>
     <p><b>Psst;</b> Print this document if you want a rescue tip</p>
@@ -29,7 +30,11 @@
     </div>
     <div class="secret" :class="{hide:seed==''}">
       <span class="hideemail">{{hideUsermail}}</span><br/>
-      0x{{seed}} 
+      {{seed}} 
+    </div>
+    <div class="published" :class="{hide:(!receipt)}">
+      Transaction confirmed in block {{receipt?.blockNumber}} <br/>
+      Gas used: {{receipt?.gasUsed.toString()}}
     </div>
  </div>  
   
@@ -39,13 +44,6 @@
   .content{
     max-width: 700px;
     margin: auto;      
-    .description,
-    .version{
-      // border-left: 7px solid rgb(175 184 193 / 20%);
-      // padding-left: 10px;
-      // padding-top: 20px;
-    }
-
     .secret{
       overflow-wrap: anywhere;
       text-align: left;
@@ -54,6 +52,15 @@
       padding: 25px;
       width: 100%;
     }
+    .published{
+      overflow-wrap: anywhere;
+      text-align: left;
+      margin: 10px 0;
+      background: #ddf9cf;
+      padding: 25px;
+      width: 100%;      
+    }
+
     .hideemail {
       font-family: monospace;
       font-weight: 600;
@@ -79,6 +86,7 @@ import { Options, Vue } from 'vue-class-component';
 import { $wallet, Horcrux } from '../services';
 
 import Password from '@/components/Password.vue';
+import { xor_encrypt } from '@/lib/XOR';
 
 @Options({
   components: { Password },
@@ -102,9 +110,61 @@ export default class HorcruxVault extends Vue {
   difficulty = BigNumber.from('0x1ffff');
 
   // Web3
-  signer: Signer|null=null;
+  address ="0x58f25463779E44A395804C783ee01202fF442b85";
+  abiCreate = [
+    "function create(uint256 source, uint256 horcrux )",
+    "function redeem(uint256 seed, uint256 nonce) returns (uint256)"
+  ];
+  abi =[
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "source",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "horcrux",
+          "type": "uint256"
+        }
+      ],
+      "name": "create",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "seed",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "nonce",
+          "type": "uint256"
+        }
+      ],
+      "name": "redeem",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ]
+
+  signer:any;
   account = "";
   balance = "0";
+  receipt:any = null;
+
 
   //
   // POW
@@ -158,9 +218,11 @@ export default class HorcruxVault extends Vue {
     }
 
     this.signer = provider.getSigner();
-    // console.log('--- DBG signer0',await this.signer.getAddress());
-    // console.log('--- DBG signer1',await this.signer.getChainId());
-    // console.log('--- DBG signer2',(await this.signer.getBalance()).toString());
+
+
+    console.log('--- DBG signer0',await this.signer.getAddress());
+    console.log('--- DBG signer1',account);
+    console.log('--- DBG signer2',(await this.signer.getBalance()).toString());
 
 
     // To connect to the user's wallet, we have to run this method.
@@ -170,7 +232,7 @@ export default class HorcruxVault extends Vue {
     //
     //load balance
     // this.balance = await web3.eth.getBalance(account);
-    this.balance = (await provider.getBalance(this.account)).toString();
+    this.balance = (await this.signer.getBalance()).toString();
   }
 
   async onGenerate($event:Event) {
@@ -182,39 +244,35 @@ export default class HorcruxVault extends Vue {
     console.log('--- DEBUG',this.seed,this.nonce);
   }
 
-    //
-    //load contracts
-  //   try {
-  //     this.token = new ethers.Contract(
-  //       this.Token.address,
-  //       this.Token.abi,
-  //       signer
-  //     );
-  //     this.dbank = new ethers.Contract(
-  //       this.dBank.address,
-  //       this.dBank.abi,
-  //       signer
-  //     );
-  //     // this.token.on('MinterChanged',(from: any, to: any) =>{
-  //     //   console.log('--- DBG MinterChanged evnt',from,to);
-  //     // });
-  //     // this.dbank.on('Deposit',(user: any, etherAmount: any, timeStart: any) =>{
-  //     //   console.log('--- DBG deposit evnt',user,etherAmount.toString());
-  //     //   this.depositedAmount = (etherAmount.toString());
-  //   } catch (e) {
-  //     console.log('Error', e);
-  //     window.alert('Contracts not deployed to the current network')
-  //   }
-  // }
-
   async onPublish($event:Event) {
     $event.preventDefault();
     try{
       await this.initMetamask();
 
-      // const node = ethers.utils.HDNode.fromSeed(seed);
-      // const hash =  ethers.utils.keccak256(ethers.utils.defaultAbiCoder.encode(['uint256','uint256'],[seed,nonce]));
-      //horcrux.create(hash,this.value.base64);
+      //
+      // init contract state
+      const privateKey =  ethers.utils.keccak256(ethers.utils.defaultAbiCoder.encode(['uint256','uint256'],[this.seed,this.nonce]));
+      const hash = ethers.utils.keccak256(privateKey);
+
+      //
+      // simple mixer
+      const share = this.value.share;
+      let bytes = xor_encrypt(
+        ethers.utils.arrayify('0x'+share),
+        ethers.utils.arrayify(privateKey.substring(0,16))
+      );
+      const mixed = ethers.utils.hexlify(bytes);
+      console.log('--- DEBUG p',privateKey,hash,mixed);
+      
+      const horcrux = new ethers.Contract(this.address,this.abiCreate,this.signer);
+
+      const tx = await horcrux.create(hash,mixed);
+
+      console.log(`Transaction hash: ${tx.hash}`);
+
+      this.receipt = await tx.wait();
+      console.log(`Transaction confirmed in block ${this.receipt.blockNumber}`);
+      console.log(`Gas used: ${this.receipt.gasUsed.toString()}`);
 
     }catch(err: any) {
       console.debug(err);

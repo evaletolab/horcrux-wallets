@@ -281,7 +281,7 @@ export default class Home extends Vue {
     }
     return {
       version:this._currentHorcrux.substring(0,3),
-      share:this._currentHorcrux,
+      share:this._currentHorcrux.substring(1),
       base64:($wallet.b64.encode('0x'+this._currentHorcrux+'0'))
     };
   }
