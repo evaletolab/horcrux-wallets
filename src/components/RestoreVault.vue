@@ -10,9 +10,9 @@
 
     <div class="media-display">
       <fieldset>
-        <label for="email">Use the used email to restore the secret</label>
+        <label for="email">Email used to restore your Horcrux</label>
         <input type="email"  v-model="username" placeholder="email@g.com" id="email" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-        <password label="Restore your secret with your hard password" 
+        <password label="Secret used to restore your Horcrux" 
                   v-model="password" @score="onScore"/>
 
         <button @click="onRestore" class="button-primary" :disabled="(score < 4)||receipt">{{computing?'Computing...':'Redeem Vault'}}</button>

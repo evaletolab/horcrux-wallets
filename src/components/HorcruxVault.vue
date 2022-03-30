@@ -18,7 +18,7 @@
         <password label="Complete your secret with a hard password (choose min 10 chars)" 
                   v-model="password" @score="onScore"/>
 
-        <button @click="onGenerate" class="button-primary" :disabled="(score < 4)||receipt">{{computing?'Computing...':'Redeem Vault'}}   </button>
+        <button @click="onGenerate" class="button-primary" :disabled="(score < 4)||receipt">{{computing?'Computing...':'Store Vault'}}   </button>
         <button @click="onPublish" class="button-primary" :disabled="(seed == '')||receipt" >Publish </button>
       </fieldset>
     </div>
@@ -255,9 +255,13 @@ export default class HorcruxVault extends Vue {
     //
     // proof of Work
     this.computing = true;
-    const POW = async () => {
-      this.seed = stringToHEX256(this.username+""+this.password);
-      this.nonce = requiresWork(this.seed,this.difficulty)[1];
+    const POW = () => {
+      return new Promise((resolve)=>{
+        setTimeout(()=>{
+          this.seed = stringToHEX256(this.username+""+this.password);
+          this.nonce = requiresWork(this.seed,this.difficulty)[1];
+        },0);
+      })
     }
     await POW();
     this.computing = false;
