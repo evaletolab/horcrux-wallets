@@ -168,8 +168,8 @@ export default class Recover extends Vue {
     this.drawer[destination] = false;
   }  
 
-  onHorcrux(value:string) {
-    this.horcruxs[this.currentIndex] = value;
+  onHorcrux($event:{value:string}) {
+    this.horcruxs[this.currentIndex] = $event.value;
   }
 
 

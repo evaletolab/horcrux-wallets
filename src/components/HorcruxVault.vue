@@ -18,7 +18,7 @@
         <password label="Complete your secret with a hard password (choose min 10 chars)" 
                   v-model="password" @score="onScore"/>
 
-        <button @click="onGenerate" class="button-primary" :disabled="(score < 4)||receipt">Generate Vault  </button>
+        <button @click="onGenerate" class="button-primary" :disabled="(score < 4)||receipt">{{computing?'Computing...':'Redeem Vault'}}   </button>
         <button @click="onPublish" class="button-primary" :disabled="(seed == '')||receipt" >Publish </button>
       </fieldset>
     </div>
@@ -125,10 +125,6 @@ export default class HorcruxVault extends Vue {
 
   // Web3
   address ="0x58f25463779E44A395804C783ee01202fF442b85";
-  abiCreate = [
-    "function create(uint256 source, uint256 horcrux )",
-    "function redeem(uint256 seed, uint256 nonce) returns (uint256)"
-  ];
   abi =[
     {
       "inputs": [
@@ -184,6 +180,7 @@ export default class HorcruxVault extends Vue {
   // POW
   nonce = "";
   seed = "";
+  computing = false;
 
   get date() {
     return this.currentDate.toLocaleDateString();
@@ -257,9 +254,13 @@ export default class HorcruxVault extends Vue {
     $event.preventDefault();
     //
     // proof of Work
-    this.seed = stringToHEX256(this.username+""+this.password);
-    this.nonce = requiresWork(this.seed,this.difficulty)[1];
-    console.log('--- DEBUG',this.seed,this.nonce);
+    this.computing = true;
+    const POW = async () => {
+      this.seed = stringToHEX256(this.username+""+this.password);
+      this.nonce = requiresWork(this.seed,this.difficulty)[1];
+    }
+    await POW();
+    this.computing = false;
   }
 
   async onPublish($event:Event) {

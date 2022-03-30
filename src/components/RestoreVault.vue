@@ -15,7 +15,7 @@
         <password label="Restore your secret with your hard password" 
                   v-model="password" @score="onScore"/>
 
-        <button @click="onRestore" class="button-primary" :disabled="(score < 4)||receipt">Redeem Vault  </button>
+        <button @click="onRestore" class="button-primary" :disabled="(score < 4)||receipt">{{computing?'Computing...':'Redeem Vault'}}</button>
       </fieldset>
     </div>
 
@@ -29,9 +29,9 @@
       <span class="hideemail">{{hideUsermail}}</span><br/>
       {{seed}} 
     </div>
-    <div class="published" :class="{hide:(!receipt)}">
-      Transaction confirmed in block {{receipt?.blockNumber}} <br/>
-      Gas used: {{receipt?.gasUsed.toString()}}
+    <div class="published" :class="{hide:(share == '')}">
+      <b>Vault content : </b>
+      {{share}}
     </div>
  </div>  
   
@@ -87,27 +87,18 @@
 <script lang="ts">
 import { requiresWork } from '@/lib/POW';
 import { stringToHEX256 } from '@/lib/utils';
-import { BigNumber, ethers, Signer } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 import { Options, Vue } from 'vue-class-component';
-import { $wallet, Horcrux } from '../services';
 
 import Password from '@/components/Password.vue';
 import { xor_decrypt } from '@/lib/XOR';
 
 @Options({
-  components: { Password },
-  props: {
-    value: {
-      default: {},
-      required: true,
-      type: Object
-    },
-  }
+  components: { Password }
 })
 export default class RestoreVault extends Vue {
 
   // props
-  value!:Horcrux;
   currentDate: Date = new Date();
 
   password = "";
@@ -117,61 +108,22 @@ export default class RestoreVault extends Vue {
 
   // Web3
   address ="0x58f25463779E44A395804C783ee01202fF442b85";
-  abi =[
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "source",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "horcrux",
-          "type": "uint256"
-        }
-      ],
-      "name": "create",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "seed",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "nonce",
-          "type": "uint256"
-        }
-      ],
-      "name": "redeem",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    }
-  ]
+  abiRedeem = [
+    "function redeem(uint256 seed, uint256 nonce) view returns(uint)"
+  ];
 
   signer:any;
   account = "";
   balance = "0";
   receipt:any = null;
+  share = "";
 
 
   //
   // POW
   nonce = "";
   seed = "";
+  computing = false;
 
   get date() {
     return this.currentDate.toLocaleDateString();
@@ -243,35 +195,43 @@ export default class RestoreVault extends Vue {
 
   async onRestore($event:Event) {
     $event.preventDefault();
-    //
-    // proof of Work
-    this.seed = stringToHEX256(this.username+""+this.password);
-    this.nonce = requiresWork(this.seed,this.difficulty)[1];
-    console.log('--- DEBUG',this.seed,this.nonce);
 
     try{
-      this.initMetamask();
+      this.computing = true;
+      await this.initMetamask();
+
+      //
+      // proof of Work
+      this.seed = stringToHEX256(this.username+""+this.password);
+      this.nonce = requiresWork(this.seed,this.difficulty)[1];
+      console.log('--- DEBUG',this.seed,this.nonce);
+
       //
       // init contract state
       const privateKey =  ethers.utils.keccak256(ethers.utils.defaultAbiCoder.encode(['uint256','uint256'],[this.seed,this.nonce]));
-      const hash = ethers.utils.keccak256(privateKey);
 
-      const horcrux = new ethers.Contract(this.address,this.abi,this.signer);
+      const horcrux = new ethers.Contract(this.address,this.abiRedeem,this.signer);
 
-      console.log('---- DEBUG redeem',horcrux, this.seed,this.nonce);
       const result = (await horcrux.redeem(this.seed,this.nonce)).toHexString();
 
-      console.log('---- DEBUG redeem result',result);
+      const mixed = ethers.utils.arrayify(result);
 
+      this.computing = false;
+
+      if (mixed[0] == 0){
+        this.share = "Not available";
+      this.$emit("value", {value: this.share});
+        return;
+      }
       //
       // simple demixer
       const bytes = xor_decrypt(
-        ethers.utils.arrayify(result),
+        mixed,
         ethers.utils.arrayify(privateKey.substring(0,16))
       );
-      const unmixed = ethers.utils.hexlify(bytes);
+      this.share = ethers.utils.hexlify(bytes);
 
-      this.$emit("value", {value: unmixed});
+      this.$emit("value", {value: this.share});
 
     }catch(err) {
       console.log('--- DEBUG restore',err);
