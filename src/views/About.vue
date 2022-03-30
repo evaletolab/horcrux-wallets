@@ -11,7 +11,7 @@
       <li><a href="https://github.com/bitcoin/bips/blob/master/bip-0084.mediawiki">BIP84</a> Segwit derivation path</li>
       <li>SSS (Shamir Shared Secret)</li>
       <li><a href="https://github.com/evaletolab/horcrux-wallets/blob/oe-hardhat/hardhat/contracts/Horcrux.sol">HorcruxVault Smart Contract</a></li>
-      <li>Shared with MIT licence <a href="https://github.com/evaletolab/horcrux-wallets">github</a></li>
+      <li>Shared as MIT <a href="https://github.com/evaletolab/horcrux-wallets">github</a></li>
     </ul>
     <package-versions />
   </div>
