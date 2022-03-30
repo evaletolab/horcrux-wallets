@@ -20,7 +20,7 @@
 
         <input type="password"  v-model="confirmation" placeholder="Confirm the password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
         <button @click="onGenerate" class="button-primary" :disabled="!isPasswordOk">{{computing?'Computing...':'Create Vault'}}   </button>
-        <button @click="onPublish" class="button-primary" :disabled="(seed == '')||receipt" >Publish </button>
+        <button @click="onPublish" class="button-primary" :disabled="(seed == '')||receipt" > {{publishing?'Publishing...':'Publish'}} </button>
       </fieldset>
     </div>
     <div class="published" :class="{hide:(!receipt)}">
@@ -149,6 +149,7 @@ export default class HorcruxVault extends Vue {
   account = "";
   balance = "0";
   receipt:any = null;
+  publishing = false;
 
 
   //
@@ -249,6 +250,7 @@ export default class HorcruxVault extends Vue {
   async onPublish($event:Event) {
     $event.preventDefault();
     try{
+      this.publishing = true;
       await this.initMetamask();
 
       //
@@ -275,6 +277,7 @@ export default class HorcruxVault extends Vue {
       console.log(`Transaction hash: ${tx.hash}`);
 
       this.receipt = await tx.wait();
+      this.publishing = false;
       console.log(`Transaction confirmed in block ${this.receipt.blockNumber}`);
       console.log(`Gas used: ${this.receipt.gasUsed.toString()}`);
 
