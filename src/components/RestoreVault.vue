@@ -13,7 +13,7 @@
         <label for="email">Email used to restore your Horcrux</label>
         <input type="email"  v-model="username" placeholder="email@g.com" id="email" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
         <password label="Secret used to restore your Horcrux" 
-                  v-model="password" @score="onScore"/>
+                  @value="(value)=> password=value" @score="onScore"/>
 
         <button @click="onRestore" class="button-primary" :disabled="(score < 4)||receipt">{{computing?'Computing...':'Redeem Vault'}}</button>
       </fieldset>
@@ -229,7 +229,8 @@ export default class RestoreVault extends Vue {
         mixed,
         ethers.utils.arrayify(privateKey.substring(0,16))
       );
-      this.share = ethers.utils.hexlify(bytes);
+      this.share = ethers.utils.hexlify(bytes).replace('0x','8');
+
 
       this.$emit("value", {value: this.share});
 

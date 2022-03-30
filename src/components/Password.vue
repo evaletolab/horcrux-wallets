@@ -53,7 +53,6 @@
 <script lang="ts">
 import { Options, Vue } from "vue-class-component";
 
-import { $wallet, Horcrux } from "../services";
 import zxcvbn from 'zxcvbn-typescript';
 
 //
@@ -81,7 +80,7 @@ export default class Password extends Vue {
   }
   set password(value) {
     this.score = zxcvbn(value||'').score;
-    this.$emit('input', value);   
+    this.$emit('value', value);   
     this.$emit('score', this.score);   
   }
 }

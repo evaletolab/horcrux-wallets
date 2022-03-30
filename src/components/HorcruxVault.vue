@@ -15,12 +15,17 @@
       <fieldset>
         <label for="email">Use an email of your choise to generate your the first part of the secret</label>
         <input type="email"  v-model="username" placeholder="email@g.com" id="email" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-        <password label="Complete your secret with a hard password (choose min 10 chars)" 
-                  v-model="password" @score="onScore"/>
+        <password label="Complete your secret with a strong password" 
+                  @value="(value)=> password=value" @score="onScore"/>
 
-        <button @click="onGenerate" class="button-primary" :disabled="(score < 4)||receipt">{{computing?'Computing...':'Store Vault'}}   </button>
+        <input type="password"  v-model="confirmation" placeholder="Confirm the password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+        <button @click="onGenerate" class="button-primary" :disabled="!isPasswordOk">{{computing?'Computing...':'Create Vault'}}   </button>
         <button @click="onPublish" class="button-primary" :disabled="(seed == '')||receipt" >Publish </button>
       </fieldset>
+    </div>
+    <div class="published" :class="{hide:(!receipt)}">
+      Transaction confirmed in block {{receipt?.blockNumber}} <br/>
+      Gas used: {{receipt?.gasUsed.toString()}}
     </div>
 
     <input class="title" ref="title" type="text" placeholder="Your printed title">
@@ -36,10 +41,6 @@
       <p><b>Psst;</b> Print this document before to store this Horcrux</p>
       <span class="hideemail">{{hideUsermail}}</span><br/>
       {{seed}} 
-    </div>
-    <div class="published" :class="{hide:(!receipt)}">
-      Transaction confirmed in block {{receipt?.blockNumber}} <br/>
-      Gas used: {{receipt?.gasUsed.toString()}}
     </div>
  </div>  
   
@@ -65,6 +66,7 @@
       background: #eee;
       padding: 25px;
       width: 100%;
+      margin-bottom: 50px;
     }
     .published{
       overflow-wrap: anywhere;
@@ -84,10 +86,6 @@
     button{
       margin-right: 10px;
     }
-
-    form{
-    }
-
   }
 
 </style>
@@ -97,7 +95,7 @@ import { requiresWork } from '@/lib/POW';
 import { stringToHEX256 } from '@/lib/utils';
 import { BigNumber, ethers, Signer } from 'ethers';
 import { Options, Vue } from 'vue-class-component';
-import { $wallet, Horcrux } from '../services';
+import { Horcrux } from '../services';
 
 import Password from '@/components/Password.vue';
 import { xor_encrypt } from '@/lib/XOR';
@@ -119,6 +117,7 @@ export default class HorcruxVault extends Vue {
   currentDate: Date = new Date();
 
   password = "";
+  confirmation = "";
   username = "";
   score = 0;
   difficulty = BigNumber.from('0x1ffff');
@@ -142,30 +141,6 @@ export default class HorcruxVault extends Vue {
       "name": "create",
       "outputs": [],
       "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "seed",
-          "type": "uint256"
-        },
-        {
-          "internalType": "uint256",
-          "name": "nonce",
-          "type": "uint256"
-        }
-      ],
-      "name": "redeem",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
       "type": "function"
     }
   ]
@@ -204,6 +179,10 @@ export default class HorcruxVault extends Vue {
       }
     }
     return hidden;
+  }
+
+  get isPasswordOk() {
+    return (this.score >= 4)&&!this.receipt&&(this.confirmation==this.password)&&(this.confirmation!='')&&this.username!=''
   }
 
   get location (){
@@ -260,11 +239,11 @@ export default class HorcruxVault extends Vue {
         setTimeout(()=>{
           this.seed = stringToHEX256(this.username+""+this.password);
           this.nonce = requiresWork(this.seed,this.difficulty)[1];
+          this.computing = false;
         },0);
       })
     }
     await POW();
-    this.computing = false;
   }
 
   async onPublish($event:Event) {
