@@ -8,7 +8,7 @@
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint",
     "deploy": "node scripts/gh-pages-deploy.js",
-    "btc": "browserify bitcoinjs.js --standalone bitcoinjs > ./bitcoinjs-lib.js"
+    "btc": "browserify bitcoin.js --standalone bitcoinjs > ./bitcoinjs-lib.js"
   },
   "dependencies": {
     "bitcoinjs-lib": "^6.0.1",
