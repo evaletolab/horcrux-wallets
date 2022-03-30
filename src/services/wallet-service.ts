@@ -14,6 +14,7 @@ class WalletService {
   private defaultLang:i18n = 'en';
 
   entropy: Uint8Array = new Uint8Array();
+  shares = [];
 
   get b64() {
     return ethers.utils.base64;
@@ -58,11 +59,13 @@ class WalletService {
   async createShamirSecretFromSeed(entropy?: Uint8Array) {
     const hexSeed = ethers.utils.hexlify(this.entropy).split('0x');
     const b64 = ethers.utils.base64.encode('0x'+hexSeed[1]);
-    console.log('----DB entropy',this.entropy.length,this.entropy);
-    const shares = share(hexSeed[1], 3, 2,32);
-    console.log('----SSS share',shares[0].length,shares[0]);
+    this.shares = share(hexSeed[1], 3, 2,32) as [];
 
-    return shares;
+    return this.shares;
+  }
+
+  async getShamirCache() {
+    return this.shares;
   }
 
   //

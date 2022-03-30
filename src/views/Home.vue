@@ -267,6 +267,13 @@ export default class Home extends Vue {
 
   async mounted() {
     this.entropyStart = false;
+    if(!$wallet.entropy || !$wallet.entropy.length) {
+      return;
+    }
+    this.mnemonic = await $wallet.createMnemonic($wallet.entropy,this.mnemonicBytes);
+    this.seed = (await $wallet.getSeed(this.mnemonic));
+    this.shares = await $wallet.getShamirCache();
+
   }
 
   get combineShares() {
