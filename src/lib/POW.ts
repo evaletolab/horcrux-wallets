@@ -11,7 +11,7 @@ export function requiresWork(string: string, difficulty: BigNumber) {
     //   console.log('---',index,work.toString())
     // }
     if((work.mod(difficulty)).lte(2)) {
-      return [work.toHexString(),index.toString(16)];
+      return [work.toHexString(),'0x'+index.toString(16)];
     }    
 
   }

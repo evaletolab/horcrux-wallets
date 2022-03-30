@@ -64,13 +64,14 @@
           </button>
 
         </div>
-        <div class="media-display monero hide">
+        <!-- MONERO -->
+        <!-- <div class="media-display monero hide">
           <input type="checkbox" id="monero" @change="()=> monero = !monero">
           <label class="label-inline" for="monero">Display Monero Mnemonic</label>
           <textarea  v-model="moneroMnemonic" class="phrase private-data " :class="{hide:!monero}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">              
           </textarea>
           <qr class="qrcode" :message="mnemonic" v-if="seed" />
-        </div>
+        </div> -->
 
     </div>    
 
@@ -83,12 +84,12 @@
     </div>      
     
     <!-- BIP32 Root Key -->
-    <div class="form-group hide">
+    <!-- <div class="form-group " v-if="rootKey">
       <label for="root-key" class="col-sm-2 control-label">BIP32 Root Key</label>
       <div class="col-sm-10">
           <textarea v-model="rootKey" class="root-key private-data "  autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false"></textarea>
       </div>
-    </div>  
+    </div>   -->
 
     <!-- Shamir Secret Sharing Scheme -->
     <div class="sharing" :class="{hide:(!shares.length)}">
@@ -342,16 +343,8 @@ export default class Home extends Vue {
   }
 
   onHorcrux(share: string, destination:string) {
-    // const route:any = {
-    //   'print':()=> this.$refs.print,
-    //   'vault':()=> this.$refs.vault,
-    // }
-    // route[destination]().open = true;
-    // FIXME share len = 131 (odd)
-    // lend village excuse sort climb muscle blue shell measure crumble divide section reason income buffalo
     this._currentHorcrux = share;
     this.drawer[destination] = !this.drawer[destination];
-    console.log('---- open horcrux',destination,this.drawer[destination])
   }
 
   onStart() {

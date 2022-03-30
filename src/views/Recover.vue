@@ -16,9 +16,8 @@
         
         <div class="action"> 
           restore from 
-          <a class="store" @click="() => openScanDrawerForIndex(index)" >print</a>
-          <a href="" class="store">vault</a>
-          <a href="" class="store">cloud</a>
+          <a class="store" @click="onOpenDrawer(index,'print')">print</a>
+          <a class="store" @click="onOpenDrawer(index,'vault')">vault</a>
         </div>
       </div>
       <!-- Mnemonic Language -->
@@ -48,10 +47,15 @@
 
     </div>
 
-    <drawer ref="qrscan">
+    <drawer :open="drawer.print" :displayClose="true" @close="onCloseDrawer('print')">
       <h2>scan qrcode</h2>
       <qr-scan v-on:decoded="onQrScanDecoded"/>
     </drawer>
+
+    <drawer :open="drawer.vault" :displayClose="true" @close="onCloseDrawer('vault')">
+      <restore-vault @value="onHorcrux"  />
+    </drawer>
+
   
   </div>
 </template>
@@ -114,16 +118,22 @@ import * as secret from 'secrets.js-34r7h';
 import { ethers } from 'ethers';
 import Drawer from '@/components/Drawer.vue';
 import QrScan from '@/components/QrScan.vue';
+import RestoreVault from '@/components/RestoreVault.vue';
 
 @Options({
   components: {
-    Drawer, QrScan,
+    Drawer, QrScan, RestoreVault
   },
 })
 export default class Recover extends Vue {
   horcruxs:any = [null,null];
   currentIndex = -1;
   error = "";
+
+  drawer: any = {
+    vault: false,
+    print: false
+  }
 
   get entropy() {    
     try{
@@ -149,15 +159,24 @@ export default class Recover extends Vue {
     return $wallet.createMnemonic(entropy, 16);
   }
 
-  openScanDrawerForIndex(index: number){
+  onOpenDrawer(index: number,destination:string){
     this.currentIndex = index;
-    (this.$refs.qrscan as any).onOpen();
+    this.drawer[destination]=true;
   }
+
+  onCloseDrawer(destination:string) {
+    this.drawer[destination] = false;
+  }  
+
+  onHorcrux(value:string) {
+    this.horcruxs[this.currentIndex] = value;
+  }
+
 
   onQrScanDecoded(result:{value:string}){
     // console.log("got qrscan", result.value);
-    (this.$refs.qrscan as any).onClose();
     this.horcruxs[this.currentIndex] = result.value;
   }
+
 }
 </script>

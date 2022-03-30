@@ -1,7 +1,7 @@
 <template>
   <div class="qrscan">
     <video ref="video"></video>  
-    <button @click.stop="toggle">{{started ? 'stop': 'start'}}</button>
+    <button class="hide" @click.stop="toggle">{{started ? 'stop': 'start'}}</button>
   </div>    
 </template>
 
@@ -31,6 +31,10 @@ export default class QrScan extends Vue {
       this.started = false;
       this.$emit("decoded", {value: result.data});
     }, options);
+
+    this.qrScanner.start();
+    this.started = true;
+    console.log('----QR scanner is running',this.qrScanner )
   }
 
   toggle(){
@@ -55,5 +59,9 @@ export default class QrScan extends Vue {
   .qrscan{
     width: 100%;
     height: 100%;
+    video{
+      width: 100%;
+      height: 100%;
+    }
   }
 </style>

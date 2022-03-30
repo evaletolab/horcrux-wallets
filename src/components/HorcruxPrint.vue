@@ -3,7 +3,7 @@
     <h1>Horcrux </h1>
     <h3>{{date}} / <span class=" bold">v{{value?.version}}</span> </h3>
     <p class="description">        
-      Horcrux generated from {{location}}
+      Horcrux generated from <a :href="location">{{location}}</a><br/>    
     </p>
 
     <input class="title" ref="title" type="text" placeholder="Your printed title">

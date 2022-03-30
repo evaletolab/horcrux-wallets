@@ -1,39 +1,31 @@
 <template>
- <div v-if="!!value.share" class="content">
-    <h1>Horcrux </h1>
-    <h3>{{date}} / <span class="bold">v{{value?.version}}</span> </h3>
+ <div class="content">
+    <h1>Restore Horcrux from Vault </h1>
     <p class="description">    
       Horcrux generated from <a :href="location">{{location}}</a><br/>    
       It will be stored in our Ethereum Vault without any thirdparties. 
       Contract addresse here : 
       <a target="_tab" :href="'https://ropsten.etherscan.io/address/'+address">{{address}}</a><br/>
-      This is an demo version on testnet Ropsten. You can get free rETH on this <a target="_tab" href="https://faucet.egorfine.com/">faucet</a>
-
     </p>
 
     <div class="media-display">
       <fieldset>
-        <label for="email">Use an email of your choise to generate your the first part of the secret</label>
+        <label for="email">Use the used email to restore the secret</label>
         <input type="email"  v-model="username" placeholder="email@g.com" id="email" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-        <password label="Complete your secret with a hard password (choose min 10 chars)" 
+        <password label="Restore your secret with your hard password" 
                   v-model="password" @score="onScore"/>
 
-        <button @click="onGenerate" class="button-primary" :disabled="(score < 4)||receipt">Generate Vault  </button>
-        <button @click="onPublish" class="button-primary" :disabled="(seed == '')||receipt" >Publish </button>
+        <button @click="onRestore" class="button-primary" :disabled="(score < 4)||receipt">Redeem Vault  </button>
       </fieldset>
     </div>
 
-    <input class="title" ref="title" type="text" placeholder="Your printed title">
 
-    <div class="secret media-display">
-      {{value?.share}}
-    </div>
     <h3>Vault secret 🔑</h3>
     <div>
 
     </div>
     <div class="secret" :class="{hide:seed==''}">
-      <p><b>Psst;</b> Print this document before to store this Horcrux</p>
+      <p><b>Psst;</b> Compare your secret with your printed document</p>
       <span class="hideemail">{{hideUsermail}}</span><br/>
       {{seed}} 
     </div>
@@ -100,7 +92,7 @@ import { Options, Vue } from 'vue-class-component';
 import { $wallet, Horcrux } from '../services';
 
 import Password from '@/components/Password.vue';
-import { xor_encrypt } from '@/lib/XOR';
+import { xor_decrypt } from '@/lib/XOR';
 
 @Options({
   components: { Password },
@@ -112,7 +104,7 @@ import { xor_encrypt } from '@/lib/XOR';
     },
   }
 })
-export default class HorcruxVault extends Vue {
+export default class RestoreVault extends Vue {
 
   // props
   value!:Horcrux;
@@ -125,10 +117,6 @@ export default class HorcruxVault extends Vue {
 
   // Web3
   address ="0x58f25463779E44A395804C783ee01202fF442b85";
-  abiCreate = [
-    "function create(uint256 source, uint256 horcrux )",
-    "function redeem(uint256 seed, uint256 nonce) returns (uint256)"
-  ];
   abi =[
     {
       "inputs": [
@@ -253,51 +241,42 @@ export default class HorcruxVault extends Vue {
     console.log('--- DBG balance',this.balance);
   }
 
-  async onGenerate($event:Event) {
+  async onRestore($event:Event) {
     $event.preventDefault();
     //
     // proof of Work
     this.seed = stringToHEX256(this.username+""+this.password);
     this.nonce = requiresWork(this.seed,this.difficulty)[1];
     console.log('--- DEBUG',this.seed,this.nonce);
-  }
 
-  async onPublish($event:Event) {
-    $event.preventDefault();
     try{
-      await this.initMetamask();
-
+      this.initMetamask();
       //
       // init contract state
       const privateKey =  ethers.utils.keccak256(ethers.utils.defaultAbiCoder.encode(['uint256','uint256'],[this.seed,this.nonce]));
       const hash = ethers.utils.keccak256(privateKey);
 
-      //
-      // simple mixer
-      const share = this.value.share;
-      console.log('--- DEBUG share',share);
-      let bytes = xor_encrypt(
-        ethers.utils.arrayify('0x'+share),
-        ethers.utils.arrayify(privateKey.substring(0,16))
-      );
-      const mixed = ethers.utils.hexlify(bytes);
-      console.log('--- DEBUG mixed',mixed);
-      
       const horcrux = new ethers.Contract(this.address,this.abi,this.signer);
 
-      console.log('---- DEBUG create',hash,mixed);
-      const tx = await horcrux.create(hash,mixed);
+      console.log('---- DEBUG redeem',horcrux, this.seed,this.nonce);
+      const result = (await horcrux.redeem(this.seed,this.nonce)).toHexString();
 
-      console.log(`Transaction hash: ${tx.hash}`);
+      console.log('---- DEBUG redeem result',result);
 
-      this.receipt = await tx.wait();
-      console.log(`Transaction confirmed in block ${this.receipt.blockNumber}`);
-      console.log(`Gas used: ${this.receipt.gasUsed.toString()}`);
+      //
+      // simple demixer
+      const bytes = xor_decrypt(
+        ethers.utils.arrayify(result),
+        ethers.utils.arrayify(privateKey.substring(0,16))
+      );
+      const unmixed = ethers.utils.hexlify(bytes);
 
-    }catch(err: any) {
-      console.debug(err);
-      window.alert(err.message);
+      this.$emit("value", {value: unmixed});
+
+    }catch(err) {
+      console.log('--- DEBUG restore',err);
     }
+    
   }
 
   onScore(value:number){

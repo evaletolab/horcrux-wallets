@@ -1,7 +1,7 @@
 <template>
   <transition name="slide">
     <section  class="drawer primary" :class="{open:open}" @click="onClose(false)">
-      <button class="icon" v-if="displayClose" @click="onClose(true)">
+      <button class="icon media-display" v-if="displayClose" @click="onClose(true)">
         ❌ <span class="hide material-icons-outlined">playlist_remove</span>
       </button>
 
