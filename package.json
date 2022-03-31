@@ -11,6 +11,8 @@
     "btc": "browserify bitcoin.js --standalone bitcoinjs > ./bitcoinjs-lib.js"
   },
   "dependencies": {
+    "@coinbase/wallet-sdk": "^3.0.5",
+    "@walletconnect/web3-provider": "^1.7.7",
     "bitcoinjs-lib": "^6.0.1",
     "ecpair": "^2.0.1",
     "ethers": "^5.5.4",
@@ -22,6 +24,7 @@
     "vue-class-component": "^8.0.0-rc.1",
     "vue-property-decorator": "^9.1.2",
     "vue-router": "^4.0.12",
+    "web3modal": "^1.9.5",
     "zxcvbn-typescript": "^5.0.1"
   },
   "devDependencies": {

@@ -2,10 +2,15 @@
  <div class="content">
     <h1>Restore Horcrux from Vault </h1>
     <p class="description">    
-      Horcrux generated from <a :href="location">{{location}}</a><br/>    
-      It will be stored in our Ethereum Vault without any thirdparties. 
-      Contract addresse here : 
-      <a target="_tab" :href="'https://ropsten.etherscan.io/address/'+address">{{address}}</a><br/>
+      Your Horcrux is stored safely without any thirdparties. 
+      You only need to remmember your secret to restore the encrypted Vault. 
+      Use your printed page as a rescue tip!
+      <p class="info">
+        This is an alpha version running on testnet Ropsten. <br/>
+        Contract address : 
+        <a target="_tab" :href="'https://ropsten.etherscan.io/address/'+address">{{address}}</a>
+      </p>
+
     </p>
 
     <div class="media-display">

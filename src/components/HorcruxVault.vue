@@ -2,14 +2,22 @@
  <div v-if="!!value.share" class="content">
     <h1>Horcrux </h1>
     <h3>{{date}} / <span class="bold">v{{value?.version}}</span> </h3>
-    <p class="description">    
-      Horcrux generated from <a :href="location">{{location}}</a><br/>    
-      It will be stored in our Ethereum Vault without any thirdparties. 
-      Contract addresse here : 
-      <a target="_tab" :href="'https://ropsten.etherscan.io/address/'+address">{{address}}</a><br/>
-      This is an demo version on testnet Ropsten. You can get free rETH on this <a target="_tab" href="https://faucet.egorfine.com/">faucet</a>
+    <div class="description">    
+      This Horcrux is generated from <a :href="location">{{location}}</a><br/>    
+      This service use Ethereum without any thirdparties. 
+      You only need to choose a strong secret and publish the encrypted Vault. 
+      Once it's done, we also recommand to print this page as a rescue tip (Ctrl+p).
+      
+      
+      <p class="info">
+        This is an alpha version running on testnet Ropsten. <br/>
+        You can get free rETH on this <a target="_tab" href="https://faucet.egorfine.com/">faucet</a> to test this service<br/>
+        Contract address : 
+        <a target="_tab" :href="'https://ropsten.etherscan.io/address/'+address">{{address}}</a>
+      </p>
+      
 
-    </p>
+    </div>
 
     <div class="media-display">
       <fieldset>
@@ -38,9 +46,9 @@
 
     </div>
     <div class="secret" :class="{hide:seed==''}">
-      <p><b>Psst;</b> Print this document before to store this Horcrux</p>
+      <p><b>Psst;</b> Print this document as a rescue tip</p>
       <span class="hideemail">{{hideUsermail}}</span><br/>
-      {{seed}} 
+      {{seed.slice(0,8)}}... {{seed.slice(-8)}}
     </div>
  </div>  
   
@@ -99,6 +107,12 @@ import { Horcrux } from '../services';
 
 import Password from '@/components/Password.vue';
 import { xor_encrypt } from '@/lib/XOR';
+
+//
+// FIXME modal connectors are to expensive
+import Web3Modal from "web3modal";
+import CoinbaseWalletSDK from "@coinbase/wallet-sdk";
+import WalletConnect from "@walletconnect/web3-provider";
 
 @Options({
   components: { Password },
@@ -190,23 +204,49 @@ export default class HorcruxVault extends Vue {
     return document.location.href;
   }
 
+  async metamaskdisconnect () {
+    const $window = window as any;
+    await $window.ethereum.request({
+      method: "wallet_requestPermissions",
+      params: [{
+          eth_accounts: {}
+      }]
+    });
+  }  
+
   async initMetamask() {
     const $window = window as any;
-    if(!$window.ethereum){
-      throw new Error('Please install MetaMask');
-    }
-    //const web3 = new Web3($window.ethereum);
-    // const netId = await web3.eth.net.getId();
-    // const accounts = await web3.eth.getAccounts();    
-    // const metamask = await $window.ethereum.request({ method: 'eth_requestAccounts' });
-    // const account = accounts[0] || metamask[0];
-    //
-    // initialize metamask
-    // const [account] = await $window.ethereum.request({ method: 'eth_requestAccounts' });
-    // if(!account){
-    //   throw new Error('Please login with MetaMask');
+    // if(!$window.ethereum){
+    //   throw new Error('Please install MetaMask');
     // }
-    const provider = new ethers.providers.Web3Provider($window.ethereum);
+    
+    const providerOptions = {
+      walletlink: {
+        package: CoinbaseWalletSDK, 
+        options: {
+          appName: "Horcrux",
+        }
+      },
+      walletconnect: {
+        package: WalletConnect, 
+        options: {
+          infuraId: "27e484dcd9e3efcfd25a83a78777cdf1"
+        }
+      }
+    };
+    const web3Modal = new Web3Modal({
+      cacheProvider: true, // optional
+      providerOptions // required
+    });
+
+    const instance = await web3Modal.connect();
+
+    const provider = new ethers.providers.Web3Provider(instance);
+
+    provider.on("connect", (info: { chainId: number }) => {
+      console.log('--DBUG provider:connect',info);
+    });
+
     const [account] = await provider.send("eth_requestAccounts", []);
     if(!account){
       throw new Error('Please login with MetaMask');
@@ -241,7 +281,7 @@ export default class HorcruxVault extends Vue {
           this.seed = stringToHEX256(this.username+""+this.password);
           this.nonce = requiresWork(this.seed,this.difficulty)[1];
           this.computing = false;
-        },0);
+        },100);
       })
     }
     await POW();
@@ -250,6 +290,7 @@ export default class HorcruxVault extends Vue {
   async onPublish($event:Event) {
     $event.preventDefault();
     try{
+      this.receipt = null;
       this.publishing = true;
       await this.initMetamask();
 
@@ -280,10 +321,11 @@ export default class HorcruxVault extends Vue {
       this.publishing = false;
       console.log(`Transaction confirmed in block ${this.receipt.blockNumber}`);
       console.log(`Gas used: ${this.receipt.gasUsed.toString()}`);
-
+      await this.metamaskdisconnect();
     }catch(err: any) {
-      console.debug(err);
       window.alert(err.message);
+      this.publishing = false;
+      console.debug(err);
     }
   }
 
