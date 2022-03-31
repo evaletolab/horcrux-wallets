@@ -1,0 +1,121 @@
+
+:root {
+  --md-theme-default-primary:#fff;
+  --md-theme-default-primary-text:#000203;
+  --md-theme-default-secondary:#eee;
+  --md-theme-default-secondary-text:#000203;
+  --md-theme-default-tertiary:#63a1d9;
+  --md-theme-default-tertiary-text:#000203;
+  --md-theme-toolbar-height:40px;
+  --md-theme-max-with:500px;
+}
+
+
+body {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin: auto;
+  max-width: 80rem;
+  font-family: 'Roboto', serif;
+  @media (max-width:500px) {
+    text-align: left;    
+  }
+}
+
+.body-lock{
+  overflow: hidden!important;
+  background-color: #efefef;
+}
+
+td,th{
+  padding: 1.2rem 0.8rem;
+}
+
+.text-center {
+  text-align: center;
+}
+.hide {
+  display: none;
+}
+
+.bold{
+  font-weight: 700;
+}
+
+.pink{
+  color: deeppink;
+}
+
+ol{
+  list-style-type: decimal;
+}
+
+.info {
+  padding: .4em .8em;
+  margin: 0.2em -0.6em;
+  background-color: rgb(175 184 193 / 20%);
+  border-radius: 6px;    
+}
+
+.code,code {
+  padding: .2em .4em;
+  padding-left:0;
+  margin: 0;
+  font-size: 85%;
+  background-color: rgb(175 184 193 / 20%);
+  border-radius: 6px;    
+}
+
+
+.container {
+  @media (max-width:500px) {
+    padding: 0 0.4rem!important;
+  }
+}
+
+.media-display {
+  @media print {
+    display: none!important;
+  }
+}
+
+.mg-tabs{
+  .mg-tabs--items{
+    margin-left: 0.2em;
+    margin-right: 0.2em;
+    padding-left: 0.2em;
+    padding-right: 0.2em;      
+  }
+  ul{
+    display: flex;
+    text-align: center;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    list-style: none;
+    cursor: pointer;
+    margin: 0;    
+    @media (max-width:500px) {
+      font-size: 12px;
+    }
+    li{
+      font-weight: bold;
+      border-bottom: 0.3rem solid transparent;
+      color: var(--mg-md-theme-default-tertiary);
+      opacity: 0.7;
+      flex: 0 0 auto;      
+      margin: 0;
+      padding: 4px 10px;
+      .router-link-active{
+        color: var(--md-theme-default-primary-text);
+        border-color: var(--md-theme-default-primary-text);
+        overflow-y: hidden;
+        opacity: 1;          
+      }
+    }
+  }
+}
+
+.web3modal-modal-lightbox { z-index: 200 !important; }

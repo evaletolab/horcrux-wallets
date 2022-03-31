@@ -1,29 +1,42 @@
 <template>
-  <div id="nav">
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </div>
+  <nav id="nav" class="container mg-tabs navigation media-display">
+    <ul>
+      <li><router-link to="/">Create Identity</router-link> |</li>
+      <li><router-link to="/recover">Recover Identity</router-link> |</li>
+      <li><router-link to="/wallets">Wallets</router-link> |</li>
+      <li><router-link to="/about">About </router-link></li>
+    </ul>
+  </nav>
   <router-view/>
+  <footer>
+    <span>You can use this tool without having to be online.</span>
+    <div>Horcrux is an educational project made with <span class="pink">❤️</span></div>
+  </footer>
 </template>
 
 <style lang="scss">
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
 
-#nav {
-  padding: 30px;
+.navigation {
+  display: flex;
+  align-content: center;
+  align-items: center;
+  height: 40px;
+  border-bottom: 2px solid #eee;
+  margin-bottom: 10px;
 
   a {
     font-weight: bold;
-    color: #2c3e50;
 
     &.router-link-exact-active {
     }
-  }
+  }  
 }
+footer{
+  margin-top: 50px;
+  padding: 30px 0;
+  border-top: 1px solid #ddd;
+}
+
+
+
 </style>
