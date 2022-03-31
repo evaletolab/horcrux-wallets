@@ -1,5 +1,5 @@
 <template>
-  <nav id="nav" class="container mg-tabs navigation">
+  <nav id="nav" class="container mg-tabs navigation media-display">
     <ul>
       <li><router-link to="/">Create Identity</router-link> |</li>
       <li><router-link to="/recover">Recover Identity</router-link> |</li>
@@ -8,26 +8,13 @@
     </ul>
   </nav>
   <router-view/>
+  <footer>
+    <span>You can use this tool without having to be online.</span>
+    <div>Horcrux is an educational project made with <span class="pink">❤️</span></div>
+  </footer>
 </template>
 
 <style lang="scss">
-
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin: auto;
-  max-width: 80rem;
-  font-family: 'Roboto', serif;
-}
-
-.container {
-  @media (max-width:500px) {
-    padding: 0 0.4rem!important;
-  }
-}
 
 .navigation {
   display: flex;
@@ -42,48 +29,14 @@
 
     &.router-link-exact-active {
     }
-  }
+  }  
+}
+footer{
+  margin-top: 50px;
+  padding: 30px 0;
+  border-top: 1px solid #ddd;
 }
 
-:root{
-  --mg-color-primary: blue;
-  --mg-color-secondary: blue;
-  --mg-color-tertiary: blue;
-}
-.mg-tabs{
-  .mg-tabs--items{
-    margin-left: 0.2em;
-    margin-right: 0.2em;
-    padding-left: 0.2em;
-    padding-right: 0.2em;      
-  }
-  ul{
-    display: flex;
-    text-align: center;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    list-style: none;
-    cursor: pointer;
-    margin: 0;    
-    @media (max-width:500px) {
-      font-size: 12px;
-    }
-    li{
-      font-weight: bold;
-      border-bottom: 0.3rem solid transparent;
-      color: var(--mg-color-tertiary);
-      opacity: 0.7;
-      flex: 0 0 auto;      
-      margin: 0;
-      padding: 4px 10px;
-      .router-link-active{
-        color: var(--mg-color-primary);
-        border-color: var(--mg-color-primary);
-        overflow-y: hidden;
-        opacity: 1;          
-      }
-    }
-  }
-}
+
 
 </style>

@@ -13,7 +13,8 @@ module.exports = {
   },
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-    'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off'
+    'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
+    '@typescript-eslint/no-var-requires':'off'
   },
   overrides: [
     {
@@ -24,6 +25,26 @@ module.exports = {
       env: {
         mocha: true
       }
-    }
+    },
+    {
+      "files": ["bitcoinjs-lib.js"],
+      "rules": {
+        "no-unused-expressions": "off",
+        "no-prototype-builtins": "off",
+        "no-redeclare": "off",
+        "no-constant-condition": "off",
+        "no-cond-assign": "off",
+        "no-unreachable": "off",
+        "no-case-declarations": "off",
+        "no-empty": "off",
+        "no-undef": "off",
+        "@typescript-eslint/ban-ts-comment": "off",
+        "@typescript-eslint/no-var-requires":"off",
+        "@typescript-eslint/no-empty-function":"off",
+        "@typescript-eslint/no-this-alias":"off",
+        "@typescript-eslint/no-extra-semi":"off",
+        "@typescript-eslint/no-unused-vars":"off"
+      }
+    }    
   ]
 }

@@ -1,63 +1,71 @@
 //import { $config } from './config-service';
-import { ethers, utils }  from 'ethers';
-import { share, combine } from 'secrets.js-34r7h';
+import { ethers }  from 'ethers';
+import { share } from 'secrets.js-34r7h';
 
-type i18n = 'en'|'fr'|'it'|'es';
+export type i18n = 'en'|'fr'|'it'|'es';
 
+export interface Horcrux {
+  share: string;
+  base64: string;
+  version: string;
+}
 class WalletService {
   private _STORAGE = "horcrux-wallet";
   private defaultLang:i18n = 'en';
 
   entropy: Uint8Array = new Uint8Array();
-  //
-  // FIXME, replace all import by ethers@4.0
-  // https://docs.ethers.io/v4/api-wallet.html
+  shares = [];
 
-  async entropy256Bits() {
-    const bytes = new Uint8Array(20);
-    const self: any = window;
-    const cryptoObj = self.crypto || self.msCrypto; // for IE
-    cryptoObj.getRandomValues(bytes);
-    return bytes;
+  get b64() {
+    return ethers.utils.base64;
   }
 
-  async createEntropy() {
-    return this.entropy = await this.entropy256Bits();
+  get b58() {
+    return ethers.utils.base58;
   }
 
   retrieveEntropy(mnemonic: string) {
-    const strEntropy = utils.HDNode.mnemonicToEntropy(mnemonic,ethers.wordlists[this.defaultLang]);
-    return this.entropy = utils.toUtf8Bytes(strEntropy);
+    const strEntropy = ethers.utils.mnemonicToEntropy(mnemonic,ethers.wordlists[this.defaultLang]);
+    return this.entropy = ethers.utils.toUtf8Bytes(strEntropy);
   }
 
-  createMnemonic(entropy: Uint8Array) {
+  createMnemonic(entropy: Uint8Array, size:number) {
     // https://docs.ethers.io/v5/api/utils/hdnode/#Mnemonic
-    const mnemonic =utils.HDNode.entropyToMnemonic(utils.hexlify(entropy),ethers.wordlists[this.defaultLang])
+    // https://github.com/ethers-io/ethers.js/issues/34
+    const sizedEntropy = entropy.slice(0,size);
+    console.log('--- entropySized',sizedEntropy,size);
+    const mnemonic =ethers.utils.entropyToMnemonic(ethers.utils.hexlify(sizedEntropy),ethers.wordlists[this.defaultLang])
     return mnemonic;
   }
 
   isValidMnemonic(mnemonic:string) {
-    return utils.HDNode.isValidMnemonic(mnemonic,ethers.wordlists[this.defaultLang]);
+    return ethers.utils.isValidMnemonic(mnemonic,ethers.wordlists[this.defaultLang]);
   }
 
   async getSeed(mnemonic: string) {
-    return utils.HDNode.mnemonicToSeed(mnemonic);
+    return ethers.utils.mnemonicToSeed(mnemonic);
   }
 
-  async createRootKey(seed: string){
-    const node = utils.HDNode.fromSeed(seed);
-    // defaultPath ⇒ "m/44'/60'/0'/0/0"
-    const child = node.derivePath('m/0/0');
-    // Get the extended public key
-    // let xpub = child.neuter().extendedKey;
-
-    // Get the extended private key
-    return child.extendedKey;
+  //
+  // generate wallets 
+  // https://github.com/iancoleman/bip39/blob/c3c7cebfe4c0b5a9b97e71e781b69e6a08e1fb57/src/js/index.js#L1225
+  createRootKey(seed: string,options: any,count?: number,start?:number){
+    const derived = options.path;
+    const node = ethers.utils.HDNode.fromSeed(seed);
+    const wallets = new Array(count||5).fill(0).map((elem,index)=> node.derivePath(derived+'/'+(index+(start||0))));
+    return wallets;
   }
 
   async createShamirSecretFromSeed(entropy?: Uint8Array) {
-    const hexSeed = utils.hexlify(this.entropy).split('0x');
-    return share(hexSeed[1], 3, 2, 512);
+    const hexSeed = ethers.utils.hexlify(this.entropy).split('0x');
+    const b64 = ethers.utils.base64.encode('0x'+hexSeed[1]);
+    this.shares = share(hexSeed[1], 3, 2,32) as [];
+
+    return this.shares;
+  }
+
+  async getShamirCache() {
+    return this.shares;
   }
 
   //
@@ -82,8 +90,9 @@ class WalletService {
     // let sig = ethers.utils.splitSignature(flatSig)
   }
 
-  setDefaultLang(i18n:i18n) {
+  setDefaultLang(i18n:i18n,size: number) {
     this.defaultLang = i18n;
+    this.createMnemonic(this.entropy,size);
   }
 
 } 

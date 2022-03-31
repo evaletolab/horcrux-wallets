@@ -32,7 +32,7 @@ export class MouseEntropyEngine{
     isFirstCall = true;
     collectedValues: number[] = [];
 
-    buf = new Uint8Array(1); // 1 byte buf for crypto rand values
+    buf = new Uint8Array(2); // 1 byte buf for crypto rand values
     result = ""; // desiredBitCount length binary string
 
     constructor(
@@ -49,9 +49,9 @@ export class MouseEntropyEngine{
 
     getRandomCryptoNibble(): number{
         self.crypto.getRandomValues(this.buf);
-        const binaryByteStr = this.buf[0].toString(2).padStart(8, '0');
-        const nibble = parseInt(binaryByteStr.substring(4), 2);
-        // console.log("crypto nibble", this.buf[0], binaryByteStr, nibble.toString(2).padStart(4, '0'), nibble);
+        const binaryByteStr = (this.buf[0]+this.buf[1]).toString(2).padStart(8, '0');
+        const nibble = parseInt(binaryByteStr.substring(0,8), 2);
+        //console.log("crypto nibble", this.buf[0], binaryByteStr, nibble.toString(2).padStart(4, '0'), nibble);
         return nibble;
     }
 
@@ -85,8 +85,8 @@ export class MouseEntropyEngine{
         if((deltaX * this.previousDeltaX < 0) || (deltaY * this.previousDeltaY < 0)){
             // extract 2 bits per axis
             // (3 is binary 11)
-            const xStr = (x & 3).toString(2).padStart(2, '0');
-            const yStr = (y & 3).toString(2).padStart(2, '0');
+            const xStr = (x & 7).toString(2).padStart(2, '0');
+            const yStr = (y & 7).toString(2).padStart(2, '0');
             
             // xyStr represents nibble of data (4bits)
             const xyStr = xStr + yStr;
