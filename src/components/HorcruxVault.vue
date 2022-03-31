@@ -11,7 +11,7 @@
       
       <p class="info">
         This is an alpha version running on testnet Ropsten. <br/>
-        You can get free rETH on this <a target="_tab" href="https://faucet.egorfine.com/">faucet</a> to test this service<br/>
+        You can get free rETH there <a target="_tab" href="https://faucet.egorfine.com/">faucet</a> to test the service<br/>
         Contract address : 
         <a target="_tab" :href="'https://ropsten.etherscan.io/address/'+address">{{address}}</a>
       </p>
