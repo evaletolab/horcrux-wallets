@@ -42,7 +42,7 @@
       {{value?.share}}
     </div>
     <h3>Vault secret 🔑</h3>
-    <p class="info"><b>Psst;</b> Print this document as a rescue tip</p>
+    <p class="code"><b>Psst;</b> Print this document as a rescue tip</p>
     <div class="secret" :class="{hide:seed==''}">
       <span class="hideemail">{{hideUsermail}}</span><br/>
       {{seed.slice(0,8)}} ****  {{seed.slice(-8)}}
@@ -72,6 +72,7 @@
       padding: 25px;
       width: 100%;
       margin-bottom: 50px;
+      border: 2px solid #eee;
     }
     .published{
       overflow-wrap: anywhere;

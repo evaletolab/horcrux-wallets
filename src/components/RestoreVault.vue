@@ -26,9 +26,6 @@
 
 
     <h3>Vault secret 🔑</h3>
-    <div>
-
-    </div>
     <div class="secret" :class="{hide:seed==''}">
       <p><b>Psst;</b> Compare your secret with your printed document</p>
       <span class="hideemail">{{hideUsermail}}</span><br/>
@@ -62,6 +59,7 @@
       background: #eee;
       padding: 25px;
       width: 100%;
+      border: 2px solid #eee;
     }
     .published{
       overflow-wrap: anywhere;
