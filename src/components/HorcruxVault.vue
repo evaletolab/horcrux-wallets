@@ -3,7 +3,7 @@
     <h1>Horcrux </h1>
     <h3>{{date}} / <span class="bold">v{{value?.version}}</span> </h3>
     <div class="description">    
-      This Horcrux is generated from <a :href="location">{{location}}</a><br/>    
+      Horcrux is generated from <a :href="location">{{location}}</a><br/>    
       This service use Ethereum without any thirdparties. 
       You only need to choose a strong secret and publish the encrypted Vault. 
       Once it's done, we also recommand to <u>print this page as a rescue tip</u> (Ctrl+p).
@@ -11,7 +11,7 @@
       
       <p class="info">
         This is an alpha version running on testnet Ropsten. <br/>
-        You can get free rETH there <a target="_tab" href="https://faucet.egorfine.com/">faucet</a> to test the service<br/>
+        To test the service you can get free ETH there → <a target="_tab" href="https://faucet.egorfine.com/">faucet</a><br/>
         Contract address : 
         <a target="_tab" :href="'https://ropsten.etherscan.io/address/'+address">{{address}}</a>
       </p>
@@ -42,13 +42,10 @@
       {{value?.share}}
     </div>
     <h3>Vault secret 🔑</h3>
-    <div>
-
-    </div>
+    <p class="info"><b>Psst;</b> Print this document as a rescue tip</p>
     <div class="secret" :class="{hide:seed==''}">
-      <p><b>Psst;</b> Print this document as a rescue tip</p>
       <span class="hideemail">{{hideUsermail}}</span><br/>
-      {{seed.slice(0,8)}}... {{seed.slice(-8)}}
+      {{seed.slice(0,8)}} ****  {{seed.slice(-8)}}
     </div>
  </div>  
   
