@@ -3,8 +3,8 @@
     <h1>Restore Horcrux from Vault </h1>
     <p class="description">    
       Your Horcrux is stored safely without any thirdparties. 
-      You only need to remmember your secret to restore the encrypted Vault. 
-      Use your printed page as a rescue tip!
+      You only need to remember your secret (mail+password) to restore the encrypted Vault. 
+      Also use your printed page as a rescue tip!
       <p class="info">
         This is an alpha version running on testnet Ropsten. <br/>
         Contract address : 

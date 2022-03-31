@@ -6,7 +6,7 @@
       This Horcrux is generated from <a :href="location">{{location}}</a><br/>    
       This service use Ethereum without any thirdparties. 
       You only need to choose a strong secret and publish the encrypted Vault. 
-      Once it's done, we also recommand to print this page as a rescue tip (Ctrl+p).
+      Once it's done, we also recommand to <u>print this page as a rescue tip</u> (Ctrl+p).
       
       
       <p class="info">
