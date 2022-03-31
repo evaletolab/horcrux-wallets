@@ -1,4 +1,5 @@
 A tool to organise and manage secure paper wallets without thirdparties.
+![image](https://user-images.githubusercontent.com/1422935/161034995-71ee7a24-5978-42cb-a7e2-5827fa21b593.png)
 
 # Steganography
 
