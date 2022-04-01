@@ -1,1 +1,2 @@
-const bitcoin = require('bitcoinjs-lib');
+exports.bitcoinjs = require('bitcoinjs-lib');
+exports.ecpair = require('ecpair');

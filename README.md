@@ -5,6 +5,11 @@ A tool to organise and manage paper wallets without thirdparties.
 > npm i
 > npm run btc
 ```
+> Note about bitcoinjs-lib.js:
+> Remove all tslint the comments /* eslint-disable node/no-deprecated-api */
+> Remove Typescript fields for class ECPair
+
+
 try the demo, https://evaletolab.github.io/horcrux-wallets/
 
 # Project goal

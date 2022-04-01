@@ -33,7 +33,7 @@
 
     <div class="mg-tabs">
       <ul >
-        <li @click="onDerivation('btc')"  :class="{active:!defaultDerivation.index}">BTC</li>
+        <li @click="onDerivation('btc')"  :class="{active:!defaultDerivation.index}">BTC (legacy)</li>
         <li @click="onDerivation('segwit')"  :class="{active:defaultDerivation.index == 1}">BTC segwit</li>
         <li @click="onDerivation('eth')" :class="{active:(defaultDerivation.index == 2)}">ETH</li>
       </ul>
@@ -54,7 +54,7 @@
           </tr>
         </tbody>
       </table>      
-      <h3>Slot for your bank</h3>
+      <h3>Slot for exchange</h3>
       <p>Secure your financial activities</p>
       <table>
         <thead>
@@ -176,6 +176,9 @@ export default class Wallets extends Vue {
   services:HDNode[]|any[] = [];
   pension:HDNode[]|any[] = [];
 
+  // - monero = 128
+  // - eth = 60
+  // - btc = 0
   // address type (Legacy, P2HS Segwit, P2WPKH Segwit) 
   // FIXME config should be centralized 
   // P2PK: "Pay To Public Key"
@@ -215,18 +218,13 @@ export default class Wallets extends Vue {
     return $wallet.isValidMnemonic(this.mnemonic);
   }
 
+  //
+  // filter for address
   address(string: string) {
     return string;
-    //return (this.defaultDerivation.b58)? ethers.utils.base58.encode('0x'+string):string;
   }
-  //
-  // defaultPath ⇒ "m/44'/60'/0'/0/0"
-  // - monero = 128
-  // - eth = 60
-  // - btc = 0
-  // Bitcoin Core, MultiBit HD  ⇒ "m/0'
-  // Ethereum, Ledger, Blockchain.info, Coinomi ⇒ "m/44'
-  async createWallets() {
+
+async createWallets() {
     if(!this.isValidMnemonic){
       return;
     }
@@ -254,9 +252,9 @@ export default class Wallets extends Vue {
     };
 
     const seed= await $wallet.getSeed(this.mnemonic);
-    this.services = $wallet.createRootKey(seed,this.defaultDerivation, 5,0).map(network);
-    this.wallets = $wallet.createRootKey(seed,this.defaultDerivation, 5,5).map(network);
-    this.pension = $wallet.createRootKey(seed,this.defaultDerivation, 5,10).map(network);
+    this.services = $wallet.createRootKey(seed,this.defaultDerivation, 10,0).map(network);
+    this.wallets = $wallet.createRootKey(seed,this.defaultDerivation, 10,5).map(network);
+    this.pension = $wallet.createRootKey(seed,this.defaultDerivation, 10,10).map(network);
     return;
   }
 
