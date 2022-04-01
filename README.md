@@ -35,7 +35,7 @@ We create a simple ethereum contract that can store one Horcrux (SSS split)  in 
 
 > Note: PoW on the client side, is a simple solution to to discourage the brut force attack.
 
-**3/5** Because the initial Horcrux should not be stored on a public blockchain, we create a `privateKey` based on the KECCAK256 hash of `iid` and `pow`. The the Horcrux has tobe MIXED (or encrypted) before to be stored. 
+**3/5** Because the initial Horcrux should not be stored on a public blockchain, we derive a `privateKey` based on the KECCAK256 hash of `iid` and `pow`. The the Horcrux has tobe MIXED (or encrypted) before to be stored. 
 
 
 **4/5** At this point, we derive the key used for the storage with the KECCAK256 hash of the privateKey. That means that neither the privateKey or the horcrux can be restored.
