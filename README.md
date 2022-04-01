@@ -37,7 +37,7 @@ We create a simple ethereum contract that can store one Horcrux (SSS split)  in 
 
 **4/5** At this point, we derive the key used for the storage with the KECCAK256 hash of the privateKey. That means that neither the privateKey or the horcrux can be restored.
 
-**5/5** to redeem the content we use a pure function in solidity, that means no transaction, 
+**5/5** to restore the content we use a pur function in solidity, that means no transaction, it's a silent call
 
   
 <br clear="right" />  
