@@ -15,7 +15,7 @@ We propose the usage of Shamir Shared Secret (SSS) to protect your Mnemonic with
 
 * Use printed paper.
 * Use a digital pipcture with our Steganography solution.
-* And use our Horcrux SmartContract. **--v**
+* And use our Horcrux SmartContract. 👇
 
 
 ## Store one Horcrux on Ethereum
