@@ -15,12 +15,8 @@ describe("Horcrux", function () {
   it("create unique seed based on username/password", async function() {
     const seed = stringToHEX256("userfrom1233@bigcomp.com12LP#QOlp09");
     const work = requiresWork(seed,difficulty);
-    const hash =  ethers.utils.keccak256(ethers.utils.defaultAbiCoder.encode(['uint256','uint256'],[seed,'0x'+work[1]]));
-    console.log('---seed ',seed);
-    console.log('---nonce ',work[1]);
-    // console.log('---encoder+keccak256',hash);
-    //console.log('---proof ',proofOfWork(seed,hash,'0x'+work[1]));
-    const pow = proofOfWork(seed,hash,'0x'+work[1]);
+    const hash =  ethers.utils.keccak256(ethers.utils.defaultAbiCoder.encode(['uint256','uint256'],[seed,work[1]]));
+    const pow = proofOfWork(seed,hash,work[1]);
     expect(pow).to.be.true;
   })
 
@@ -56,7 +52,7 @@ describe("Horcrux", function () {
 
     const seed = stringToHEX256("userfrom1233@bigcomp.com1LP#QOlp09");
     const share = "0x0801ac30b898476dfb96b65ba8ce36eac7b07d3f0ad18c970eb7b49381c6";
-    const nonce = '0x'+requiresWork(seed,difficulty)[1];
+    const nonce = requiresWork(seed,difficulty)[1];
     const privateKey =  ethers.utils.keccak256(ethers.utils.defaultAbiCoder.encode(['uint256','uint256'],[seed,nonce]));
     const hash = ethers.utils.keccak256(privateKey);
 
@@ -86,6 +82,25 @@ describe("Horcrux", function () {
   });
   
 
+  it("create horcrux with used address throw an error", async function () {
+    const Horcrux = await ethers.getContractFactory("Horcrux");
+    const horcrux = await Horcrux.deploy();
+    await horcrux.deployed();
+
+
+    const seed = stringToHEX256("userfrom1233@bigcomp.com1LP#QOlp09");
+    const share = "0x0801ac30b898476dfb96b65ba8ce36eac7b07d3f0ad18c970eb7b49381c6";
+    const nonce = requiresWork(seed,difficulty)[1];
+    const privateKey =  ethers.utils.keccak256(ethers.utils.defaultAbiCoder.encode(['uint256','uint256'],[seed,nonce]));
+    const hash = ethers.utils.keccak256(privateKey);
+
+    
+    await horcrux.create(hash,share);
+    //
+    // retry throw an error
+    await expect(horcrux.create(hash,share)).to.be.revertedWith('Horcrux: this destination is not available');
+  });
+
 
   // https://opengsn.org/
   // https://github.com/bitclave/Feeless
@@ -97,11 +112,10 @@ describe("Horcrux", function () {
 
     const iface = new ethers.utils.Interface(abiCreate);
     const share = "0x0801ac30b898476dfb96b65ba8ce36eac7b07d3f0ad18c970eb7b49381c6";
-    const nonce = '0x'+requiresWork(seed,difficulty)[1];
+    const nonce = requiresWork(seed,difficulty)[1];
     const encoder = ethers.utils.defaultAbiCoder.encode(['uint256','uint256'],[seed,nonce])
     const source = ethers.utils.keccak256(encoder);
     const encoded = iface.encodeFunctionData("create", [source,share]);    
-    //console.log('---calldata ',encoded);
     expect(encoded).to.be.a.string;
 
     //
@@ -134,8 +148,6 @@ describe("Horcrux", function () {
       data:encoded,
       chainId:1
     })
-    console.log('----1',encodedtx1)
-    console.log('----2',encodedtx2)
 
     //
     // TODO https://github.com/status-im/account-contracts/blob/develop/contracts/account/AccountGasAbstract.sol
