@@ -27,10 +27,10 @@ We create a simple ethereum contract that can store one Horcrux (SSS split)  in 
 **1/8** To secure an Horcrux user have to choose and remember an email and password. 
 
 
-**2/8** We computes a pair of values to secure our process. First one is the KECCAK256 hash of the text `ethers.utils.id(username+password)` that produce a `iid` (identity id). We compute the value `pow` with the Proof-Of-Work of the `iid`.
+**2/8** We computes a pair of values to secure our process. First one is the KECCAK256 hash of the text `ethers.utils.id(username+password)` that produce a `iid` (identity id). We compute the value `pow` with the Proof-Of-Work of the `iid` and there are used for:
 
-* `iid` and `pow` are used to mix (XOR) the Horcrux
-* `iid` and `pow` are used to redeem the Horcrux
+* mix (XOR) or encrypt the Horcrux
+* redeem the Horcrux 
 
 **3/8** Because the initial Horcrux should not be stored on a public blockchain, we create a `privateKey` based on the KECCAK256 hash of `iid` and `pow`. The the Horcrux has tobe MIXED (or encrypted) before to be stored. 
 
