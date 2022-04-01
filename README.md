@@ -24,20 +24,21 @@ We propose the usage of Shamir Shared Secret (SSS) to protect your Mnemonic with
 
 We create a simple ethereum contract that can store one Horcrux (SSS split)  in a secure way. Here is the main idea 🧵
 
-**1/8** To secure an Horcrux user have to choose and remember an email and password. 
+**1/5** To secure an Horcrux user have to choose and remember an email and password. 
 
 
-**2/8** We computes a pair of values to secure our process. First one is the KECCAK256 hash of the text `ethers.utils.id(username+password)` that produce a `iid` (identity id). We compute the value `pow` with the Proof-Of-Work of the `iid` and there are used for:
+**2/5** We computes a pair of values to secure our process. First one is the KECCAK256 hash of the text `ethers.utils.id(username+password)` that produce a `iid` (identity id). We compute the value `pow` with the Proof-Of-Work of the `iid` and there are used for:
 
 * mix (XOR) or encrypt the Horcrux
 * redeem the Horcrux 
 
-**3/8** Because the initial Horcrux should not be stored on a public blockchain, we create a `privateKey` based on the KECCAK256 hash of `iid` and `pow`. The the Horcrux has tobe MIXED (or encrypted) before to be stored. 
+**3/5** Because the initial Horcrux should not be stored on a public blockchain, we create a `privateKey` based on the KECCAK256 hash of `iid` and `pow`. The the Horcrux has tobe MIXED (or encrypted) before to be stored. 
 
 
-**4/8**
+**4/5** At this point, we derive the key used for the storage with the KECCAK256 hash of the privateKey. That means that neither the privateKey or the horcrux can be restored.
 
-> TODO 
+**5/5** to redeem the content we use a pure function in solidity, that means no transaction, 
+
   
 <br clear="right" />  
   
