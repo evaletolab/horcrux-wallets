@@ -185,8 +185,13 @@ export default class Drawer extends Vue {
     -webkit-overflow-scrolling: touch;
     height: 100%;
     transition: all 200ms;
-
+    scrollbar-width: none;  /* Firefox */
   }
+
+  section.drawer div.content::-webkit-scrollbar {
+    display: none;
+  }
+
 
   section.drawer div.content h3{
     width: 100%;

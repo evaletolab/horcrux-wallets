@@ -49,7 +49,8 @@
       <span class="hideemail">{{hideUsermail}}</span><br/>
       {{seed.slice(0,8)}} ****  {{seed.slice(-8)}}
     </div>
-    <div class="info">
+    <hr/>
+    <div class="code">
       Contract address : 
         <a target="_tab" :href="'https://ropsten.etherscan.io/address/'+address">{{address}}</a>
     </div>
