@@ -54,7 +54,8 @@
 <style scoped lang="scss">
   .content{
     max-width: 700px;
-    margin: auto;      
+    margin: auto;    
+    margin-bottom:50px;  
     input.title {
       height: 6rem;
       font-size: 3rem;

@@ -58,6 +58,9 @@ ol{
   margin: 0.8em -0.6em;
   background-color: rgb(175 184 193 / 20%);
   border-radius: 6px;    
+  overflow: hidden;
+  wmax-width: 300px;
+  text-overflow: ellipsis;
 }
 
 .code,code {
