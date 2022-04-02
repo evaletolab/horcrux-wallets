@@ -6,14 +6,12 @@
       Horcrux is generated from <a :href="location">{{location}}</a><br/>    
       This service use Ethereum without any thirdparties. 
       You only need to choose a strong secret and publish the encrypted Vault. 
-      Once it's done, we also recommand to <u>print this page as a rescue tip</u> (Ctrl+p).
+      Once it's done, we also recommand you to <u>print this page as a rescue tip</u> (Ctrl+p).
       
       
       <p class="info">
         This is an alpha version running on testnet Ropsten. <br/>
-        To test the service you can get free ETH there → <a target="_tab" href="https://faucet.egorfine.com/">faucet</a><br/>
-        Contract address : 
-        <a target="_tab" :href="'https://ropsten.etherscan.io/address/'+address">{{address}}</a>
+        To test the service you can get free ETH there → <a target="_tab" href="https://faucet.egorfine.com/">faucet</a><br/>        
       </p>
       
 
@@ -21,7 +19,7 @@
 
     <div class="media-display">
       <fieldset>
-        <label for="email">Use an email of your choise to generate your the first part of the secret</label>
+        <label for="email">Use an email of your choise to generate the first part of the secret</label>
         <input type="email"  v-model="username" placeholder="email@g.com" id="email" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
         <password label="Complete your secret with a strong password" 
                   @value="(value)=> password=value" @score="onScore"/>
@@ -50,6 +48,10 @@
     <div class="secret" :class="{hide:seed==''}">
       <span class="hideemail">{{hideUsermail}}</span><br/>
       {{seed.slice(0,8)}} ****  {{seed.slice(-8)}}
+    </div>
+    <div class="info">
+      Contract address : 
+        <a target="_tab" :href="'https://ropsten.etherscan.io/address/'+address">{{address}}</a>
     </div>
  </div>  
   
