@@ -31,6 +31,10 @@
         <button @click="onPublish" class="button-primary" :disabled="(seed == '')||receipt" > {{publishing?'Publishing...':'Publish'}} </button>
       </fieldset>
     </div>
+    <div class="published" :class="{hide:(!tx)}">
+      Waiting transaction ... {{tx?.hash}}
+    </div>
+
     <div class="published" :class="{hide:(!receipt)}">
       Transaction confirmed in block {{receipt?.blockNumber}} <br/>
       Gas used: {{receipt?.gasUsed.toString()}}
@@ -162,6 +166,7 @@ export default class HorcruxVault extends Vue {
   account = "";
   balance = "0";
   receipt:any = null;
+  tx:any = null;
   publishing = false;
 
 
@@ -312,12 +317,13 @@ export default class HorcruxVault extends Vue {
       const horcrux = new ethers.Contract(this.address,this.abi,this.signer);
 
       console.log('---- DEBUG create',hash,mixed);
-      const tx = await horcrux.create(hash,mixed);
+      this.tx = await horcrux.create(hash,mixed);
 
-      console.log(`Transaction hash: ${tx.hash}`);
+      console.log(`Transaction hash: ${this.tx.hash}`);
 
-      this.receipt = await tx.wait();
+      this.receipt = await this.tx.wait();
       this.publishing = false;
+      this.tx = null;
       console.log(`Transaction confirmed in block ${this.receipt.blockNumber}`);
       console.log(`Gas used: ${this.receipt.gasUsed.toString()}`);
       await this.metamaskdisconnect();

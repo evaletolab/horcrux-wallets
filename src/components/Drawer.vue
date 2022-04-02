@@ -1,11 +1,12 @@
 <template>
   <transition name="slide">
     <section  class="drawer primary" :class="{open:open}" @click="onClose(false)">
-      <button class="icon media-display" v-if="displayClose" @click="onClose(true)">
+      <button class="icon media-display" 
+          v-if="displayClose" @click="onClose(true)" :class="{'exited': (scrollDirection > 0) }">
         ❎ <span class="hide material-icons-outlined">playlist_remove</span>
       </button>
 
-      <div ref="container" v-if="open" class="content">
+      <div ref="container" v-if="open" class="content" @scroll="onScroll">
         <slot />
       </div>        
     </section>
@@ -33,11 +34,35 @@ import { Watch } from 'vue-property-decorator'
 export default class Drawer extends Vue {
   open!:boolean;
   displayClose!:boolean;
+  lastScrollTop = 50;
+  scrollDirection = 0;
 
+  //
+  // helpers for typescript
+  $refs!: {
+    container: HTMLElement
+  }  
+
+  onScroll($event:any) {    
+    const st = $event.target.scrollTop;
+    //
+    // downscroll code
+    if (st > this.lastScrollTop){
+      this.scrollDirection = 1;
+    } 
+    //
+    // upscroll code
+    else {          
+      this.scrollDirection = -1;
+    }
+
+    //
+    // For Mobile or negative scrolling
+    this.lastScrollTop = st <= 0 ? 0 : st; 
+  }
   
   @Watch('open')
   onOpenChanged(value: boolean, oldValue: boolean) {
-    console.log('----',value)
     if(value) {
       document.body.classList.add('body-lock');
     }else{
@@ -125,6 +150,12 @@ export default class Drawer extends Vue {
     font-weight: 100;
     font-family: cursive;
     border: 0;
+    opacity: 1;
+    transition: all 200ms;      
+  }
+
+  section.drawer .icon.exited {
+    opacity: 0;
   }
 
   section.drawer.open {
