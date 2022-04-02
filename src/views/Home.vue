@@ -92,14 +92,14 @@
     </div>   -->
 
     <!-- Shamir Secret Sharing Scheme -->
-    <div class="sharing" :class="{hide:(!shares.length)}">
+    <div class="sharing">
       <div class="header">
           <h2>Use Horcruxes/SSS to recover your identity</h2>
-          <p>To increase the security of your identity, You can break the Menominc phrase in 3 separate pieces (called Horcruxes).
+          <p>To increase the security of your identity, We break the Menominc phrase in 3 separate pieces (called Horcruxes).
             Your need at <b>least two pieces</b> to reconstitute your identity. 
             You decide where you want to store each Horcrux. We recomend you keep them in separate places/locations. 
             We provide a few alternatives all independant of trusted thirdparties:
-            <ul>
+            <ul :class="{hide1:(!shares.length)}">
               <li>Store them on printed paper.</li>
               <li>Use our Vault SmartContract a digital and secure space to store Horcruxes.</li>
               <li>Or store them on digital pipcture with our Steganography solution.</li>
