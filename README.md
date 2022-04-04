@@ -31,7 +31,7 @@ We created a simple ethereum contract that can store one Horcrux (SSS split)  in
 What? storing a secret in a public blochain is insaine !
 
 
-**0/5** First, we store one share of Shamir and [Shamir](https://github.com/WebOfTrustInfo/rwot8-barcelona/blob/master/draft-documents/shamir-secret-sharing-best-practices.md) is considered secure. That is, any combination of shares less than the necessary threshold convey absolutely no information about the secret. Seconds, the shared part is XOR mixed with a private key before to be stored. We already planned a tools to delegate the storage and avoid the relation between the original wallet the stored Horcrux.
+**0/5** First, we store one share of Shamir [1](https://github.com/WebOfTrustInfo/rwot8-barcelona/blob/master/draft-documents/shamir-secret-sharing-best-practices.md) [2](https://en.wikipedia.org/wiki/Shamir%27s_Secret_Sharing), [3](https://www.npmjs.com/package/secrets.js-34r7h) is considered secure. That is, any combination of shares less than the necessary threshold convey absolutely no information about the secret. Seconds, the shared part is XOR mixed with a private key before to be stored. We already planned a tools to delegate the storage and avoid the relation between the original wallet the stored Horcrux.
 
 
 **1/5** To secure an Horcrux user have to choose and remember an email and password. 
