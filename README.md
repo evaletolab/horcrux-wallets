@@ -30,7 +30,7 @@ We propose the usage of Shamir Shared Secret (SSS) to protect your Mnemonic with
 We create a simple ethereum contract that can store one Horcrux (SSS split)  in a secure way. Here is the main idea 🧵
 What stored a secret in a public blochain is insaine !
 
-**0/5** First, we store one share of Shamir that is useless Then [Shamir](https://github.com/WebOfTrustInfo/rwot8-barcelona/blob/master/draft-documents/shamir-secret-sharing-best-practices.md) is considered as secure . Seconds, the shared part is XOR mixed before to be stored. Third, we already planned a tools to delegate the storage and avoid the relation between one wallet and one Horcrux.
+**0/5** First, we store one share of Shamir that is useless Then [Shamir](https://github.com/WebOfTrustInfo/rwot8-barcelona/blob/master/draft-documents/shamir-secret-sharing-best-practices.md) is considered information-theoretically secure. That is, any combination of shares less than the necessary threshold convey absolutely no information about the secret. Seconds, the shared part is XOR mixed with a private key before to be stored. Third, we already planned a tools to delegate the storage and avoid the relation between one wallet and one Horcrux.
 
 
 **1/5** To secure an Horcrux user have to choose and remember an email and password. 
