@@ -3,7 +3,10 @@ import { BigNumber, ethers } from 'ethers';
 // const defaultDifficulty = new BigNumber('0xfff')
 
 
-
+//
+// FIXME, use scrypt (or AES-js) instead ! 
+// https://github.com/ethers-io/ethers.js/blob/564c5fa36458683571f94806b7563a6e2e695ab0/wallet/secret-storage.js#L230
+// https://www.npmjs.com/package/aes-js
 export function requiresWork(string: string, difficulty: BigNumber) {
   for (let index = 0;; index++) {
     const work = BigNumber.from(ethers.utils.keccak256(ethers.utils.defaultAbiCoder.encode(['uint','uint'],[string,index])));
