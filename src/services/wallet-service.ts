@@ -1,5 +1,6 @@
 //import { $config } from './config-service';
 import { ethers }  from 'ethers';
+import { SigningKey } from 'ethers/lib/utils';
 import { share } from 'secrets.js-34r7h';
 
 export type i18n = 'en'|'fr'|'it'|'es';
@@ -42,6 +43,11 @@ class WalletService {
     return ethers.utils.isValidMnemonic(mnemonic,ethers.wordlists[this.defaultLang]);
   }
 
+  isValidPrivateKey(pKey:string) {
+    const hex32 = (typeof(pKey) === "string" && pKey.match(/^(0x)?[0-9a-f]{64}$/i));
+    return hex32;
+  }
+
   async getSeed(mnemonic: string) {
     return ethers.utils.mnemonicToSeed(mnemonic);
   }
@@ -54,6 +60,13 @@ class WalletService {
     const node = ethers.utils.HDNode.fromSeed(seed);
     const wallets = new Array(count||5).fill(0).map((elem,index)=> node.derivePath(derived+'/'+(index+(start||0))));
     return wallets;
+  }
+
+  createFromKey(privateKey:string){
+    const wallet = new ethers.Wallet(privateKey);
+    //const wallet2 = new SigningKey(privateKey);
+    console.log('---- DBG pKey',wallet);
+    return wallet;
   }
 
   async createShamirSecretFromSeed(entropy?: Uint8Array) {
