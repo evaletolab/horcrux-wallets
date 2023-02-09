@@ -62,3 +62,8 @@ What? storing a secret in a public blochain is insaine !
 > TODO
 
 # Printer
+
+
+# bitcoin
+
+* https://github.com/bitcoinjs/bitcoinjs-lib/blob/master/test/integration/addresses.spec.ts
