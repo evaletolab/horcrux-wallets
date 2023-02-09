@@ -124,6 +124,7 @@ import { $wallet } from '../services';
 // https://forum.stacks.org/t/how-to-sign-data-with-app-private-key/6603
 
 const bitcoin = require('../../bitcoinjs-lib');
+const bitcoinMessage = require('bitcoinjs-message');
 
 @Options({
   components: {
@@ -184,15 +185,21 @@ export default class Wallets extends Vue {
       switch(this.defaultDerivation.index){
         case 0:// P2PK et P2PKH
         return { 
+          btc:true,
           address:bitcoin.payments.p2pkh({ pubkey: keyPair.publicKey }).address,
           pubicKey:keyPair.publicKey.toString('hex'),
-          privateKey:keyPair.toWIF()
+          compressed:keyPair.compressed,
+          privateKey:keyPair.toWIF(),
+          privateKeyBuffer: keyPair.privateKey
         };
         case 1:
         return { 
+          btc:true,
           address:bitcoin.payments.p2wpkh({ pubkey: keyPair.publicKey }).address,
           pubicKey:keyPair.publicKey.toString('hex'),
-          privateKey:keyPair.toWIF()
+          compressed:keyPair.compressed,
+          privateKey:keyPair.toWIF(),
+          privateKeyBuffer: keyPair.privateKey
         };
         default:
         return wallet;
@@ -206,7 +213,15 @@ export default class Wallets extends Vue {
 
 
   async updatePrivate($event:any) {
-    this.privateKey = $event.target.value;
+    try{
+      //KzqNhjDJq7abHcJiqyCegQYoUh1e2Tyx24rHWd5NBLAheuFTJK4Z
+      const keyPair = bitcoin.ECPair.fromWIF($event.target.value);
+      this.privateKey = '0x'+keyPair.privateKey.toString('hex');
+    }catch(err){
+      this.privateKey = $event.target.value;
+    }
+  
+
     console.log(this.privateKey,this.privateKey.length)
     await this.createWallet();
   }
@@ -219,7 +234,12 @@ export default class Wallets extends Vue {
 
   async onSignMessage(){
     //FIXME, for BTC use lib https://github.com/bitcoinjs/bitcoinjs-message
-    this.signedMessage = await this.wallet.signMessage(this.rootMessage);
+    if(this.wallet.btc){
+      this.signedMessage = bitcoinMessage.sign(this.rootMessage, this.wallet.privateKeyBuffer, this.wallet.compressed).toString('base64');
+      //console.log('----DBG private key',this.wallet.privateKeyBuffer.toString('base64'))
+    }else{
+      this.signedMessage = await this.wallet.signMessage(this.rootMessage);
+    }
   }
 }
 </script>

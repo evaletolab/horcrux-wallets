@@ -1,6 +1,6 @@
 {
   "name": "horcrux",
-  "version": "0.9.40",
+  "version": "0.10.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -11,8 +11,9 @@
     "btc": "browserify bitcoin.js --standalone bitcoinjs > ./bitcoinjs-lib.js"
   },
   "dependencies": {
-    "@coinbase/wallet-sdk": "^3.0.5",
-    "@walletconnect/web3-provider": "^1.7.7",
+    "@coinbase/wallet-sdk": "^3.6.3",
+    "@walletconnect/web3-provider": "^1.8.0",
+    "bitcoinjs-message": "^2.2.0",
     "ethers": "^5.5.4",
     "qr-scanner": "^1.4.1",
     "qrcode": "^1.5.0",
@@ -22,7 +23,7 @@
     "vue-class-component": "^8.0.0-rc.1",
     "vue-property-decorator": "^9.1.2",
     "vue-router": "^4.0.12",
-    "web3modal": "^1.9.5",
+    "web3modal": "^1.9.12",
     "zxcvbn-typescript": "^5.0.1"
   },
   "devDependencies": {
