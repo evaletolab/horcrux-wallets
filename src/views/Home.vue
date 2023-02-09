@@ -307,6 +307,7 @@ export default class Home extends Vue {
     this.seed = (await $wallet.getSeed(this.mnemonic));
     this.shares = await $wallet.createShamirSecretFromSeed();
 
+
   }
 
   async onEntropyCollected(entropyResult: I_MouseEntropyResult){
@@ -317,6 +318,10 @@ export default class Home extends Vue {
     this.mnemonic = await $wallet.createMnemonic($wallet.entropy,this.mnemonicBytes);
     this.seed = (await $wallet.getSeed(this.mnemonic));
     this.shares = await $wallet.createShamirSecretFromSeed();
+
+    //
+    // FOR demon only
+    $wallet.memoryMnemonic = this.mnemonic;
 
   }
 

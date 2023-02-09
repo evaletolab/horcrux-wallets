@@ -14,6 +14,7 @@ class WalletService {
   private _STORAGE = "horcrux-wallet";
   private defaultLang:i18n = 'en';
 
+  public memoryMnemonic:string|null = null;
   entropy: Uint8Array = new Uint8Array();
   shares = [];
 

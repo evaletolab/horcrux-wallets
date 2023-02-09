@@ -7,7 +7,7 @@
  
     <!-- BIP39 Mnemonic -->
     <div class="mnemonic">        
-        <textarea  :value="''" @input="updateMnemonic" class="phrase private-data " autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">              
+        <textarea  :value="mnemonic" @input="updateMnemonic" class="phrase private-data " autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">              
         </textarea>
 
         <div class="warning" :class="{hide:!isValidMnemonic}">
@@ -218,17 +218,26 @@ export default class Wallets extends Vue {
     return $wallet.isValidMnemonic(this.mnemonic);
   }
 
+
+  async mounted() {
+    //
+    // FOR demon only
+    this.mnemonic = $wallet.memoryMnemonic || '';
+    if(this.mnemonic.length) {
+      this.createWallets();
+    }
+  }
+
   //
   // filter for address
   address(string: string) {
     return string;
   }
 
-async createWallets() {
+  async createWallets() {
     if(!this.isValidMnemonic){
       return;
     }
-
 
     const network = (wallet:HDNode) => {
       const privateKey = ethers.utils.arrayify(wallet.privateKey);
@@ -260,6 +269,11 @@ async createWallets() {
 
   async updateMnemonic($event:any) {
     this.mnemonic = $event.target.value;
+
+    //
+    // FOR demo only
+    $wallet.memoryMnemonic = this.mnemonic;
+
     await this.createWallets();
   }
 
