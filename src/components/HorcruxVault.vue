@@ -25,8 +25,9 @@
                   @value="(value)=> password=value" @score="onScore"/>
 
         <input type="password"  v-model="confirmation" placeholder="Confirm the password" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-        <button @click="onGenerate" class="button-primary" :disabled="!isPasswordOk">{{computing?'Computing...':'Create Vault'}}   </button>
-        <button @click="onPublish" class="button-primary" :disabled="(seed == '')||receipt" > {{publishing?'Publishing...':'Publish'}} </button>
+        <button @click="onGenerate" class="button-primary" :disabled="!isPasswordOk">{{computing?'Computing...':'Create Vault'}}</button>
+        <button @click="onPublish" class="button-primary" :disabled="(seed == '')||receipt" > {{publishing?'Publishing...':'Publish/ETH'}} </button>
+        <button @click="onPublishDrive" class="button-primary" :disabled="(seed == '')||receipt" > {{publishing?'Publishing...':'Publish/DRIVE'}} </button>
       </fieldset>
     </div>
     <div class="published" :class="{hide:(!tx)}">
@@ -47,10 +48,11 @@
     <p class="code"><b>Psst;</b> Print this document as a rescue tip</p>
     <div class="secret" :class="{hide:seed==''}">
       <span class="hideemail">{{hideUsermail}}</span><br/>
-      {{seed.slice(0,8)}} ****  {{seed.slice(-8)}}
+      {{seed.slice(0,8)}} ****  {{seed.slice(-8)}}<br/>
+      {{mixed}}
     </div>
     <hr/>
-    <div class="code">
+    <div class="code hide-print">
       Contract address : 
         <a target="_tab" :href="'https://ropsten.etherscan.io/address/'+address">{{address}}</a>
     </div>
@@ -171,6 +173,7 @@ export default class HorcruxVault extends Vue {
   receipt:any = null;
   tx:any = null;
   publishing = false;
+  mixed ="";
 
 
   //
@@ -209,6 +212,10 @@ export default class HorcruxVault extends Vue {
 
   get location (){
     return document.location.href;
+  }
+
+  async mounted(){
+      this.mixed = "";
   }
 
   async metamaskdisconnect () {
@@ -294,6 +301,33 @@ export default class HorcruxVault extends Vue {
     await POW();
   }
 
+  async onPublishDrive($event:Event) {
+    $event.preventDefault();
+    try{
+      this.receipt = null;
+      this.publishing = true;
+
+      //
+      // init contract state
+      const privateKey =  ethers.utils.keccak256(ethers.utils.defaultAbiCoder.encode(['uint256','uint256'],[this.seed,this.nonce]));
+      const hash = ethers.utils.keccak256(privateKey);
+
+      //
+      // simple mixer
+      const share = this.value.share;
+      let bytes = xor_encrypt(
+        ethers.utils.arrayify('0x'+share),
+        ethers.utils.arrayify(privateKey.substring(0,16))
+      );
+      const mixed = this.mixed = ethers.utils.hexlify(bytes);
+      console.log('---- DEBUG create',hash,mixed);
+
+    }catch(err) {
+
+    }
+
+  }
+
   async onPublish($event:Event) {
     $event.preventDefault();
     try{
@@ -314,7 +348,7 @@ export default class HorcruxVault extends Vue {
         ethers.utils.arrayify('0x'+share),
         ethers.utils.arrayify(privateKey.substring(0,16))
       );
-      const mixed = ethers.utils.hexlify(bytes);
+      const mixed = this.mixed = ethers.utils.hexlify(bytes);
       console.log('--- DEBUG mixed',mixed);
       
       const horcrux = new ethers.Contract(this.address,this.abi,this.signer);
