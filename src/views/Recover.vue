@@ -176,6 +176,7 @@ export default class Recover extends Vue {
   onQrScanDecoded(result:{value:string}){
     // console.log("got qrscan", result.value);
     this.horcruxs[this.currentIndex] = result.value;
+    this.drawer.print = false;
   }
 
 }

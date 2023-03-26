@@ -98,11 +98,11 @@
           <p>To increase the security of your identity, We break the Menominc phrase in 3 separate pieces (called Horcruxes).
             Your need at <b>least two pieces</b> to reconstitute your identity. 
             You decide where you want to store each Horcrux. We recomend you keep them in separate places/locations. 
-            We provide a few alternatives all independant of trusted thirdparties:
+            We provide a few alternatives (do not keep all of them on trusted thirdparties):
             <ul :class="{hide1:(!shares.length)}">
-              <li>Store them on printed paper.</li>
-              <li>Use our Vault SmartContract a digital and secure space to store Horcruxes.</li>
-              <li>Or store them on digital pipcture with our Steganography solution.</li>
+              <li>Store them on printed paper and keep them in separate places/locations.</li>
+              <li>Use our Vault SmartContract a digital and secure space to store ONE Horcrux.</li>
+              <li>Or store ONE Horcrux on cloud provider</li>
             </ul>
           </p>
 
@@ -112,7 +112,7 @@
         <div class="action">
           <a  class="store" @click="onHorcrux(share,'print')">print</a>
           <a  class="store" @click="onHorcrux(share,'vault')">vault</a>
-          <a  class="store">Steganography</a>
+          <a  class="store">dropbox/microsoft/google</a>
         </div>
       </div>
     </div>
@@ -289,7 +289,7 @@ export default class Home extends Vue {
     }
     return {
       version:this._currentHorcrux.substring(0,3),
-      share:this._currentHorcrux.substring(1),
+      share:this._currentHorcrux,
       base64:($wallet.b64.encode('0x'+this._currentHorcrux+'0'))
     };
   }
