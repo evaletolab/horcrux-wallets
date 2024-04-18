@@ -1,6 +1,6 @@
 A tool to organise and manage paper wallets without thirdparties.
 
-## ⇾ Follow our funky new development ⇾ [web3](https://github.com/evaletolab/kng-web3) 🌶️
+## ⇾ Follow our funky new development ⇾ [king-kong-II-web3](https://github.com/evaletolab/kng-web3) 🌶️
 
 # Installation
 
